@@ -64,5 +64,8 @@ function Prompt
 	}
     
 	Write-Host " $location" -ForegroundColor Green -NoNewLine
+    
+    Write-VcsStatus
+    
 	return " "
 }
