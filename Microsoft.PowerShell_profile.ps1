@@ -65,7 +65,7 @@ function Prompt
     
 	Write-Host " $location" -ForegroundColor Green -NoNewLine
     
-    if (-Not $location.Path -eq "cert:\")
+    if ($location.Path -ne "cert:\")
 	{
 		Write-VcsStatus
 	} 
