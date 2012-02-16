@@ -13,7 +13,7 @@ function Set-VisualStudioVars($version = "10.0")
     $batchFilePath = $registryKey.InstallDir.Replace("IDE\", "Tools\vsvars32.bat")
     $command = "`"$batchFilePath`" & set"
     
-    cmd /c $command | ForEach-Object { $varName, $varValue = $_.split('='); Set-Item -Path Env:$varName -value $varValue }
+    cmd /c $command | ForEach-Object { $varName, $varValue = $_.Split('='); Set-Item -Path Env:$varName -Value $varValue }
 }
 
 Set-Alias vs Set-VisualStudioVars
