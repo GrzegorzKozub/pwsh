@@ -12,7 +12,8 @@ Push-Location
 cd $(Split-Path $PROFILE)
 
 . .\Get-Colors.ps1
-. .\Run-Elevated.ps1
+. .\Optimize-Processes.ps1
+. .\Set-Proxy.ps1
 . .\Set-VisualStudioVars.ps1
 
 Pop-Location

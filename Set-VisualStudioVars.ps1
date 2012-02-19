@@ -1,17 +1,17 @@
-function Set-VisualStudioVars($version = "10.0")
+function Set-VisualStudioVars($Version = "10.0")
 {
     if ([intptr]::Size -eq 8)
     {
-        $registryKeyPath = "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + $version
+        $path = "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + $Version
     }
     else
     {
-        $registryKeyPath = "HKLM:SOFTWARE\Microsoft\VisualStudio\" + $version
+        $path = "HKLM:SOFTWARE\Microsoft\VisualStudio\" + $Version
     }
 
-    $registryKey = Get-ItemProperty $registryKeyPath
-    $batchFilePath = $registryKey.InstallDir.Replace("IDE\", "Tools\vsvars32.bat")
-    $command = "`"$batchFilePath`" & set"
+    $key = Get-ItemProperty $path
+    $batchFile = $key.InstallDir.Replace("IDE\", "Tools\vsvars32.bat")
+    $command = "`"$batchFile`" & set"
     
     cmd /c $command | ForEach-Object { $varName, $varValue = $_.Split('='); Set-Item -Path Env:$varName -Value $varValue }
 }
