@@ -3,7 +3,7 @@
     [CmdletBinding()]
     
     Param (
-        [Parameter(Position = 0, Mandatory = $True, HelpMessage = "Enter either Off, Automatic or Manual.")]
+        [Parameter(Position = 0, Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [ValidateSet("Off", "Automatic", "Manual")]
         [String]

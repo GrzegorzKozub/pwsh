@@ -6,4 +6,4 @@
     Get-Process | Where-Object { $_.Company -eq "McAfee, Inc." } | Stop-Process -Force
 }
 
-Set-Alias op Optimize-Processes
+Set-Alias optimize Optimize-Processes
