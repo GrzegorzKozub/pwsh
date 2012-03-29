@@ -6,7 +6,7 @@
         [Parameter(Position = 0, Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [ValidateSet("Off", "Automatic", "Manual")]
-        [String]
+        [string]
         $Configuration
     )
 

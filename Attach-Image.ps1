@@ -6,7 +6,7 @@
         [Parameter(Position = 0, Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({Test-Path $_})]
-        [String]
+        [string]
         $ImagePath,
         
         [Parameter(Position = 1)]
