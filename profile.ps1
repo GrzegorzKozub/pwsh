@@ -12,6 +12,7 @@ Push-Location
 cd $(Split-Path $PROFILE)
 
 . .\Attach-Image.ps1
+. .\Import-Certificate.ps1
 . .\Optimize-Processes.ps1
 . .\Set-Proxy.ps1
 . .\Set-VisualStudioVars.ps1

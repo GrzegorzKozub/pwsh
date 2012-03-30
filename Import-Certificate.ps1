@@ -37,21 +37,29 @@
     {
         try
         {
+            if (!(Test-Path $CertificateFile.FullName))
+            {
+                $CertificateFile = New-Object System.IO.FileInfo $(Join-Path -Path $PWD.ProviderPath -ChildPath $CertificateFile)
+            }
+            
             $certificate = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 $CertificateFile, $CertificatePassword
             $store = New-Object System.Security.Cryptography.X509Certificates.X509Store $StoreName, $StoreLocation
             
             $store.Open([System.Security.Cryptography.X509Certificates.OpenFlags]::ReadWrite)
             $store.Add($certificate)
-            $store.Close()
             
-            #http://msdn.microsoft.com/en-us/library/system.security.cryptography.x509certificates.x509store.aspx
-            
-            #remove
-            #list the certs with cert:
+            Write-Verbose "Imported certificate $CertificateFile to store $StoreName at location $StoreLocation."
         }
         catch
         {
             Write-Error -Message $_ -ErrorAction Stop
+        }
+        finally
+        {
+            if ($store -ne $null)
+            {
+                $store.Close()
+            }
         }
     }
     
