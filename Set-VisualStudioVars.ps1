@@ -1,11 +1,7 @@
-function Set-VisualStudioVars($Version = "10.0")
-{
-    if ([intptr]::Size -eq 8)
-    {
+function Set-VisualStudioVars ($Version = "10.0") {
+    if ([intptr]::Size -eq 8) {
         $path = "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + $Version
-    }
-    else
-    {
+    } else {
         $path = "HKLM:SOFTWARE\Microsoft\VisualStudio\" + $Version
     }
 

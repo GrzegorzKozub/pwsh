@@ -10,14 +10,11 @@ $Host.PrivateData.VerboseBackgroundColor = $BackgroundColor
 $Host.PrivateData.ProgressForegroundColor = "White"
 $Host.PrivateData.ProgressBackgroundColor = "DarkGray"
 
-function Prompt
-{
+function Prompt {
 	$userColor = "DarkGreen"
     
-	foreach ($group in $($([Security.Principal.WindowsIdentity]::GetCurrent()).Groups))
-	{
-		if ($($group.Translate([Security.Principal.SecurityIdentifier])).IsWellKnown([Security.Principal.WellKnownSidType]::BuiltinAdministratorsSid))
-		{
+	foreach ($group in $($([Security.Principal.WindowsIdentity]::GetCurrent()).Groups)) {
+		if ($($group.Translate([Security.Principal.SecurityIdentifier])).IsWellKnown([Security.Principal.WellKnownSidType]::BuiltinAdministratorsSid)) {
 			$userColor = "DarkRed"
 		}
 	}
@@ -26,8 +23,7 @@ function Prompt
 	$hostName = $env:COMPUTERNAME.ToLower()
 	$history = @(Get-History)
 	
-    if ($history.Count -gt 0)
-	{
+    if ($history.Count -gt 0) {
 		$history = $history[$history.Count - 1].Id
 	}
 	
@@ -37,13 +33,11 @@ function Prompt
 	$location = $(Get-Location)
 	$Host.UI.RawUI.WindowTitle = $location
 	
-    if ($location.Path -eq $Home)
-	{
+    if ($location.Path -eq $Home) {
 		$location = "~"
 	}
 	
-    if ($location.Path.Length -ge 40)
-	{
+    if ($location.Path.Length -ge 40) {
 		$location = $location.Path
 		$location = $location.Substring($location.LastIndexOf("\") + 1, $location.Length - $location.LastIndexOf("\") - 1) 
 	}
@@ -53,22 +47,19 @@ function Prompt
 	Write-Host "$hostName" -ForegroundColor DarkYellow -NoNewLine
 	Write-Host " $history" -ForegroundColor Blue -NoNewLine
 	
-    if ($nestedHeight -gt 0)
-	{
+    if ($nestedHeight -gt 0) {
 		Write-Host " $nestedHeight" -ForegroundColor DarkMagenta -NoNewLine	
 	}
 	
-    if ($stackHeight -gt 0)
-	{
+    if ($stackHeight -gt 0) {
 		Write-Host " $stackHeight" -ForegroundColor DarkCyan -NoNewLine
 	}
     
 	Write-Host " $location" -ForegroundColor Green -NoNewLine
     
-    if ($location.Path -ne "cert:\")
-	{
+    if ($location.Path -ne "cert:\") {
 		Write-VcsStatus
-	} 
+	}
     
 	return " "
 }

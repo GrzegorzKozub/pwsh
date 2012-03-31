@@ -1,8 +1,7 @@
-﻿function Attach-Image
-{
+﻿function Attach-Image {
     [CmdletBinding()]
-    
-    Param (
+
+    param (
         [Parameter(Position = 0, Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({Test-Path $_})]
@@ -16,12 +15,9 @@
 
     $path = $env:TEMP + "\" + [Guid]::NewGuid().Guid + ".txt"
     
-    if ($Detach)
-    {
+    if ($Detach) {
         $action = "detach vdisk"
-    }
-    else
-    {
+    } else {
         $action = "attach vdisk"
     }
     
