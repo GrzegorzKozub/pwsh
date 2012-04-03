@@ -2,19 +2,19 @@
     [CmdletBinding()]
 
     param (
-        [Parameter(Position = 0, Mandatory = $true)]
+        [Parameter(Position = 0)]
         [ValidateNotNullOrEmpty()]
         [ValidateSet("CurrentUser", "LocalMachine")]
         [ValidateScript({Test-Path cert:\$_\$StoreName})]
         [string]
-        $StoreLocation,
+        $StoreLocation = "CurrentUser",
         
-        [Parameter(Position = 1, Mandatory = $true)]
+        [Parameter(Position = 1)]
         [ValidateNotNullOrEmpty()]
         [ValidateSet("AddressBook", "AuthRoot", "CertificateAuthority", "Disallowed", "My", "Root", "TrustedPeople", "TrustedPublisher")]
         [ValidateScript({Test-Path cert:\$StoreLocation\$_})]
         [string]
-        $StoreName,
+        $StoreName = "My",
         
         [Parameter(Position = 2, Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]

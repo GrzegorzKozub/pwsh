@@ -11,8 +11,8 @@ Push-Location
 cd $(Split-Path $PROFILE)
 
 . .\Attach-Image.ps1
+. .\Generate-Certificate.ps1
 . .\Import-Certificate.ps1
-. .\Init-OpenSsl.ps1
 . .\Optimize-Processes.ps1
 . .\Set-Proxy.ps1
 . .\Set-VisualStudioVars.ps1
