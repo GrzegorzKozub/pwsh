@@ -33,6 +33,82 @@
         New-Item -ItemType File -Path $openSslDatabase -Name "index.txt" | Out-Null
         New-Item -ItemType File -Path $openSslDatabase -Name "serial" -Value "00" | Out-Null
     }
+    
+    # initialize configuration
+
+    $configFile = "Generate-Certificate.config"
+    
+    if (!(Test-Path $configFile)) {
+        $config = [xml] @"
+            <config>
+                <rootCa>
+                    <filename>RootCA</filename>
+                    <subject>
+                        <c>PL</c>
+                        <st>mazowieckie</st>
+                        <l>Warszawa</l>
+                        <o>Hewlett-Packard</o>
+                        <ou>BS ITO Software Services</ou>
+                        <cn>Test Root CA</cn>
+                        <e>grzegorz.kozub@hp.com</e>
+                    </subject>
+                </rootCa>
+                <subCa>
+                    <filename>SubCA</filename>
+                    <subject>
+                        <c>PL</c>
+                        <st>mazowieckie</st>
+                        <l>Warszawa</l>
+                        <o>Hewlett-Packard</o>
+                        <ou>BS ITO Software Services</ou>
+                        <cn>Test Sub CA</cn>
+                        <e>grzegorz.kozub@hp.com</e>
+                    </subject>
+                </subCa>
+                <certificate>
+                    <filename>Certificate</filename>
+                    <subject>
+                        <c>PL</c>
+                        <st>mazowieckie</st>
+                        <l>Warszawa</l>
+                        <o>Hewlett-Packard</o>
+                        <ou>BS ITO Software Services</ou>
+                        <cn>Test Certificate</cn>
+                        <e>grzegorz.kozub@hp.com</e>
+                    </subject>
+                </certificate>
+            </config>
+"@
+        $config.Save($configFile)
+        
+        Write-Host "The $configFile file was created. Modify it now, if required, then press any key to continue..."
+        $null = $Host.UI.RawUI.ReadKey("NoEcho, IncludeKeyDown")
+    }
+    
+    # read configuration
+    
+    Write-Verbose "Reading configuration from the $configFile file."
+
+    $config = New-Object xml
+    $config.Load($configFile)
+    
+    $rootCaFilename = $config.config.rootCa.filename
+    $subCaFilename = $config.config.subCa.filename
+    $certificateFilename = $config.config.certificate.filename
+    
+    $subjectPattern = "/countryName={0}/stateOrProvinceName={1}/localityName={2}/organizationName={3}/organizationalUnitName={4}/commonName={5}/emailAddress={6}/"
+    
+    $rootCaSubject = $config.config.rootCa.subject
+    $rootCaSubject = [string]::Format($subjectPattern, $rootCaSubject.c, $rootCaSubject.st, $crootCaSubject.l, $rootCaSubject.o, $rootCaSubject.ou, $rootCaSubject.cn, $rootCaSubject.e)
+    
+    $subCaSubject = $config.config.subCa.subject
+    $subCaSubject = [string]::Format($subjectPattern, $subCaSubject.c, $subCaSubject.st, $csubCaSubject.l, $subCaSubject.o, $subCaSubject.ou, $subCaSubject.cn, $subCaSubject.e)
+   
+    $certificateSubject = $config.config.certificate.subject
+    $certificateSubject = [string]::Format($subjectPattern, $certificateSubject.c, $certificateSubject.st, $ccertificateSubject.l, $certificateSubject.o, $certificateSubject.ou, $certificateSubject.cn, $certificateSubject.e)
+
+    # generate the root CA certificate and key
+    # Write-Verbose
 
     return
     
