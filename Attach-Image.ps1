@@ -9,7 +9,7 @@
         $ImagePath,
         
         [Parameter(Position = 1)]
-        [Switch]
+        [switch]
         $Detach = $false
     )
 
