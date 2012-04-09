@@ -101,7 +101,7 @@
                         <cn>Test Certificate</cn>
                         <e>grzegorz.kozub@hp.com</e>
                     </subject>
-                </certificate>
+                </certificate>              
             </config>
 "@
         $config.Save($configFile)
@@ -114,8 +114,7 @@
     
     Write-Verbose "Reading configuration from the $configFile file."
 
-    $config = New-Object xml
-    $config.Load($configFile)
+    $config = [xml] (Get-Content $configFile)
     
     $subjectPattern = "/countryName={0}/stateOrProvinceName={1}/localityName={2}/organizationName={3}/organizationalUnitName={4}/commonName={5}/emailAddress={6}/"
 
@@ -133,13 +132,12 @@
         $subCaSubject = [string]::Format($subjectPattern, $subCaSubject.c, $subCaSubject.st, $subCaSubject.l, $subCaSubject.o, $subCaSubject.ou, $subCaSubject.cn, $subCaSubject.e)
     }
 
-    $certificateFilename = $config.config.certificate.filename
-    $certificateValidForDays = $config.config.certificate.validForDays
-    $certificateKeyPassword = $config.config.certificate.keyPassword
-    $certificateExportPassword = $config.config.certificate.exportPassword
-    $certificateSubject = $config.config.certificate.subject
-    $certificateSubject = [string]::Format($subjectPattern, $certificateSubject.c, $certificateSubject.st, $certificateSubject.l, $certificateSubject.o, $certificateSubject.ou, $certificateSubject.cn, $certificateSubject.e)
-    
+    $certificates = $config.config.certificate
+
+    foreach ($c in $certificates) {
+        $c.subject.InnerText = [string]::Format($subjectPattern, $c.subject.c, $c.subject.st, $c.subject.l, $c.subject.o, $c.subject.ou, $c.subject.cn, $c.subject.e)
+    }
+
     # setup file extensions
 
     $cer = ".cer"
@@ -171,9 +169,11 @@
         }        
     }
 
-    if (!$certificateFilename -or !$certificateValidForDays -or !$certificateKeyPassword -or !$certificateExportPassword -or !$certificateSubject) {
-        Write-Error "The $configFile file is missing required certificate settings."
-        return
+    foreach ($c in $certificates) {
+        if (!$c.filename -or !$c.validForDays -or !$c.keyPassword -or !$c.exportPassword -or !$c.subject) {
+            Write-Error "The $configFile file is missing required certificate settings."
+            return
+        }
     }
 
     # generate the CA
@@ -194,24 +194,26 @@
 
         $caFilename = $subCaFilename
         $caKeyPassword = $subCaKeyPassword
-        $caAdjective = "subordinate"
+        $caKind = "subordinate"
     } else {
         $caFilename = $rootCaFilename
         $caKeyPassword = $rootCaKeyPassword
-        $caAdjective = "root"
+        $caKind = "root"
     }
 
     # generate the certificate
 
-    Write-Verbose "Generating the certificate request."
-    openssl req -new -out $certificateFilename$req -keyout $certificateFilename$key -subj $certificateSubject -passout pass:$certificateKeyPassword
+    foreach ($c in $certificates) {
+        Write-Verbose "Generating the certificate request for $($c.filename)."
+        openssl req -new -out ($c.filename+$req) -keyout ($c.filename+$key) -subj $c.subject -passout pass:$c.keyPassword
+        
+        Write-Verbose "Signing the certificate request with the $caKind CA key."
+        openssl ca -days $c.validForDays -batch -cert $caFilename$cer -keyfile $caFilename$key -passin pass:$caKeyPassword -in ($c.filename+$req) -out ($c.filename+$cer)
 
-    Write-Verbose "Signing the certificate request with the $caAdjective CA key."
-    openssl ca -days $certificateValidForDays -batch -cert $caFilename$cer -keyfile $caFilename$key -passin pass:$caKeyPassword -in $certificateFilename$req -out $certificateFilename$cer
-
-    Write-Verbose "Converting the certificate to PKCS#12 format."
-    openssl pkcs12 -export -in $certificateFilename$cer -inkey $certificateFilename$key -passin pass:$certificateKeyPassword -out $certificateFilename$pfx -passout pass:$certificateExportPassword
-
+        Write-Verbose "Converting the certificate to PKCS#12 format."
+        openssl pkcs12 -export -in ($c.filename+$cer) -inkey ($c.filename+$key) -passin pass:$c.keyPassword -out ($c.filename+$pfx) -passout pass:$c.exportPassword
+    }
+   
     # generate the CRL
 
     if ($UseSubCa -and $RevokeSubCa) {
@@ -223,10 +225,12 @@
     }
 
     if ($RevokeCertificate) {
-        Write-Verbose "Revoking the certificate."
-        openssl ca -cert $caFilename$cer -keyfile $caFilename$key -passin pass:$caKeyPassword -revoke $certificateFilename$cer
+        foreach ($c in $certificates) {
+            Write-Verbose "Revoking the certificate $($c.filename)."
+            openssl ca -cert $caFilename$cer -keyfile $caFilename$key -passin pass:$caKeyPassword -revoke ($c.filename+$cer)
+        }
 
-        Write-Verbose "Generating the CRL for the $caAdjective CA."
+        Write-Verbose "Generating the CRL for the $caKind CA."
         openssl ca -cert $caFilename$cer -keyfile $caFilename$key -passin pass:$caKeyPassword -gencrl -out $caFilename$crl
     }
 }
