@@ -141,8 +141,9 @@
     # setup file extensions
 
     $cer = ".cer"
+    $crl = ".crl"
     $key = ".key"
-    $pfx = ".crl"
+    $pfx = ".pfx"
     $req = ".req"
 
     # validate configuration
@@ -205,13 +206,13 @@
 
     foreach ($c in $certificates) {
         Write-Verbose "Generating the certificate request for $($c.filename)."
-        openssl req -new -out ($c.filename+$req) -keyout ($c.filename+$key) -subj $c.subject -passout pass:$c.keyPassword
+        openssl req -new -out ($c.filename+$req) -keyout ($c.filename+$key) -subj $c.subject -passout "pass:$($c.keyPassword)"
         
         Write-Verbose "Signing the certificate request with the $caKind CA key."
         openssl ca -days $c.validForDays -batch -cert $caFilename$cer -keyfile $caFilename$key -passin pass:$caKeyPassword -in ($c.filename+$req) -out ($c.filename+$cer)
 
         Write-Verbose "Converting the certificate to PKCS#12 format."
-        openssl pkcs12 -export -in ($c.filename+$cer) -inkey ($c.filename+$key) -passin pass:$c.keyPassword -out ($c.filename+$pfx) -passout pass:$c.exportPassword
+        openssl pkcs12 -export -in ($c.filename+$cer) -inkey ($c.filename+$key) -passin "pass:$($c.keyPassword)" -out ($c.filename+$pfx) -passout "pass:$($c.exportPassword)"
     }
    
     # generate the CRL
