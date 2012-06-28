@@ -11,6 +11,7 @@ Push-Location
 cd $(Split-Path $PROFILE)
 
 . .\Attach-Image.ps1
+. .\Encrypt-Config.ps1
 . .\Generate-Certificate.ps1
 . .\Import-Certificate.ps1
 . .\Optimize-Processes.ps1
