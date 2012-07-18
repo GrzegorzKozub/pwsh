@@ -55,8 +55,9 @@
     # initialize configuration
 
     $configFile = "Generate-Certificate.config"
+    $configFilePath = Join-Path (Get-Location -PSProvider FileSystem).Path $configFile
     
-    if (!(Test-Path $configFile)) {
+    if (!(Test-Path $configFilePath)) {
         $config = [xml] @"
             <config>
                 <rootCa>
@@ -104,17 +105,17 @@
                 </certificate>              
             </config>
 "@
-        $config.Save($configFile)
+        $config.Save($configFilePath)
         
         Write-Host "The $configFile file was created. Modify it now, if required, then press any key to continue..."
         $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyUp")
     }
-    
+
     # read configuration
     
     Write-Verbose "Reading configuration from the $configFile file."
 
-    $config = [xml] (Get-Content $configFile)
+    $config = [xml] (Get-Content $configFilePath)
     
     $subjectPattern = "/countryName={0}/stateOrProvinceName={1}/localityName={2}/organizationName={3}/organizationalUnitName={4}/commonName={5}/emailAddress={6}/"
 
