@@ -10,9 +10,9 @@
     )
     
     $path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
-    $autoConfigUrl = "http://autocache.hp.com/"
-    $proxyServer = "bbnwebcachevip2.bastion.europe.hp.com:8080"
-    $proxyOverride = "127.0.0.1;localhost;*.eds.com;*.hp.com;*.hp.net;*.hpqcorp.net;*.cpqcorp.net;*.hpshopping.com;130.177.*"
+    $autoConfigUrl = ""
+    $proxyServer = ""
+    $proxyOverride = "127.0.0.1;localhost"
     
     switch ($Configuration) {   
         "Off" {
