@@ -18,6 +18,7 @@ cd $(Split-Path $PROFILE)
 . .\Set-Proxy.ps1
 . .\Set-VisualStudioVars.ps1
 . .\Ssd-Game.ps1
+. .\Update-Path.ps1
 
 Pop-Location
 
