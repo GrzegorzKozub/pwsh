@@ -14,7 +14,6 @@ cd $(Split-Path $PROFILE)
 . .\Encrypt-Config.ps1
 . .\Generate-Certificate.ps1
 . .\Import-Certificate.ps1
-. .\Optimize-Processes.ps1
 . .\Set-Proxy.ps1
 . .\Set-VisualStudioVars.ps1
 . .\Ssd-Game.ps1
