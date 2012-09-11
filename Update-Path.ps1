@@ -46,6 +46,8 @@
         $pathArray += $Value
     }
 
+    $totalPaths = $pathArray.Length
+
     $windows = Get-Content Env:SystemRoot
     $programFiles = Get-Content Env:ProgramFiles
     $programFilesx86 = Get-Content Env:"ProgramFiles(x86)"
@@ -61,7 +63,14 @@
     $userPaths = $pathArray | Where-Object { $_ -like "*$user\*" } | Sort-Object
 
     $pathArray = @() + $windowsPaths + $programFilesPaths + $programFilesx86Paths + $commonPaths + $programsPaths + $userPaths
-    $path = $( $pathArray | Where-Object { $_ -ne $null } ) -Join ";"
+    $pathArray = $pathArray | Where-Object { $_ -ne $null }
+
+    if ($pathArray.Length -lt $totalPaths) {
+        Write-Error "Unsupported location detected. No changes will be made."
+        return
+    }
+
+    $path = $pathArray -Join ";"
 
     [Environment]::SetEnvironmentVariable("Path", $path, $Target)
 }
