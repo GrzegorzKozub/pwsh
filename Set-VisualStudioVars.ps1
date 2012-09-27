@@ -1,15 +1,30 @@
-function Set-VisualStudioVars ($Version = "10.0") {
-    if ([intptr]::Size -eq 8) {
-        $path = "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + $Version
-    } else {
-        $path = "HKLM:SOFTWARE\Microsoft\VisualStudio\" + $Version
-    }
+function Set-VisualStudioVars {
+    [CmdletBinding()]
+
+    param (
+        [Parameter(Position = 0)]
+        [ValidateSet(10, 11)] 
+        [int] 
+        $Version = 11
+    )
+
+    $path = "HKLM:SOFTWARE\"
+    if ([intptr]::Size -eq 8) { $path += "Wow6432Node\" }
+    $path += "Microsoft\VisualStudio\" + $Version + ".0"
+
+    Write-Verbose "Reading settings from $path..."
 
     $key = Get-ItemProperty $path
     $batchFile = $key.InstallDir.Replace("IDE\", "Tools\vsvars32.bat")
     $command = "`"$batchFile`" & set"
-    
-    cmd /c $command | ForEach-Object { $varName, $varValue = $_.Split('='); Set-Item -Path Env:$varName -Value $varValue }
+
+    Write-Verbose "Executing $batchFile..."
+
+    cmd /c $command | ForEach-Object {
+        $varName, $varValue = $_.Split('=')
+        Write-Verbose "$varName = $varValue" 
+        Set-Item -Path Env:$varName -Value $varValue 
+    }
 }
 
 Set-Alias vs Set-VisualStudioVars
