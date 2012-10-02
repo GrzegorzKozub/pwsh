@@ -19,7 +19,12 @@
     )
 
     $path = [Environment]::GetEnvironmentVariable("Path", $Target)
-    $pathArray = $path.Split(";")
+
+    if ($path -ne $null) {
+        $pathArray = $path.Split(";")
+    } else {
+        $pathArray = @()
+    }
 
     if (!$Value) {
         $pathArray
