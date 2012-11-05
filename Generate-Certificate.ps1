@@ -68,10 +68,10 @@
                         <c>PL</c>
                         <st>mazowieckie</st>
                         <l>Warszawa</l>
-                        <o>Hewlett-Packard</o>
-                        <ou>BS ITO Software Services</ou>
+                        <o>Apsis</o>
+                        <ou>Developers</ou>
                         <cn>Test Root CA</cn>
-                        <e>grzegorz.kozub@hp.com</e>
+                        <e>grzegorz.kozub@apsis.com</e>
                     </subject>
                 </rootCa>
                 <subCa>
@@ -82,10 +82,10 @@
                         <c>PL</c>
                         <st>mazowieckie</st>
                         <l>Warszawa</l>
-                        <o>Hewlett-Packard</o>
-                        <ou>BS ITO Software Services</ou>
+                        <o>Apsis</o>
+                        <ou>Developers</ou>
                         <cn>Test Sub CA</cn>
-                        <e>grzegorz.kozub@hp.com</e>
+                        <e>grzegorz.kozub@apsis.com</e>
                     </subject>
                 </subCa>
                 <certificate>
@@ -97,10 +97,10 @@
                         <c>PL</c>
                         <st>mazowieckie</st>
                         <l>Warszawa</l>
-                        <o>Hewlett-Packard</o>
-                        <ou>BS ITO Software Services</ou>
+                        <o>Apsis</o>
+                        <ou>Developers</ou>
                         <cn>Test Certificate</cn>
-                        <e>grzegorz.kozub@hp.com</e>
+                        <e>grzegorz.kozub@apsis.com</e>
                     </subject>
                 </certificate>              
             </config>
