@@ -17,7 +17,6 @@ cd $(Split-Path $PROFILE)
 . .\Process-ResourceHackerScripts.ps1
 . .\Set-Proxy.ps1
 . .\Set-VisualStudioVars.ps1
-. .\Ssd-Game.ps1
 . .\Update-Path.ps1
 
 Pop-Location
