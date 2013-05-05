@@ -15,7 +15,11 @@
 
         [Parameter(Position = 2)]
         [switch]
-        $Delete = $false
+        $Delete = $false,
+
+        [Parameter(Position = 3)]
+        [string]
+        $Diminish = "Git"
     )
 
     $path = [Environment]::GetEnvironmentVariable("Path", $Target)
@@ -64,6 +68,10 @@
     $programFilesx86Paths = $pathArray | Where-Object { $_ -like "*$programFilesx86\*" } | Sort-Object
     $programsPaths = $pathArray | Where-Object { $_ -like "*$programs\*" } | Sort-Object
     $userPaths = $pathArray | Where-Object { $_ -like "*$user\*" } | Sort-Object
+
+    foreach ($folder in $Diminish.Split(",") | Sort-Object) {
+        $programsPaths = $($programsPaths | Where-Object { $_ -notlike "*\$folder*" }) + $($programsPaths | Where-Object { $_ -like "*\$folder*" })
+    }
 
     $pathArray = @() + $windowsPaths + $programFilesPaths + $programFilesx86Paths + $programsPaths + $userPaths
     $pathArray = $pathArray | Where-Object { $_ -ne $null }
