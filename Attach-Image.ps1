@@ -26,4 +26,4 @@
     Remove-Item -Path $path
 }
 
-Set-Alias attach Attach-Image
+Set-Alias ai Attach-Image

@@ -47,5 +47,5 @@ function Encrypt-Config {
     $config.Save([System.Configuration.ConfigurationSaveMode]::Modified)
 }
 
-Set-Alias encrypt Encrypt-Config
+Set-Alias ec Encrypt-Config
 

@@ -62,4 +62,4 @@
     }
 }
 
-Set-Alias import Import-Certificate
+Set-Alias impcert Import-Certificate

@@ -237,4 +237,4 @@
     }
 }
 
-Set-Alias generate Generate-Certificate
+Set-Alias gencert Generate-Certificate
