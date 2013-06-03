@@ -61,19 +61,19 @@
     $programFiles = Get-Content Env:ProgramFiles
     $programFilesx86 = Get-Content Env:"ProgramFiles(x86)"
     $programs = "C:\Programs"
-    $user = Get-Content Env:Home
+    $d = "D:"
 
     $windowsPaths = $pathArray | Where-Object { $_ -like "*$windows\*" -or $_ -eq $windows }
     $programFilesPaths = $pathArray | Where-Object { $_ -like "*$programFiles\*" } | Sort-Object
     $programFilesx86Paths = $pathArray | Where-Object { $_ -like "*$programFilesx86\*" } | Sort-Object
     $programsPaths = $pathArray | Where-Object { $_ -like "*$programs\*" } | Sort-Object
-    $userPaths = $pathArray | Where-Object { $_ -like "*$user\*" } | Sort-Object
+    $dPaths = $pathArray | Where-Object { $_ -like "*$d\*" } | Sort-Object
 
     foreach ($folder in $Diminish.Split(",") | Sort-Object) {
         $programsPaths = @() + $($programsPaths | Where-Object { $_ -notlike "*\$folder*" }) + $($programsPaths | Where-Object { $_ -like "*\$folder*" })
     }
 
-    $pathArray = @() + $windowsPaths + $programFilesPaths + $programFilesx86Paths + $programsPaths + $userPaths
+    $pathArray = @() + $windowsPaths + $programFilesPaths + $programFilesx86Paths + $programsPaths + $dPaths
     $pathArray = $pathArray | Where-Object { $_ -ne $null }
 
     if ($pathArray.Length -lt $totalPaths) {
