@@ -70,7 +70,7 @@
     $userPaths = $pathArray | Where-Object { $_ -like "*$user\*" } | Sort-Object
 
     foreach ($folder in $Diminish.Split(",") | Sort-Object) {
-        $programsPaths = $($programsPaths | Where-Object { $_ -notlike "*\$folder*" }) + $($programsPaths | Where-Object { $_ -like "*\$folder*" })
+        $programsPaths = @() + $($programsPaths | Where-Object { $_ -notlike "*\$folder*" }) + $($programsPaths | Where-Object { $_ -like "*\$folder*" })
     }
 
     $pathArray = @() + $windowsPaths + $programFilesPaths + $programFilesx86Paths + $programsPaths + $userPaths
