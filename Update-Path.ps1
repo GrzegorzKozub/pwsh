@@ -84,6 +84,8 @@
     $path = $pathArray -Join ";"
 
     [Environment]::SetEnvironmentVariable("Path", $path, $Target)
+
+    rapidee -s -e -m Path $(Get-Content Env:\Path)
 }
 
 Set-Alias path Update-Path
