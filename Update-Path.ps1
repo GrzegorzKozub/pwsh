@@ -69,6 +69,8 @@
     $programsPaths = $pathArray | Where-Object { $_ -like "*$programs\*" } | Sort-Object
     $dPaths = $pathArray | Where-Object { $_ -like "*$d\*" } | Sort-Object
 
+    $windowsPaths = $windowsPaths | ForEach-Object { $_ -replace $windows.Replace("\", "\\"), "%SystemRoot%" }
+
     foreach ($folder in $Diminish.Split(",") | Sort-Object) {
         $programsPaths = @() + $($programsPaths | Where-Object { $_ -notlike "*\$folder*" }) + $($programsPaths | Where-Object { $_ -like "*\$folder*" })
     }
@@ -83,9 +85,11 @@
 
     $path = $pathArray -Join ";"
 
-    [Environment]::SetEnvironmentVariable("Path", $path, $Target)
-
-    rapidee -s -e -m Path $(Get-Content Env:\Path)
+    if ($Target -eq "Machine") {
+        rapidee -s -e -m Path $path
+    } else {
+        rapidee -s -e Path $path
+    }
 }
 
 Set-Alias path Update-Path
