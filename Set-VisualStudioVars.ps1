@@ -3,9 +3,9 @@ function Set-VisualStudioVars {
 
     param (
         [Parameter(Position = 0)]
-        [ValidateSet(10, 11)] 
+        [ValidateSet(10, 12)] 
         [int] 
-        $Version = 11
+        $Version = 12
     )
 
     $path = "HKLM:SOFTWARE\"
