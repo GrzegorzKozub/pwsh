@@ -3,7 +3,7 @@ function Set-VisualStudioVars {
 
     param (
         [Parameter(Position = 0)]
-        [ValidateSet(10, 12)] 
+        [ValidateSet(10, 11, 12)] 
         [int] 
         $Version = 12
     )
