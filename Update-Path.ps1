@@ -86,9 +86,9 @@
     $path = $pathArray -Join ";"
 
     if ($Target -eq "Machine") {
-        rapidee -s -e -m Path $path
+        Start-Process -FilePath "rapidee.exe" -ArgumentList "-s", "-e", "-m", "Path", """$path""" -Wait
     } else {
-        rapidee -s -e Path $path
+        Start-Process -FilePath "rapidee.exe" -ArgumentList "-s", "-e", "Path", """$path""" -Wait
     }
 }
 
