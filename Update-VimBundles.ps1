@@ -1,7 +1,7 @@
 function Update-VimBundles {
 
     workflow Pull-UpdatesInParallel {
-        $bundles = Get-ChildItem -Path "c:\Programs\Vim\vimfiles\bundle" -Directory -Exclude "taskpaper.vim","typescript-vim","vim-colors-solarized"
+        $bundles = Get-ChildItem -Path "c:\Programs\Vim\vimfiles\bundle" -Directory
 
         foreach -Parallel ($bundle in $bundles) {
 
