@@ -39,11 +39,12 @@ add_definitions(-DMS_WIN64)
         . `
         c:\Programs\Vim\vimfiles\bundle\YouCompleteMe\third_party\ycmd\cpp
 
-    mingw32-make -j4 ycm_support_libs
+    mingw32-make ycm_support_libs
 
+    Set-Location ..
     Remove-Item build -Recurse | Out-Null
 
-    Set-Location ..\third_party\ycmd\third_party\OmniSharpServer
+    Set-Location third_party\ycmd\third_party\OmniSharpServer
     Set-VisualStudioVars
     msbuild /m OmniSharp.sln
 
