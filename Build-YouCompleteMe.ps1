@@ -29,10 +29,6 @@ add_definitions(-DMS_WIN64)
 
     $env:Path = $env:Path.Replace("C:\Programs\Git\bin;", "").Replace("C:\Programs\Ruby\bin;", "")
 
-    if (Test-Path build -PathType Container) {
-        Remove-Item build -Recurse | Out-Null
-    }
-
     New-Item build -ItemType Directory | Out-Null
     Set-Location build
 
@@ -44,6 +40,8 @@ add_definitions(-DMS_WIN64)
         c:\Programs\Vim\vimfiles\bundle\YouCompleteMe\third_party\ycmd\cpp
 
     mingw32-make -j4 ycm_support_libs
+
+    Remove-Item build -Recurse | Out-Null
 
     Set-Location ..\third_party\ycmd\third_party\OmniSharpServer
     Set-VisualStudioVars
