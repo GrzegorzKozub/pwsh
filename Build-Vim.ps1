@@ -13,6 +13,9 @@ function Build-Vim {
 
     Set-Location "src"
 
+    $iconsArchivePath = [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($PROFILE.CurrentUserAllHosts), "Build-Vim.zip")
+    7z x -y $iconsArchivePath | Out-Null
+
     foreach ($gui in "no", "yes") {
         mingw32-make -j4 -f make_ming.mak `
             ARCH=i686 FEATURES=HUGE MBYTE=yes IME=yes GIME=yes CSCOPE=yes GUI=$gui OLE=$gui DIRECTX=$gui `
