@@ -1,14 +1,14 @@
 function Build-Vim {
     Push-Location
 
-    if (Test-Path "vim" -PathType Container) {
-        Set-Location "vim"
-        git reset --hard
-        git clean -d --force
-        git pull
+    if (Test-Path "build-vim" -PathType Container) {
+        Set-Location "build-vim"
+        hg update --clean
+        hg status --ignored --unknown | ForEach-Object { Remove-Item $_.Substring(2) }
+        hg pull
     } else {
-        git clone git://github.com/b4winckler/vim.git
-        Set-Location "vim"
+        hg clone https://code.google.com/p/vim/ "build-vim"
+        Set-Location "build-vim"
     }
 
     Set-Location "src"
