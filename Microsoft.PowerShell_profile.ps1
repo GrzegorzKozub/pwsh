@@ -1,65 +1,89 @@
-$BackgroundColor = "Black"
-$Host.PrivateData.ErrorForegroundColor = "Red"
-$Host.PrivateData.ErrorBackgroundColor = $BackgroundColor
-$Host.PrivateData.WarningForegroundColor = "Magenta"
-$Host.PrivateData.WarningBackgroundColor = $BackgroundColor
+$backgroundColor = "Black"
+$separatorColor = "DarkGray"
+
+$Host.PrivateData.DebugBackgroundColor = $backgroundColor
 $Host.PrivateData.DebugForegroundColor = "Yellow"
-$Host.PrivateData.DebugBackgroundColor = $BackgroundColor
-$Host.PrivateData.VerboseForegroundColor = "Cyan"
-$Host.PrivateData.VerboseBackgroundColor = $BackgroundColor
-$Host.PrivateData.ProgressForegroundColor = "White"
+$Host.PrivateData.ErrorBackgroundColor = $backgroundColor
+$Host.PrivateData.ErrorForegroundColor = "Red"
 $Host.PrivateData.ProgressBackgroundColor = "DarkGray"
+$Host.PrivateData.ProgressForegroundColor = "White"
+$Host.PrivateData.VerboseBackgroundColor = $backgroundColor
+$Host.PrivateData.VerboseForegroundColor = "Cyan"
+$Host.PrivateData.WarningBackgroundColor = $backgroundColor
+$Host.PrivateData.WarningForegroundColor = "Magenta"
+
+$GitPromptSettings.AfterForegroundColor = $separatorColor
+$GitPromptSettings.AfterText = ")"
+$GitPromptSettings.BeforeForegroundColor = $separatorColor
+$GitPromptSettings.BeforeIndexForegroundColor = $separatorColor
+$GitPromptSettings.BeforeIndexText = ""
+$GitPromptSettings.BeforeText = " ("
+$GitPromptSettings.BranchAheadForegroundColor = "DarkGreen"
+$GitPromptSettings.BranchBehindForegroundColor = "DarkRed"
+$GitPromptSettings.BranchBehindAndAheadForegroundColor = "DarkYellow"
+$GitPromptSettings.BranchForegroundColor = "DarkBlue"
+$GitPromptSettings.DefaultForegroundColor = "Gray"
+$GitPromptSettings.DelimForegroundColor = $separatorColor
+$GitPromptSettings.DelimText = ""
+$GitPromptSettings.EnableWindowTitle = ""
+$GitPromptSettings.IndexForegroundColor = "DarkGreen"
+$GitPromptSettings.UntrackedForegroundColor = "DarkYellow"
+$GitPromptSettings.UntrackedText = " *"
+$GitPromptSettings.WorkingForegroundColor = "DarkRed"
+
+Clear-Variable backgroundColor
+Clear-Variable separatorColor
+
+$prompt = @{}
+$prompt.User = $env:USERNAME.ToLower()
+$prompt.Host = $env:COMPUTERNAME.ToLower()
+$prompt.UserColor = "DarkGreen"
+
+foreach ($group in $($([Security.Principal.WindowsIdentity]::GetCurrent()).Groups)) {
+    if ($($group.Translate([Security.Principal.SecurityIdentifier])).IsWellKnown([Security.Principal.WellKnownSidType]::BuiltinAdministratorsSid)) {
+        $prompt.UserColor = "DarkRed"
+        continue
+    }
+}
 
 function Prompt {
-	$userColor = "DarkGreen"
-    
-	foreach ($group in $($([Security.Principal.WindowsIdentity]::GetCurrent()).Groups)) {
-		if ($($group.Translate([Security.Principal.SecurityIdentifier])).IsWellKnown([Security.Principal.WellKnownSidType]::BuiltinAdministratorsSid)) {
-			$userColor = "DarkRed"
-		}
-	}
-    
-	$userName = $env:USERNAME.ToLower()
-	$hostName = $env:COMPUTERNAME.ToLower()
-	$history = @(Get-History)
-	
+
+	$history = Get-History
+
     if ($history.Count -gt 0) {
-		$history = $history[$history.Count - 1].Id
+		$historyLevel = $history[$history.Count - 1].Id
 	}
-	
-    $history = ($history + 1)
-	$nestedHeight = $NestedPromptLevel
-	$stackHeight = (Get-Location -Stack).Count
-	$location = $(Get-Location)
-	$Host.UI.RawUI.WindowTitle = $location
-	
-    if ($location.Path -eq $Home) {
+
+    $historyLevel++
+	$stackLevel = (Get-Location -Stack).Count
+	$location = (Get-Location).Path
+
+    if ($location -eq $Home) {
 		$location = "~"
+	} elseif ($location.Length -ge 64) {
+		$location = $location.Substring($location.LastIndexOf("\") + 1, $location.Length - $location.LastIndexOf("\") - 1)
 	}
-	
-    if ($location.Path.Length -ge 40) {
-		$location = $location.Path
-		$location = $location.Substring($location.LastIndexOf("\") + 1, $location.Length - $location.LastIndexOf("\") - 1) 
+
+	$Host.UI.RawUI.WindowTitle = "$location"
+
+	Write-Host $prompt.User -ForegroundColor $prompt.UserColor -NoNewLine
+	Write-Host "@" -ForegroundColor "DarkGray" -NoNewLine
+	Write-Host $prompt.Host -ForegroundColor "DarkYellow" -NoNewLine
+
+	Write-Host " $historyLevel" -ForegroundColor "DarkMagenta" -NoNewLine
+
+    if ($stackLevel -gt 0) {
+		Write-Host " $stackLevel" -ForegroundColor "DarkMagenta" -NoNewLine
 	}
-    
-	Write-Host "$userName" -ForegroundColor $userColor -NoNewLine
-	Write-Host "@" -ForegroundColor Gray -NoNewLine
-	Write-Host "$hostName" -ForegroundColor DarkYellow -NoNewLine
-	Write-Host " $history" -ForegroundColor Blue -NoNewLine
-	
-    if ($nestedHeight -gt 0) {
-		Write-Host " $nestedHeight" -ForegroundColor DarkMagenta -NoNewLine	
-	}
-	
-    if ($stackHeight -gt 0) {
-		Write-Host " $stackHeight" -ForegroundColor DarkCyan -NoNewLine
-	}
-    
-	Write-Host " $location" -ForegroundColor Green -NoNewLine
-    
+
+	Write-Host " $location" -ForegroundColor "DarkCyan" -NoNewLine
+
     if ($location.Path -ne "cert:\") {
 		Write-VcsStatus
 	}
-    
+
+    Write-Host
+    Write-Host ">" -ForegroundColor "DarkGray" -NoNewLine
+
 	return " "
 }
