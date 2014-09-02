@@ -2,7 +2,7 @@ $backgroundColor = "Black"
 $separatorColor = "DarkGray"
 
 $Host.PrivateData.DebugBackgroundColor = $backgroundColor
-$Host.PrivateData.DebugForegroundColor = "Yellow"
+$Host.PrivateData.DebugForegroundColor = "Magenta"
 $Host.PrivateData.ErrorBackgroundColor = $backgroundColor
 $Host.PrivateData.ErrorForegroundColor = "Red"
 $Host.PrivateData.ProgressBackgroundColor = "DarkGray"
@@ -10,7 +10,7 @@ $Host.PrivateData.ProgressForegroundColor = "White"
 $Host.PrivateData.VerboseBackgroundColor = $backgroundColor
 $Host.PrivateData.VerboseForegroundColor = "Cyan"
 $Host.PrivateData.WarningBackgroundColor = $backgroundColor
-$Host.PrivateData.WarningForegroundColor = "Magenta"
+$Host.PrivateData.WarningForegroundColor = "Yellow"
 
 $GitPromptSettings.AfterForegroundColor = $separatorColor
 $GitPromptSettings.AfterText = ")"
