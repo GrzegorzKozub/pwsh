@@ -42,12 +42,13 @@ $prompt.UserColor = "DarkGreen"
 foreach ($group in $($([Security.Principal.WindowsIdentity]::GetCurrent()).Groups)) {
     if ($($group.Translate([Security.Principal.SecurityIdentifier])).IsWellKnown([Security.Principal.WellKnownSidType]::BuiltinAdministratorsSid)) {
         $prompt.UserColor = "DarkRed"
-        continue
+        break
     }
 }
 
 function Prompt {
 
+    $time = Get-Date -UFormat "%a %T"
 	$history = Get-History
 
     if ($history.Count -gt 0) {
@@ -69,6 +70,8 @@ function Prompt {
 	Write-Host $prompt.User -ForegroundColor $prompt.UserColor -NoNewLine
 	Write-Host "@" -ForegroundColor "DarkGray" -NoNewLine
 	Write-Host $prompt.Host -ForegroundColor "DarkYellow" -NoNewLine
+
+	Write-Host " $time" -ForegroundColor "DarkGray" -NoNewLine
 
 	Write-Host " $historyLevel" -ForegroundColor "DarkMagenta" -NoNewLine
 
