@@ -21,7 +21,8 @@ function Build-Vim {
             ARCH=i686 FEATURES=HUGE MBYTE=yes IME=yes GIME=yes CSCOPE=yes GUI=$gui OLE=$gui DIRECTX=$gui `
             PYTHON=c:/Programs/Python DYNAMIC_PYTHON=yes PYTHON_VER=27 `
             PERL=c:/Programs/Perl DYNAMIC_PERL=yes PERL_VER=514 `
-            RUBY=c:/Programs/Ruby DYNAMIC_RUBY=yes RUBY_VER=20 RUBY_VER_LONG=2.0.0
+            RUBY=c:/Programs/Ruby DYNAMIC_RUBY=yes RUBY_VER=20 RUBY_VER_LONG=2.0.0 `
+            LUA=c:/Programs/Lua DYNAMIC_LUA=yes LUA_VER=52
     }
 
     Copy-Item -Path "vim.exe", "gvim.exe" -Destination $(Get-Location -Stack).ToArray()[0].Path -Force
