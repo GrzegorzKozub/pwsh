@@ -3,11 +3,10 @@ function Build-Vim {
 
     if (Test-Path "build-vim" -PathType Container) {
         Set-Location "build-vim"
-        hg update --clean
-        hg status --ignored --unknown | ForEach-Object { Remove-Item $_.Substring(2) }
-        hg pull
+        git clean -fd
+        git pull
     } else {
-        hg clone https://code.google.com/p/vim/ "build-vim"
+        git clone https://github.com/vim/vim.git "build-vim"
         Set-Location "build-vim"
     }
 
