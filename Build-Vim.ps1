@@ -10,10 +10,15 @@ function Build-Vim {
         Set-Location "build-vim"
     }
 
-    Set-Location "src"
+    $archivePath = [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($PROFILE.CurrentUserAllHosts), "Build-Vim.zip")
+    7z x -y $archivePath *.diff | Out-Null
 
-    $iconsArchivePath = [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($PROFILE.CurrentUserAllHosts), "Build-Vim.zip")
-    7z x -y $iconsArchivePath | Out-Null
+    foreach ($patch in Get-ChildItem -Filter *.diff) {
+        git apply $patch
+    }
+
+    Set-Location "src"
+    7z x -y $archivePath | Out-Null
 
     foreach ($gui in "no", "yes") {
         mingw32-make -j4 -f make_ming.mak `
