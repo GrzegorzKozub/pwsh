@@ -3,9 +3,9 @@ function Set-VisualStudioVars {
 
     param (
         [Parameter(Position = 0)]
-        [ValidateSet(10, 11, 12)] 
-        [int] 
-        $Version = 12
+        [ValidateSet(14)]
+        [int]
+        $Version = 14
     )
 
     $path = "HKLM:SOFTWARE\"
@@ -15,15 +15,15 @@ function Set-VisualStudioVars {
     Write-Verbose "Reading settings from $path..."
 
     $key = Get-ItemProperty $path
-    $batchFile = $key.InstallDir.Replace("IDE\", "Tools\vsvars32.bat")
+    $batchFile = $key.InstallDir.Replace("IDE\", "Tools\VsDevCmd.bat")
     $command = "`"$batchFile`" & set"
 
     Write-Verbose "Executing $batchFile..."
 
     cmd /c $command | ForEach-Object {
         $varName, $varValue = $_.Split('=')
-        Write-Verbose "$varName = $varValue" 
-        Set-Item -Path Env:$varName -Value $varValue 
+        Write-Verbose "$varName = $varValue"
+        Set-Item -Path Env:$varName -Value $varValue
     }
 }
 
