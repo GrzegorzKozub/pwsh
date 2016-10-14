@@ -18,10 +18,10 @@
         $LeaveLogs = $false
     )
 
-    $reshacker = Get-Command reshacker -ErrorAction SilentlyContinue
+    $resourceHacker = Get-Command ResourceHacker -ErrorAction SilentlyContinue
     
-    if ($reshacker) {
-        Write-Verbose "Using Resource Hacker located at $($reshacker.Definition)."
+    if ($resourceHacker) {
+        Write-Verbose "Using Resource Hacker located at $($resourceHacker.Definition)."
     } else {
         Write-Error "Resource Hacker is not accessible using the PATH environment variable or a PowerShell alias."
         return
@@ -36,12 +36,11 @@
         Push-Location
         Set-Location $ResourcesLocation
 
-        reshacker -Script $resourceHackerScript
-        Wait-Process -Name reshacker
+        Start-Process -FilePath "$($resourceHacker.Definition)" -ArgumentList "-Script $($resourceHackerScript)" -Wait
 
         $logFileName = $executableFileName.Replace(".exe", ".log")
 
-        if (Get-Content $logFileName | Select-String "Commands completed") {
+        if (Get-Content $logFileName | Select-String -Pattern "S.?u.?c.?c.?e.?s.?s.?!") {
             if (!$LeaveLogs) {
                 Remove-Item $logFileName
             }
