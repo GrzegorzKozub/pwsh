@@ -29,7 +29,7 @@ function Build-Vim {
             LUA=c:/Programs/Lua DYNAMIC_LUA=yes LUA_VER=52
     }
 
-    Copy-Item -Path "vim.exe", "gvim.exe" -Destination $(Get-Location -Stack).ToArray()[0].Path -Force
+    Copy-Item -Path "vim.exe", "gvim.exe", "vimrun.exe" -Destination $(Get-Location -Stack).ToArray()[0].Path -Force
     Pop-Location
 }
 
