@@ -24,10 +24,10 @@
 
     $path = [Environment]::GetEnvironmentVariable("Path", $Target)
 
+    $pathArray = @()
+
     if ($path -ne $null) {
-        $pathArray = $path.Split(";")
-    } else {
-        $pathArray = @()
+        $pathArray = @() + $($path.Split(";") | Where-Object { $_ -ne $null -and $_ -ne "" })
     }
 
     if (!$Value) {
@@ -61,13 +61,13 @@
     $programFiles = Get-Content Env:ProgramFiles
     $programFilesx86 = Get-Content Env:"ProgramFiles(x86)"
     $programs = "C:\Programs"
-    $d = "D:"
+    $userProfile = Get-Content Env:USERPROFILE
 
     $windowsPaths = $pathArray | Where-Object { $_ -like "*$windows\*" -or $_ -eq $windows }
     $programFilesPaths = $pathArray | Where-Object { $_ -like "*$programFiles\*" } | Sort-Object
     $programFilesx86Paths = $pathArray | Where-Object { $_ -like "*$programFilesx86\*" } | Sort-Object
     $programsPaths = $pathArray | Where-Object { $_ -like "*$programs\*" } | Sort-Object
-    $dPaths = $pathArray | Where-Object { $_ -like "*$d\*" } | Sort-Object
+    $userProfilePaths = $pathArray | Where-Object { $_ -like "*$userProfile\*" } | Sort-Object
 
     $windowsPaths = $windowsPaths | ForEach-Object { $_ -replace $windows.Replace("\", "\\"), "%SystemRoot%" }
 
@@ -75,7 +75,7 @@
         $programsPaths = @() + $($programsPaths | Where-Object { $_ -notlike "*\$folder*" }) + $($programsPaths | Where-Object { $_ -like "*\$folder*" })
     }
 
-    $pathArray = @() + $windowsPaths + $programFilesPaths + $programFilesx86Paths + $programsPaths + $dPaths
+    $pathArray = @() + $windowsPaths + $programFilesPaths + $programFilesx86Paths + $programsPaths + $userProfilePaths
     $pathArray = $pathArray | Where-Object { $_ -ne $null }
 
     if ($pathArray.Length -lt $totalPaths) {
