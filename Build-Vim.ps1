@@ -22,7 +22,7 @@ function Build-Vim {
 
     foreach ($gui in "no", "yes") {
         mingw32-make -j4 -f make_ming.mak `
-            ARCH=i686 FEATURES=HUGE MBYTE=yes IME=yes GIME=yes CSCOPE=yes GUI=$gui OLE=$gui DIRECTX=$gui `
+            FEATURES=HUGE MBYTE=yes IME=yes GIME=yes CSCOPE=yes GUI=$gui OLE=$gui DIRECTX=$gui `
             PYTHON3=c:/Programs/Python DYNAMIC_PYTHON3=yes PYTHON3_VER=35 `
             PERL=c:/Programs/Perl DYNAMIC_PERL=yes PERL_VER=524 `
             RUBY=c:/Programs/Ruby DYNAMIC_RUBY=yes RUBY_VER=23 RUBY_VER_LONG=2.3.0 `
