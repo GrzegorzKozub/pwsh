@@ -60,7 +60,7 @@
     $windows = Get-Content Env:SystemRoot
     $programFiles = Get-Content Env:ProgramFiles
     $programFilesx86 = Get-Content Env:"ProgramFiles(x86)"
-    $programs = "C:\Programs"
+    $programs = "C:\Apps"
     $userProfile = Get-Content Env:USERPROFILE
 
     $windowsPaths = $pathArray | Where-Object { $_ -like "*$windows\*" -or $_ -eq $windows }

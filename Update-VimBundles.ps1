@@ -1,6 +1,6 @@
 function Update-VimBundles {
     workflow Pull-UpdatesInParallel {
-        $bundles = Get-ChildItem -Path "c:\Programs\Vim\vimfiles\bundle" -Directory
+        $bundles = Get-ChildItem -Path "c:\Apps\Vim\vimfiles\bundle" -Directory
 
         foreach -Parallel ($bundle in $bundles) {
             InlineScript {
