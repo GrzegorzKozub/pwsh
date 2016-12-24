@@ -48,14 +48,6 @@ foreach ($group in $($([Security.Principal.WindowsIdentity]::GetCurrent()).Group
 
 function Prompt {
 
-    $time = Get-Date -UFormat "%a %T"
-	$history = Get-History
-
-    if ($history.Count -gt 0) {
-		$historyLevel = $history[$history.Count - 1].Id
-	}
-
-    $historyLevel++
 	$stackLevel = (Get-Location -Stack).Count
 	$location = (Get-Location).Path
 
@@ -70,10 +62,6 @@ function Prompt {
 	Write-Host $prompt.User -ForegroundColor $prompt.UserColor -NoNewLine
 	Write-Host "@" -ForegroundColor "DarkGray" -NoNewLine
 	Write-Host $prompt.Host -ForegroundColor "DarkYellow" -NoNewLine
-
-	Write-Host " $time" -ForegroundColor "DarkGray" -NoNewLine
-
-	Write-Host " $historyLevel" -ForegroundColor "DarkMagenta" -NoNewLine
 
     if ($stackLevel -gt 0) {
 		Write-Host " $stackLevel" -ForegroundColor "DarkMagenta" -NoNewLine
