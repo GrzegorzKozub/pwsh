@@ -11,5 +11,3 @@ function Reset-ExplorerWindows {
     }
 }
 
-Set-Alias rew Reset-ExplorerWindows
-

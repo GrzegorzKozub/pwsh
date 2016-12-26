@@ -34,5 +34,3 @@ function Update-VimBundles {
     Pull-UpdatesInParallel
 }
 
-Set-Alias uvb Update-VimBundles
-

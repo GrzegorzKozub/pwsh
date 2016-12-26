@@ -237,4 +237,3 @@
     }
 }
 
-Set-Alias gencert Generate-Certificate

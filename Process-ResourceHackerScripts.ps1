@@ -55,5 +55,3 @@
     }
 }
 
-Set-Alias prhs Process-ResourceHackerScripts
-

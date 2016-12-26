@@ -33,5 +33,3 @@ function Build-Vim {
     Pop-Location
 }
 
-Set-Alias bv Build-Vim
-
