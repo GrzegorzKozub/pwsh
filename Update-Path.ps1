@@ -2,93 +2,93 @@
     [CmdletBinding()]
 
     param (
-        [Parameter(Position = 0)]
+        [Parameter(Position = 0, Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [ValidateSet("User", "Machine")]
         [string]
-        $Target = "User",
+        $Dir,
 
         [Parameter(Position = 1)]
-        [ValidateNotNullOrEmpty()]
+        [ValidateSet("Machine", "User")]
         [string]
-        $Value,
+        $Target = "Machine",
 
         [Parameter(Position = 2)]
         [switch]
-        $Delete = $false,
+        $Remove = $false,
 
         [Parameter(Position = 3)]
         [string]
         $Diminish = "Git"
     )
 
-    $path = [Environment]::GetEnvironmentVariable("Path", $Target)
-
-    $pathArray = @()
-
-    if ($path -ne $null) {
-        $pathArray = @() + $($path.Split(";") | Where-Object { $_ -ne $null -and $_ -ne "" })
-    }
-
-    if (!$Value) {
-        $pathArray
+    $rapidee = Get-Command rapidee -ErrorAction SilentlyContinue
+    
+    if (!$rapidee) {
+        Write-Error "Rapid Environment Editor not found"
         return
     }
 
-    $Value = $Value.TrimEnd("\")
-    $valueExists = $pathArray | Where-Object { $_ -eq $Value }
+    $path = [Environment]::GetEnvironmentVariable("Path", $Target)
+    $paths = @()
 
-    if ($Delete) {
+    if ($path -ne $null) {
+        $paths = @() + $($path.Split(";") | Where-Object { $_ -ne $null -and $_ -ne "" })
+    }
+
+    $Dir = $Dir.TrimEnd("\")
+    $valueExists = $paths | Where-Object { $_ -eq $Dir }
+
+    if ($Remove) {
         if (!$valueExists) {
-            Write-Error "The value $Value does not exist in the $Target scope Path environment variable."
+            Write-Warning "$Dir not found in $Target Path"
             return
         }
 
-        $pathArray = $pathArray | Where-Object { $_ -ne $Value }
+        $paths = $paths | Where-Object { $_ -ne $Dir }
 
     } else {
         if ($valueExists) {
-            Write-Error "The value $Value already exists in the $Target scope Path environment variable."
+            Write-Warning "$Dir already added to $Target Path"
             return
         }
 
-        $pathArray += $Value
+        $paths += $Dir
     }
 
-    $totalPaths = $pathArray.Length
+    $totalPaths = $paths.Length
 
     $windows = Get-Content Env:SystemRoot
     $programFiles = Get-Content Env:ProgramFiles
     $programFilesx86 = Get-Content Env:"ProgramFiles(x86)"
-    $programs = "C:\Apps"
+    $apps = "C:\Apps"
     $userProfile = Get-Content Env:USERPROFILE
 
-    $windowsPaths = $pathArray | Where-Object { $_ -like "*$windows\*" -or $_ -eq $windows }
-    $programFilesPaths = $pathArray | Where-Object { $_ -like "*$programFiles\*" } | Sort-Object
-    $programFilesx86Paths = $pathArray | Where-Object { $_ -like "*$programFilesx86\*" } | Sort-Object
-    $programsPaths = $pathArray | Where-Object { $_ -like "*$programs\*" } | Sort-Object
-    $userProfilePaths = $pathArray | Where-Object { $_ -like "*$userProfile\*" } | Sort-Object
+    $windowsPaths = $paths | Where-Object { $_ -like "*$windows\*" -or $_ -eq $windows }
+    $programFilesPaths = $paths | Where-Object { $_ -like "*$programFiles\*" } | Sort-Object
+    $programFilesx86Paths = $paths | Where-Object { $_ -like "*$programFilesx86\*" } | Sort-Object
+    $appsPaths = $paths | Where-Object { $_ -like "*$apps\*" } | Sort-Object
+    $userProfilePaths = $paths | Where-Object { $_ -like "*$userProfile\*" } | Sort-Object
 
     $windowsPaths = $windowsPaths | ForEach-Object { $_ -replace $windows.Replace("\", "\\"), "%SystemRoot%" }
 
     foreach ($folder in $Diminish.Split(",") | Sort-Object) {
-        $programsPaths = @() + $($programsPaths | Where-Object { $_ -notlike "*\$folder*" }) + $($programsPaths | Where-Object { $_ -like "*\$folder*" })
+        $appsPaths = @() + $($appsPaths | Where-Object { $_ -notlike "*\$folder*" }) + $($appsPaths | Where-Object { $_ -like "*\$folder*" })
     }
 
-    $pathArray = @() + $windowsPaths + $programFilesPaths + $programFilesx86Paths + $programsPaths + $userProfilePaths
-    $pathArray = $pathArray | Where-Object { $_ -ne $null }
+    $paths = @() + $windowsPaths + $programFilesPaths + $programFilesx86Paths + $appsPaths + $userProfilePaths
+    $paths = $paths | Where-Object { $_ -ne $null }
 
-    if ($pathArray.Length -lt $totalPaths) {
-        Write-Error "Unsupported location detected. No changes will be made."
+    if ($paths.Length -lt $totalPaths) {
+        Write-Error "Unsupported location"
         return
     }
 
-    $path = $pathArray -Join ";"
+    $path = $paths -Join ";"
 
     if ($Target -eq "Machine") {
-        Start-Process -FilePath "rapidee.exe" -ArgumentList "-s", "-e", "-m", "Path", """$path""" -Wait
+        Start-Process -FilePath "$($rapidee.Definition)" -ArgumentList "-s", "-e", "-m", "Path", """$path""" -Wait
     } else {
-        Start-Process -FilePath "rapidee.exe" -ArgumentList "-s", "-e", "Path", """$path""" -Wait
+        Start-Process -FilePath "$($rapidee.Definition)" -ArgumentList "-s", "-e", "Path", """$path""" -Wait
     }
 }
 
