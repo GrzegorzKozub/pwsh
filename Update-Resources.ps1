@@ -13,7 +13,7 @@
         $ResourceDir = ".\resources"
     )
 
-    $resourceHacker = Get-Command ResourceHacker -ErrorAction SilentlyContinue
+    $resourceHacker = Get-Command "c:\Apps\Resource Hacker\ResourceHacker.exe" -ErrorAction SilentlyContinue
     
     if (!$resourceHacker) {
         Write-Error "Resource Hacker not found"
