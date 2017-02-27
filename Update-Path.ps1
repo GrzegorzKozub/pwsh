@@ -21,14 +21,8 @@
         $Diminish = "Git"
     )
 
-    $rapidee = Get-Command rapidee -ErrorAction SilentlyContinue
-    
-    if (!$rapidee) {
-        Write-Error "Rapid Environment Editor not found"
-        return
-    }
-
     $path = [Environment]::GetEnvironmentVariable("Path", $Target)
+
     $paths = @()
 
     if ($path -ne $null) {
@@ -57,19 +51,20 @@
 
     $totalPaths = $paths.Length
 
+    $systemRoot = "%SystemRoot%"
     $windows = Get-Content Env:SystemRoot
     $programFiles = Get-Content Env:ProgramFiles
     $programFilesx86 = Get-Content Env:"ProgramFiles(x86)"
     $apps = "C:\Apps"
     $userProfile = Get-Content Env:USERPROFILE
 
-    $windowsPaths = $paths | Where-Object { $_ -like "*$windows\*" -or $_ -eq $windows }
+    $windowsPaths = $paths | Where-Object { $_ -like "$systemRoot*" -or $_ -like "$windows*" }
     $programFilesPaths = $paths | Where-Object { $_ -like "*$programFiles\*" } | Sort-Object
     $programFilesx86Paths = $paths | Where-Object { $_ -like "*$programFilesx86\*" } | Sort-Object
     $appsPaths = $paths | Where-Object { $_ -like "*$apps\*" } | Sort-Object
     $userProfilePaths = $paths | Where-Object { $_ -like "*$userProfile\*" } | Sort-Object
 
-    $windowsPaths = $windowsPaths | ForEach-Object { $_ -replace $windows.Replace("\", "\\"), "%SystemRoot%" }
+    $windowsPaths = $windowsPaths | ForEach-Object { $_ -replace $windows.Replace("\", "\\"), $systemRoot }
 
     foreach ($folder in $Diminish.Split(",") | Sort-Object) {
         $appsPaths = @() + $($appsPaths | Where-Object { $_ -notlike "*\$folder*" }) + $($appsPaths | Where-Object { $_ -like "*\$folder*" })
@@ -85,11 +80,7 @@
 
     $path = $paths -Join ";"
 
-    if ($Target -eq "Machine") {
-        Start-Process -FilePath "$($rapidee.Definition)" -ArgumentList "-s", "-e", "-m", "Path", """$path""" -Wait
-    } else {
-        Start-Process -FilePath "$($rapidee.Definition)" -ArgumentList "-s", "-e", "Path", """$path""" -Wait
-    }
+    [Environment]::SetEnvironmentVariable("Path", $path, $Target)
 }
 
 Set-Alias path Update-Path
