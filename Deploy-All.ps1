@@ -55,7 +55,7 @@ function Deploy-All {
     }
 
     if ($device -eq "XPS") {
-        $other = $other + "ThrottleStop"
+        $other = $other + "MaxxAudioPro" + "ThrottleStop"
     }
 
     function Process ($apps) {
