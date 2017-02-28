@@ -57,6 +57,8 @@ function Deploy-App {
 
     Process {
 
+        $time = [Diagnostics.Stopwatch]::StartNew()
+
         $target = "D:\Apps"
         $systemDrive = Get-Content Env:\SystemDrive
 
@@ -93,12 +95,12 @@ function Deploy-App {
 
         function CreateSymlink ($symlink, $path, $isDir = $true) {
             if (Test-Path $symlink) { return }
-            Write-Host "Creating symlink $symlink"
+            Write-Host "Symlink $symlink"
             cmd /c mklink $(if ($isDir) { "/J" } else { "" }) $symlink $path | Out-Null
         }
 
         function RemoveSymlink ($symlink, $isDir = $true) {
-            Write-Host "Removing symlink $symLink"
+            Write-Host "Unlink $symLink"
             if ($isDir) {
                 try { [IO.Directory]::Delete($symlink, $true) } catch { } # https://github.com/PowerShell/PowerShell/issues/621
             } else {
@@ -113,7 +115,7 @@ function Deploy-App {
         $7z = Get-Command 7z -ErrorAction SilentlyContinue
         
         if ($7z) {
-            Write-Host "Extracting package with 7-Zip"
+            Write-Host "Extract with 7-Zip"
             7z x $zip -y -o"$($d.temp)" | Out-Null
         } else {
             Expand-Archive $zip $d.temp
@@ -135,11 +137,11 @@ function Deploy-App {
 
                 if (($isC -and !$SkipC) -or (!$isC -and !$SkipD)) {
                     if ($Remove -or $replace) {
-                        Write-Host "Removing $fullPath"
+                        Write-Host "Remove $fullPath"
                         Remove-Item $fullPath -Recurse -Force -ErrorAction SilentlyContinue
                     }
                     if (!$Remove) { 
-                        Write-Host "Creating $fullPath"
+                        Write-Host "Create $fullPath"
                         Move-Item $item.FullName $path -Force -ErrorAction SilentlyContinue
                     }
                 }
@@ -170,7 +172,7 @@ function Deploy-App {
         if (!$SkipPs1) {
             $ps1 = Join-Path $package "$script.ps1"
             if (Test-Path $ps1) {
-                Write-Host "Runnig $ps1"
+                Write-Host "Run $ps1"
                 & $ps1
             }
         }
@@ -178,14 +180,16 @@ function Deploy-App {
         if (!$SkipReg) {
             $reg = Join-Path $package "$script.reg"
             if (Test-Path $reg) {
-                Write-Host "Importing $reg"
+                Write-Host "Import $reg"
                 Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait
             }
         }
 
         Remove-Item $d.temp -Recurse -Force
 
-        Write-Host "Done $zip"
+        $time.Stop()
+
+        Write-Host "Done in $($time.Elapsed.ToString("mm\:ss\.fff"))"
     }
 }
 
