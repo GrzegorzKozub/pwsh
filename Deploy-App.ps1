@@ -31,8 +31,8 @@ function Deploy-App {
         $source = "D:\Dropbox\Apps"
 
         $values =
-            Get-ChildItem $source | 
-            Select-Object -ExpandProperty Name | 
+            Get-ChildItem $source |
+            Select-Object -ExpandProperty Name |
             Where-Object { !$_.StartsWith(".") } |
             ForEach-Object { [IO.Path]::GetFileNameWithoutExtension($_) }
 
@@ -52,7 +52,7 @@ function Deploy-App {
         $dynamicParameter = New-Object RuntimeDefinedParameter("App", [string], $attributes)
         $dynamicParameters.Add("App", $dynamicParameter)
 
-        return $dynamicParameters 
+        return $dynamicParameters
     }
 
     Process {
@@ -94,7 +94,7 @@ function Deploy-App {
         function CreateSymlink ($symlink, $path, $isDir = $true) {
             if (Test-Path $symlink) { return }
             Write-Host "Creating symlink $symlink"
-            cmd /c mklink $(if ($isDir) { "/J" } else { "" }) $symlink $path | Out-Null 
+            cmd /c mklink $(if ($isDir) { "/J" } else { "" }) $symlink $path | Out-Null
         }
 
         function RemoveSymlink ($symlink, $isDir = $true) {
@@ -127,7 +127,7 @@ function Deploy-App {
 
             $categoryPath = Join-Path $package $category
             $deviceCategoryPath = $categoryPath + "@" + $(Get-Content Env:\COMPUTERNAME)
-            if (Test-Path $deviceCategoryPath) { $categoryPath = $deviceCategoryPath } 
+            if (Test-Path $deviceCategoryPath) { $categoryPath = $deviceCategoryPath }
 
             foreach ($item in Get-ChildItem $categoryPath -ErrorAction SilentlyContinue) {
 
@@ -149,7 +149,7 @@ function Deploy-App {
                     $isDir = $item.Attributes -eq "Directory"
                     RemoveSymlink $symlink $isDir
                     if (!$Remove) {
-                        CreateSymlink $symlink $fullPath $isDir 
+                        CreateSymlink $symlink $fullPath $isDir
                     }
                 }
             }
@@ -169,17 +169,17 @@ function Deploy-App {
 
         if (!$SkipPs1) {
             $ps1 = Join-Path $package "$script.ps1"
-            if (Test-Path $ps1) { 
+            if (Test-Path $ps1) {
                 Write-Host "Runnig $ps1"
-                & $ps1 
+                & $ps1
             }
         }
 
         if (!$SkipReg) {
             $reg = Join-Path $package "$script.reg"
-            if (Test-Path $reg) { 
+            if (Test-Path $reg) {
                 Write-Host "Importing $reg"
-                Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait 
+                Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait
             }
         }
 
