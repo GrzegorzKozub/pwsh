@@ -55,25 +55,27 @@
         $paths += $Dir
     }
 
+    $paths = $paths | Sort-Object
     $totalPaths = $paths.Length
 
-    $systemRoot = "%SystemRoot%"
-    $windows = Get-Content Env:SystemRoot
-    $programFiles = Get-Content Env:ProgramFiles
-    $programFilesx86 = Get-Content Env:"ProgramFiles(x86)"
-    $apps = "C:\Apps"
-    $userProfile = Get-Content Env:USERPROFILE
+    function GetPathsByDir ($envVar) {
+        $dir = Get-Content $("Env:\" + $envVar)
+        return $paths | 
+            Where-Object { $_ -like "%$envVar%*" -or $_ -like "$dir*" } |
+            ForEach-Object { $_ -replace $dir.Replace("\", "\\"), "%$envVar%" }
+    }
 
-    $windowsPaths = $paths | Where-Object { $_ -like "$systemRoot*" -or $_ -like "$windows*" }
-    $programFilesPaths = $paths | Where-Object { $_ -like "*$programFiles\*" } | Sort-Object
-    $programFilesx86Paths = $paths | Where-Object { $_ -like "*$programFilesx86\*" } | Sort-Object
-    $appsPaths = $paths | Where-Object { $_ -like "*$apps\*" } | Sort-Object
-    $userProfilePaths = $paths | Where-Object { $_ -like "*$userProfile\*" } | Sort-Object
+    $windowsPaths = GetPathsByDir "SystemRoot"
+    $programFilesPaths = GetPathsByDir "ProgramFiles"
+    $programFilesx86Paths = GetPathsByDir "ProgramFiles(x86)"
+    $userProfilePaths = GetPathsByDir "USERPROFILE"
 
-    $windowsPaths = $windowsPaths | ForEach-Object { $_ -replace $windows.Replace("\", "\\"), $systemRoot }
+    $appsPaths = $paths | Where-Object { $_ -like "*C:\Apps\*" }
 
     foreach ($folder in $Diminish.Split(",") | Sort-Object) {
-        $appsPaths = @() + $($appsPaths | Where-Object { $_ -notlike "*\$folder*" }) + $($appsPaths | Where-Object { $_ -like "*\$folder*" })
+        $appsPaths = @() + `
+            $($appsPaths | Where-Object { $_ -notlike "*\$folder*" }) + `
+            $($appsPaths | Where-Object { $_ -like "*\$folder*" })
     }
 
     $paths = @() + $windowsPaths + $programFilesPaths + $programFilesx86Paths + $appsPaths + $userProfilePaths
