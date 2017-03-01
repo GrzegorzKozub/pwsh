@@ -1,13 +1,24 @@
 function Build-Vim {
-    Push-Location
+    [CmdletBinding()]
 
-    if (Test-Path "build-vim" -PathType Container) {
-        Set-Location "build-vim"
+    param (
+        [Parameter(Position = 0, Mandatory = $true)]
+        [ValidateScript({ Test-Path $_ })]
+        [string]
+        $Path
+    )
+
+    Push-Location
+    Set-Location $Path
+    $cloneDir = "Build-Vim"
+
+    if (Test-Path $cloneDir -PathType Container) {
+        Set-Location $cloneDir
         git clean -fd
         git pull
     } else {
-        git clone https://github.com/vim/vim.git "build-vim"
-        Set-Location "build-vim"
+        git clone https://github.com/vim/vim.git $cloneDir
+        Set-Location $cloneDir
     }
 
     $archivePath = [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($PROFILE.CurrentUserAllHosts), "Build-Vim.zip")
@@ -29,7 +40,7 @@ function Build-Vim {
             #LUA=c:/Apps/Lua DYNAMIC_LUA=yes LUA_VER=52
     }
 
-    Copy-Item -Path "vim.exe", "gvim.exe", "vimrun.exe" -Destination $(Get-Location -Stack).ToArray()[0].Path -Force
+    Copy-Item -Path "vim.exe", "gvim.exe", "vimrun.exe" -Destination $Path -Force
     Pop-Location
 }
 
