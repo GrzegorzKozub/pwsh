@@ -185,6 +185,8 @@ function Deploy-App {
             }
         }
 
+        ie4uinit -show
+
         Remove-Item $d.temp -Recurse -Force
 
         $time.Stop()
