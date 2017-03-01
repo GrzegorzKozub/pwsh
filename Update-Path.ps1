@@ -88,6 +88,12 @@
 
     $key.SetValue("Path", $path, "ExpandString")
     $key.Dispose()
+
+    function GetPath ($scope) {
+        return [System.Environment]::GetEnvironmentVariable("Path", $scope) 
+    }
+
+    $env:Path = $(GetPath "Machine") + ";" + $(GetPath "User")
 }
 
 Set-Alias path Update-Path
