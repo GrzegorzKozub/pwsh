@@ -21,7 +21,13 @@
         $Diminish = "Git"
     )
 
-    $path = [Environment]::GetEnvironmentVariable("Path", $Target)
+    if ($Target -eq "Machine") {
+        $key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("SYSTEM\CurrentControlSet\Control\Session Manager\Environment", $true)
+    } else {
+        $key = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey("Environment", $true)
+    }
+
+    $path = $key.GetValue("Path", $null, "DoNotExpandEnvironmentNames")
 
     $paths = @()
 
@@ -80,7 +86,8 @@
 
     $path = $paths -Join ";"
 
-    [Environment]::SetEnvironmentVariable("Path", $path, $Target)
+    $key.SetValue("Path", $path, "ExpandString")
+    $key.Dispose()
 }
 
 Set-Alias path Update-Path
