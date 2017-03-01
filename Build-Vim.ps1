@@ -32,7 +32,7 @@ function Build-Vim {
     7z x -y $archivePath | Out-Null
 
     foreach ($gui in "no", "yes") {
-        mingw32-make -j4 -f make_ming.mak `
+        mingw32-make -j2 -f make_ming.mak `
             FEATURES=HUGE MBYTE=yes IME=yes GIME=yes CSCOPE=yes GUI=$gui OLE=$gui DIRECTX=$gui `
             PYTHON3=c:/Apps/Python DYNAMIC_PYTHON3=yes PYTHON3_VER=35 `
             PERL=c:/Apps/Perl DYNAMIC_PERL=yes PERL_VER=524 `
