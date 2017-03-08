@@ -14,11 +14,7 @@
 
         [Parameter(Position = 2)]
         [switch]
-        $Remove = $false,
-
-        [Parameter(Position = 3)]
-        [string]
-        $Diminish = "Git"
+        $Remove = $false
     )
 
     if ($Target -eq "Machine") {
@@ -28,65 +24,71 @@
     }
 
     $path = $key.GetValue("Path", $null, "DoNotExpandEnvironmentNames")
-
-    $paths = @()
-
-    if ($path -ne $null) {
-        $paths = @() + $($path.Split(";") | Where-Object { $_ -ne $null -and $_ -ne "" })
-    }
+    $script:paths = $path.Split(";") | Where-Object { $_ -ne "" }
 
     $Dir = $Dir.TrimEnd("\")
-    $valueExists = $paths | Where-Object { $_ -eq $Dir }
+    $pathContainsDir = $paths -contains $Dir
 
     if ($Remove) {
-        if (!$valueExists) {
+        if (!$pathContainsDir) {
             Write-Warning "$Dir not found in $Target Path"
             return
         }
 
-        $paths = $paths | Where-Object { $_ -ne $Dir }
+        $script:paths = $script:paths | Where-Object { $_ -ne $Dir }
 
     } else {
-        if ($valueExists) {
+        if ($pathContainsDir) {
             Write-Warning "$Dir already added to $Target Path"
             return
         }
 
-        $paths += $Dir
+        $script:paths += $Dir
     }
 
-    $paths = $paths | Sort-Object
-    $totalPaths = $paths.Length
-
-    function GetPathsByDir ($envVar) {
-        $dir = Get-Content $("Env:\" + $envVar)
-        return $paths | 
-            Where-Object { $_ -like "%$envVar%*" -or $_ -like "$dir*" } |
-            ForEach-Object { $_ -replace $dir.Replace("\", "\\"), "%$envVar%" }
+    foreach ($envVar in "SystemRoot", "ProgramFiles", "ProgramFiles(x86)", "USERPROFILE") {
+        $dir = $(Get-Content $("Env:\" + $envVar)).Replace("\", "\\")
+        $script:paths = $script:paths | ForEach-Object { $_ -replace $dir, "%$envVar%" }
     }
 
-    $windowsPaths = GetPathsByDir "SystemRoot"
-    $programFilesPaths = GetPathsByDir "ProgramFiles"
-    $programFilesx86Paths = GetPathsByDir "ProgramFiles(x86)"
-    $userProfilePaths = GetPathsByDir "USERPROFILE"
+    function ExtractPaths ($dir) {
+        $matching = @()
+        $remaining = @()
 
-    $appsPaths = $paths | Where-Object { $_ -like "*C:\Apps\*" }
+        foreach ($path in $script:paths) {
+            if ($path -like "$dir*") {
+                $matching += $path
+            } else {
+                $remaining += $path
+            }
+        }
 
-    foreach ($folder in $Diminish.Split(",") | Sort-Object) {
-        $appsPaths = @() + `
-            $($appsPaths | Where-Object { $_ -notlike "*\$folder*" }) + `
-            $($appsPaths | Where-Object { $_ -like "*\$folder*" })
+        $script:paths = $remaining
+        return $matching | Sort-Object
     }
 
-    $paths = @() + $windowsPaths + $programFilesPaths + $programFilesx86Paths + $appsPaths + $userProfilePaths
-    $paths = $paths | Where-Object { $_ -ne $null }
+    $windowsPaths = ExtractPaths "%SystemRoot%"
+    $windowsPaths = 
+        @($windowsPaths | Where-Object { $_ -eq "%SystemRoot%\system32" }) + 
+        @($windowsPaths | Where-Object { $_ -ne "%SystemRoot%\system32" })
 
-    if ($paths.Length -lt $totalPaths) {
-        Write-Error "Unsupported location"
-        return
-    }
+    $programFilesPaths = ExtractPaths "%ProgramFiles%"
+    $programFilesX86Paths = ExtractPaths "%ProgramFiles(x86)%"
+    $userProfilePaths = ExtractPaths "%USERPROFILE%"
 
-    $path = $paths -Join ";"
+    $appsPaths = @(ExtractPaths "C:\Apps\") + @(ExtractPaths "D:\Apps\")
+    
+    $otherPaths = $script:paths
+
+    $script:paths = @() + 
+        $windowsPaths +
+        $programFilesPaths +
+        $programFilesX86Paths +
+        $appsPaths +
+        $userProfilePaths +
+        $otherPaths
+
+    $path = $script:paths -Join ";"
 
     $key.SetValue("Path", $path, "ExpandString")
     $key.Dispose()
@@ -103,7 +105,7 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, UIntPtr wP
         $WM_SETTINGCHANGE = 0x1a
         $result = [UIntPtr]::Zero
 
-        [Win32.Nativemethods]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE, [UIntPtr]::Zero, "Environment", 2, 5000, [ref] $result) | Out-Null
+        [Win32.NativeMethods]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE, [UIntPtr]::Zero, "Environment", 2, 5000, [ref] $result) | Out-Null
     }
 
     NotifySystem
