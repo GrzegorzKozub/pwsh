@@ -24,7 +24,12 @@
     }
 
     $path = $key.GetValue("Path", $null, "DoNotExpandEnvironmentNames")
-    $script:paths = $path.Split(";") | Where-Object { $_ -ne "" }
+
+    if ($path -eq $null) {
+        $script:paths = @()
+    } else {
+        $script:paths = @($path.Split(";") | Where-Object { $_ -ne "" })
+    }
 
     $Dir = $Dir.TrimEnd("\")
     $pathContainsDir = $paths -contains $Dir
