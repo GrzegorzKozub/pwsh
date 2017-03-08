@@ -35,7 +35,7 @@ function Deploy-All {
              "KeePass",
              "MinGW",
              "MSYS2",
-             "Node.Js",
+             "Node.js",
              "OBS",
              "paint.net",
              "Perl",

@@ -31,7 +31,7 @@ function Deploy-App {
         $source = "D:\Dropbox\Apps"
 
         $values =
-            Get-ChildItem $source |
+            Get-ChildItem -Path $source -Recurse -Include "*.zip" |
             Select-Object -ExpandProperty Name |
             Where-Object { !$_.StartsWith(".") } |
             ForEach-Object { [IO.Path]::GetFileNameWithoutExtension($_) }
@@ -59,7 +59,7 @@ function Deploy-App {
 
         $time = [Diagnostics.Stopwatch]::StartNew()
 
-        $target = "D:\Apps"
+        $installDir = "D:"
         $systemDrive = Get-Content Env:\SystemDrive
 
         $zip = Join-Path $source "$($PSBoundParameters.App).zip"
@@ -67,12 +67,12 @@ function Deploy-App {
         Write-Host "$(if ($Remove) { "Removing" } else { "Installing" }) $zip"
 
         $d = @{
-            temp = Join-Path $target ".deploy"
-            apps = Join-Path $target "Apps"
-            home = Join-Path $target $home.TrimStart($systemDrive)
-            documents = Join-Path $target $home.TrimStart($systemDrive) | Join-Path -ChildPath "Documents"
-            local = Join-Path $target $(Get-Content Env:\LOCALAPPDATA).TrimStart($systemDrive)
-            roaming = Join-Path $target $(Get-Content Env:\APPDATA).TrimStart($systemDrive)
+            temp = Join-Path $installDir ".deploying"
+            apps = Join-Path $installDir "Apps"
+            home = Join-Path $installDir $home.TrimStart($systemDrive)
+            documents = Join-Path $installDir $home.TrimStart($systemDrive) | Join-Path -ChildPath "Documents"
+            local = Join-Path $installDir $(Get-Content Env:\LOCALAPPDATA).TrimStart($systemDrive)
+            roaming = Join-Path $installDir $(Get-Content Env:\APPDATA).TrimStart($systemDrive)
         }
 
         $c = @{
@@ -107,8 +107,6 @@ function Deploy-App {
                 Remove-Item $symlink -ErrorAction SilentlyContinue
             }
         }
-
-        CreateSymlink $c.apps $d.apps
 
         New-Item $d.temp -ItemType Directory | Out-Null
         
@@ -147,7 +145,7 @@ function Deploy-App {
                 }
 
                 if (!$SkipC -and $createSymlinks) {
-                    $symlink = $fullPath.Replace($target, $systemDrive)
+                    $symlink = Join-Path $systemDrive $fullPath.TrimStart($installDir)
                     $isDir = $item.Attributes -eq "Directory"
                     RemoveSymlink $symlink $isDir
                     if (!$Remove) {
