@@ -140,6 +140,7 @@ function Deploy-App {
                     }
                     if (!$Remove) { 
                         Write-Host "Create $fullPath"
+                        CreateDir $path
                         Move-Item $item.FullName $path -Force -ErrorAction SilentlyContinue
                     }
                 }
@@ -160,6 +161,15 @@ function Deploy-App {
         Process "documents" $d.documents
         Process "local" $d.local
         Process "roaming" $d.roaming
+
+        foreach ($category in $(Get-ChildItem $package | Where-Object { $_.Name.Contains("#") })) {
+           $hashSeparated = $category.Name.Split("#")
+           $path = $d[$hashSeparated[0]]
+           for ($i = 1; $i -lt $hashSeparated.Length; $i++) {
+               $path = Join-Path $path $hashSeparated[$i]
+           }
+           Process $category.Name $path
+        }
 
         Process "c" $c.c $false $false
         Process "shortcuts" $c.shortcuts $false $false
