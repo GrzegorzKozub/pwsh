@@ -31,7 +31,18 @@
         $script:paths = @($path.Split(";") | Where-Object { $_ -ne "" })
     }
 
+    function Normalize ($dir) {
+        foreach ($envVar in "SystemRoot", "ProgramFiles(x86)", "ProgramFiles", "USERPROFILE") {
+            $dir = $dir -replace $(Get-Content $("Env:\" + $envVar)).Replace("\", "\\").Replace("(", "\(").Replace(")", "\)"), "%$envVar%"
+        }
+        return $dir
+    }
+
+    $script:paths = $script:paths | ForEach-Object { Normalize $_ }
+
+    $Dir = Normalize $Dir
     $Dir = $Dir.TrimEnd("\")
+
     $pathContainsDir = $paths -contains $Dir
 
     if ($Remove) {
@@ -49,11 +60,6 @@
         }
 
         $script:paths += $Dir
-    }
-
-    foreach ($envVar in "SystemRoot", "ProgramFiles", "ProgramFiles(x86)", "USERPROFILE") {
-        $dir = $(Get-Content $("Env:\" + $envVar)).Replace("\", "\\")
-        $script:paths = $script:paths | ForEach-Object { $_ -replace $dir, "%$envVar%" }
     }
 
     function ExtractPaths ($dir) {
