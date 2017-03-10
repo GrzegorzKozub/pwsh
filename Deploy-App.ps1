@@ -150,6 +150,7 @@ function Deploy-App {
                     $isDir = $item.Attributes -eq "Directory"
                     RemoveSymlink $symlink $isDir
                     if (!$Remove) {
+                        CreateDir $(Join-Path $systemDrive $path.TrimStart($installDir))
                         CreateSymlink $symlink $fullPath $isDir
                     }
                 }
