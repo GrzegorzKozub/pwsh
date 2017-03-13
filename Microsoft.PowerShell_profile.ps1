@@ -54,14 +54,7 @@ Clear-Variable separatorColor
 $prompt = @{
     User = $env:USERNAME.ToLower()
     Host = $env:COMPUTERNAME.ToLower()
-    UserColor = "DarkGreen"
-}
-
-foreach ($group in ([Security.Principal.WindowsIdentity]::GetCurrent()).Groups) {
-    if (($group.Translate([Security.Principal.SecurityIdentifier])).IsWellKnown([Security.Principal.WellKnownSidType]::BuiltinAdministratorsSid)) {
-        $prompt.UserColor = "DarkRed"
-        break
-    }
+    UserColor = if (Test-Admin) { "DarkRed" } else { "DarkGreen" }
 }
 
 function Prompt {
