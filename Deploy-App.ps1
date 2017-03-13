@@ -71,14 +71,14 @@ function Deploy-App {
             apps = Join-Path $installDir "Apps"
             home = Join-Path $installDir $home.TrimStart($systemDrive)
             documents = Join-Path $installDir $home.TrimStart($systemDrive) | Join-Path -ChildPath "Documents"
-            local = Join-Path $installDir $(Get-Content Env:\LOCALAPPDATA).TrimStart($systemDrive)
-            roaming = Join-Path $installDir $(Get-Content Env:\APPDATA).TrimStart($systemDrive)
+            local = Join-Path $installDir (Get-Content Env:\LOCALAPPDATA).TrimStart($systemDrive)
+            roaming = Join-Path $installDir (Get-Content Env:\APPDATA).TrimStart($systemDrive)
         }
 
         $c = @{
             c = Join-Path $systemDrive "\"
             apps = Join-Path $systemDrive "Apps"
-            shortcuts = Join-Path $(Get-Content Env:\ProgramData) "Start Menu\Programs"
+            shortcuts = Join-Path (Get-Content Env:\ProgramData) "Start Menu\Programs"
             startup = Join-Path $home "Start Menu\Programs\Startup"
         }
 
@@ -119,14 +119,14 @@ function Deploy-App {
             Expand-Archive $zip $d.temp
         }
 
-        $package = $(Get-ChildItem $d.temp)[0].FullName
+        $package = (Get-ChildItem $d.temp)[0].FullName
 
         function Process ($category, $path, $replace = $true, $createSymlinks = $true) {
 
             $isC = $path.StartsWith($systemDrive)
 
             $categoryPath = Join-Path $package $category
-            $deviceCategoryPath = $categoryPath + "@" + $(Get-Content Env:\COMPUTERNAME)
+            $deviceCategoryPath = $categoryPath + "@" + (Get-Content Env:\COMPUTERNAME)
             if (Test-Path $deviceCategoryPath) { $categoryPath = $deviceCategoryPath }
 
             foreach ($item in Get-ChildItem $categoryPath -ErrorAction SilentlyContinue) {
@@ -150,7 +150,7 @@ function Deploy-App {
                     $isDir = $item.Attributes -eq "Directory"
                     RemoveSymlink $symlink $isDir
                     if (!$Remove) {
-                        CreateDir $(Join-Path $systemDrive $path.TrimStart($installDir))
+                        CreateDir (Join-Path $systemDrive $path.TrimStart($installDir))
                         CreateSymlink $symlink $fullPath $isDir
                     }
                 }
@@ -163,7 +163,7 @@ function Deploy-App {
         Process "local" $d.local
         Process "roaming" $d.roaming
 
-        foreach ($category in $(Get-ChildItem $package | Where-Object { $_.Name.Contains("#") })) {
+        foreach ($category in (Get-ChildItem $package | Where-Object { $_.Name.Contains("#") })) {
            $hashSeparated = $category.Name.Split("#")
            $path = $d[$hashSeparated[0]]
            for ($i = 1; $i -lt $hashSeparated.Length; $i++) {

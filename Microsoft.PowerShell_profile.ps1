@@ -57,8 +57,8 @@ $prompt = @{
     UserColor = "DarkGreen"
 }
 
-foreach ($group in $($([Security.Principal.WindowsIdentity]::GetCurrent()).Groups)) {
-    if ($($group.Translate([Security.Principal.SecurityIdentifier])).IsWellKnown([Security.Principal.WellKnownSidType]::BuiltinAdministratorsSid)) {
+foreach ($group in ([Security.Principal.WindowsIdentity]::GetCurrent()).Groups) {
+    if (($group.Translate([Security.Principal.SecurityIdentifier])).IsWellKnown([Security.Principal.WellKnownSidType]::BuiltinAdministratorsSid)) {
         $prompt.UserColor = "DarkRed"
         break
     }

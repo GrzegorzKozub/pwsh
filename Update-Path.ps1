@@ -33,7 +33,7 @@
 
     function Normalize ($dir) {
         foreach ($envVar in "SystemRoot", "ProgramFiles(x86)", "ProgramFiles", "USERPROFILE") {
-            $dir = $dir -replace $(Get-Content $("Env:\" + $envVar)).Replace("\", "\\").Replace("(", "\(").Replace(")", "\)"), "%$envVar%"
+            $dir = $dir -replace (Get-Content ("Env:\" + $envVar)).Replace("\", "\\").Replace("(", "\(").Replace(")", "\)"), "%$envVar%"
         }
         return $dir
     }
@@ -125,7 +125,7 @@ public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, UIntPtr wP
         return [System.Environment]::GetEnvironmentVariable("Path", $scope) 
     }
 
-    $env:Path = $(GetPath "Machine") + ";" + $(GetPath "User")
+    $env:Path = (GetPath "Machine") + ";" + (GetPath "User")
 }
 
 Set-Alias path Update-Path
