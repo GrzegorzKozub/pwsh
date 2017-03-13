@@ -17,6 +17,11 @@
         $Remove = $false
     )
 
+    if (!(Test-Admin)) {
+        Write-Error "Must run as admin"
+        return
+    }
+
     if ($Target -eq "Machine") {
         $key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("SYSTEM\CurrentControlSet\Control\Session Manager\Environment", $true)
     } else {

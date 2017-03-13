@@ -23,6 +23,11 @@ function Deploy-All {
         $SkipReg = $false
     )
 
+    if (!(Test-Admin)) {
+        Write-Error "Must run as admin"
+        return
+    }
+
     $essentials = "7-Zip", "Git", "Windows"
 
     $other = "Chrome",

@@ -57,6 +57,11 @@ function Deploy-App {
 
     Process {
 
+        if (!(Test-Admin)) {
+            Write-Error "Must run as admin"
+            return
+        }
+
         $time = [Diagnostics.Stopwatch]::StartNew()
 
         $installDir = "D:"
