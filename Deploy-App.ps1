@@ -92,8 +92,8 @@ function Deploy-App {
         $c = @{
             c = Join-Path $systemDrive "\"
             apps = Join-Path $systemDrive "Apps"
-            shortcuts = Join-Path (Get-Content Env:\ProgramData) "Start Menu\Programs"
-            startup = Join-Path $home "Start Menu\Programs\Startup"
+            shortcuts = Join-Path (Get-Content Env:\ProgramData) "Microsoft\Windows\Start Menu\Programs"
+            startup = Join-Path (Get-Content Env:\APPDATA) "Microsoft\Windows\Start Menu\Programs\Startup"
         }
 
         function CreateDir ($dir) {
@@ -136,6 +136,14 @@ function Deploy-App {
             ExtractPackage
         }
 
+        function CreateCopy ($from, $to, $isDir) {
+            if ($isDir) {
+                xcopy $from $to /EYKHRIQ | Out-Null
+            } else {
+                xcopy $from ([IO.Path]::GetDirectoryName($to)) /YKHRQ | Out-Null
+            }
+        }
+
         function CreateSymlink ($symlink, $path, $isDir = $true) {
             if (Test-Path $symlink) { return }
             Write-Host "Symlink $symlink"
@@ -162,6 +170,7 @@ function Deploy-App {
             foreach ($item in Get-ChildItem $categoryPath -ErrorAction SilentlyContinue) {
 
                 $fullPath = Join-Path $path $item.Name
+                $isDir = $item.Attributes.HasFlag([IO.FileAttributes]::Directory)
 
                 if (($isC -and !$SkipC) -or (!$isC -and !$SkipD)) {
                     if (!$Pack -and ($Remove -or $replace)) {
@@ -171,18 +180,17 @@ function Deploy-App {
                     if ($Pack) {
                         Write-Host "Pack $fullPath to $($item.FullName)"
                         Remove-Item $item.FullName -Recurse -Force
-                        Copy-Item $fullPath $item.FullName -Recurse
+                        CreateCopy $fullPath $item.FullName $isDir
                     }
                     if (!$Remove -and !$Pack) { 
                         Write-Host "Create $fullPath"
                         CreateDir $path
-                        Copy-Item $item.FullName $path -Recurse -Force
+                        CreateCopy $item.FullName $fullPath $isDir
                     }
                 }
 
                 if (!$SkipC -and !$Pack -and $createSymlinks) {
                     $symlink = Join-Path $systemDrive $fullPath.TrimStart($installDir)
-                    $isDir = $item.Attributes -eq "Directory"
                     RemoveSymlink $symlink $isDir
                     if (!$Remove) {
                         CreateDir (Join-Path $systemDrive $path.TrimStart($installDir))
