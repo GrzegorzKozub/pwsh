@@ -207,7 +207,10 @@ function Deploy-App {
            Process $category.Name $path
         }
 
-        Process "c" $c.c $false $false
+        if (!$Remove) {
+            Process "c" $c.c $false $false
+        }
+
         Process "shortcuts" $c.shortcuts $false $false
         Process "startup" $c.startup $false $false
 
