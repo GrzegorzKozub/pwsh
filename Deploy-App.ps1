@@ -23,7 +23,11 @@ function Deploy-App {
 
         [Parameter(Position = 5, ValueFromRemainingArguments = $true)]
         [switch]
-        $SkipReg = $false
+        $SkipReg = $false,
+
+        [Parameter(Position = 6, ValueFromRemainingArguments = $true)]
+        [switch]
+        $Pack = $false
     )
 
     DynamicParam {
@@ -57,6 +61,11 @@ function Deploy-App {
 
     Process {
 
+        if ($Remove -and $Pack) {
+            Write-Error "Can either remove or pack"    
+            return
+        }
+
         if (!(Test-Admin)) {
             Write-Error "Must run as admin"
             return
@@ -69,10 +78,10 @@ function Deploy-App {
 
         $zip = Join-Path $source "$($PSBoundParameters.App).zip"
 
-        Write-Host "$(if ($Remove) { "Removing" } else { "Installing" }) $zip"
+        Write-Host "$(if ($Remove) { "Removing" } elseif ($Pack) { "Packing" } else { "Installing" }) $zip"
 
         $d = @{
-            temp = Join-Path $installDir ".deploying"
+            packages = Join-Path $installDir "Packages"
             apps = Join-Path $installDir "Apps"
             home = Join-Path $installDir $home.TrimStart($systemDrive)
             documents = Join-Path $installDir $home.TrimStart($systemDrive) | Join-Path -ChildPath "Documents"
@@ -92,11 +101,40 @@ function Deploy-App {
             New-Item $dir -ItemType Directory | Out-Null
         }
 
+        CreateDir $d.packages
         CreateDir $d.apps
         CreateDir $d.home
         CreateDir $d.documents
         CreateDir $d.local
         CreateDir $d.roaming
+
+        $7z = Get-Command 7z -ErrorAction SilentlyContinue
+
+        function ExtractPackage () {
+            if ($7z) {
+                Write-Host "Extract with 7-Zip to $package"
+                7z x $zip -y -o"$($d.packages)" | Out-Null
+            } else {
+                Write-Host "Expand to $package"
+                Expand-Archive $zip $d.packages
+            }
+        }
+
+        function RemovePackage () {
+            Write-Host "Remove $package"
+            Remove-Item $package -Recurse -Force
+        }
+
+        $package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($zip))
+
+        if (Test-Path $package) {
+            if (!$Remove -and !$Pack) {
+                RemovePackage
+                ExtractPackage
+            }
+        } else {
+            ExtractPackage
+        }
 
         function CreateSymlink ($symlink, $path, $isDir = $true) {
             if (Test-Path $symlink) { return }
@@ -113,19 +151,6 @@ function Deploy-App {
             }
         }
 
-        New-Item $d.temp -ItemType Directory | Out-Null
-        
-        $7z = Get-Command 7z -ErrorAction SilentlyContinue
-        
-        if ($7z) {
-            Write-Host "Extract with 7-Zip"
-            7z x $zip -y -o"$($d.temp)" | Out-Null
-        } else {
-            Expand-Archive $zip $d.temp
-        }
-
-        $package = (Get-ChildItem $d.temp)[0].FullName
-
         function Process ($category, $path, $replace = $true, $createSymlinks = $true) {
 
             $isC = $path.StartsWith($systemDrive)
@@ -139,18 +164,23 @@ function Deploy-App {
                 $fullPath = Join-Path $path $item.Name
 
                 if (($isC -and !$SkipC) -or (!$isC -and !$SkipD)) {
-                    if ($Remove -or $replace) {
+                    if (!$Pack -and ($Remove -or $replace)) {
                         Write-Host "Remove $fullPath"
                         Remove-Item $fullPath -Recurse -Force -ErrorAction SilentlyContinue
                     }
-                    if (!$Remove) { 
+                    if ($Pack) {
+                        Write-Host "Pack $fullPath to $($item.FullName)"
+                        Remove-Item $item.FullName -Recurse -Force
+                        Copy-Item $fullPath $item.FullName -Recurse
+                    }
+                    if (!$Remove -and !$Pack) { 
                         Write-Host "Create $fullPath"
                         CreateDir $path
-                        Move-Item $item.FullName $path -Force -ErrorAction SilentlyContinue
+                        Copy-Item $item.FullName $path -Recurse -Force
                     }
                 }
 
-                if (!$SkipC -and $createSymlinks) {
+                if (!$SkipC -and !$Pack -and $createSymlinks) {
                     $symlink = Join-Path $systemDrive $fullPath.TrimStart($installDir)
                     $isDir = $item.Attributes -eq "Directory"
                     RemoveSymlink $symlink $isDir
@@ -181,27 +211,44 @@ function Deploy-App {
         Process "shortcuts" $c.shortcuts $false $false
         Process "startup" $c.startup $false $false
 
-        $script = if ($Remove) { "remove" } else { "install" }
+        if ($Pack) {
 
-        if (!$SkipPs1) {
-            $ps1 = Join-Path $package "$script.ps1"
-            if (Test-Path $ps1) {
-                Write-Host "Run $ps1"
-                & $ps1
+            Remove-Item "$package.zip" -ErrorAction SilentlyContinue
+
+            if ($7z) {
+                Write-Host "Pack with 7-Zip to $zip"
+                7z a "$package.zip" "$package" | Out-Null
+            } else {
+                Write-Host "Compress to $zip"
+                Compress-Archive $package "$package.zip"
             }
-        }
 
-        if (!$SkipReg) {
-            $reg = Join-Path $package "$script.reg"
-            if (Test-Path $reg) {
-                Write-Host "Import $reg"
-                Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait
+            Move-Item "$package.zip" $zip -Force
+
+        } else {
+
+            $script = if ($Remove) { "remove" } else { "install" }
+
+            if (!$SkipPs1) {
+                $ps1 = Join-Path $package "$script.ps1"
+                if (Test-Path $ps1) {
+                    Write-Host "Run $ps1"
+                    & $ps1
+                }
             }
+
+            if (!$SkipReg) {
+                $reg = Join-Path $package "$script.reg"
+                if (Test-Path $reg) {
+                    Write-Host "Import $reg"
+                    Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait
+                }
+            }
+
+            ie4uinit -show
+
+            if ($Remove) { RemovePackage }
         }
-
-        ie4uinit -show
-
-        Remove-Item $d.temp -Recurse -Force
 
         $time.Stop()
 
