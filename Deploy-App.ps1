@@ -219,8 +219,29 @@ function Deploy-App {
         Process "shortcuts" $c.shortcuts $false $false
         Process "startup" $c.startup $false $false
 
-        if ($Pack) {
+        $script = if ($Remove) { "remove" } elseif ($Pack) { "pack" } else { "install" }
 
+        if (!$SkipPs1) {
+            $ps1 = Join-Path $package "$script.ps1"
+            if (Test-Path $ps1) {
+                Write-Host "Run $ps1"
+                & $ps1
+            }
+        }
+
+        if (!$SkipReg) {
+            $reg = Join-Path $package "$script.reg"
+            if (Test-Path $reg) {
+                Write-Host "Import $reg"
+                Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait
+            }
+        }
+
+        if (!$Remove -and !$Pack) { ie4uinit -show }
+
+        if ($Remove) { RemovePackage }
+
+        if ($Pack) {
             Remove-Item "$package.zip" -ErrorAction SilentlyContinue
 
             if ($7z) {
@@ -232,30 +253,6 @@ function Deploy-App {
             }
 
             Move-Item "$package.zip" $zip -Force
-
-        } else {
-
-            $script = if ($Remove) { "remove" } else { "install" }
-
-            if (!$SkipPs1) {
-                $ps1 = Join-Path $package "$script.ps1"
-                if (Test-Path $ps1) {
-                    Write-Host "Run $ps1"
-                    & $ps1
-                }
-            }
-
-            if (!$SkipReg) {
-                $reg = Join-Path $package "$script.reg"
-                if (Test-Path $reg) {
-                    Write-Host "Import $reg"
-                    Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait
-                }
-            }
-
-            ie4uinit -show
-
-            if ($Remove) { RemovePackage }
         }
 
         $time.Stop()
