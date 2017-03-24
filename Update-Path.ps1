@@ -43,7 +43,7 @@
         return $dir
     }
 
-    $script:paths = $script:paths | ForEach-Object { Normalize $_ }
+    $script:paths = @($script:paths | ForEach-Object { Normalize $_ })
 
     $Dir = Normalize $Dir
     $Dir = $Dir.TrimEnd("\")
