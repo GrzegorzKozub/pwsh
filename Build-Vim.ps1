@@ -59,10 +59,8 @@
     Set-Location $WorkDir
 
     $runtimeDir = Join-Path $OutDir $runtime
-    $wimfilesDir = Join-Path $OutDir "vimfiles"
 
     Remove-Item -Path $runtimeDir -Recurse -ErrorAction SilentlyContinue
-    Remove-Item -Path $wimfilesDir -Recurse -ErrorAction SilentlyContinue
 
     Copy-Item `
         -Path "$vim\runtime" `
@@ -75,12 +73,6 @@
         -Destination $runtimeDir
 
     7z x -y $zipFile *.bat *.dll *.exe -o"$runtimeDir" | Out-Null
-
-    $autoloadPath = New-Item -Path (Join-Path $wimfilesDir "autoload") -ItemType Directory
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" -OutFile (Join-Path $autoloadPath "plug.vim")
-
-    $spellPath = New-Item -Path (Join-Path $wimfilesDir "spell") -ItemType Directory
-    7z x -y $zipFile *.spl -o"$spellPath" | Out-Null
 
     Pop-Location
 }
