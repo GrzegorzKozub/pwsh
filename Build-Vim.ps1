@@ -58,9 +58,10 @@
 
     Set-Location $WorkDir
 
-    $runtimeDir = Join-Path $OutDir $runtime
+    $appDir = Join-Path $OutDir "Vim"
+    $runtimeDir = Join-Path $appDir $runtime
 
-    Remove-Item -Path $runtimeDir -Recurse -ErrorAction SilentlyContinue
+    Remove-Item -Path $appDir -Recurse -ErrorAction SilentlyContinue
 
     Copy-Item `
         -Path "$vim\runtime" `
