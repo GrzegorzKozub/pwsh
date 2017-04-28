@@ -37,7 +37,6 @@ function Deploy-App {
         $values =
             Get-ChildItem -Path $source -Recurse -Include "*.zip" |
             Select-Object -ExpandProperty Name |
-            Where-Object { !$_.StartsWith(".") } |
             ForEach-Object { [IO.Path]::GetFileNameWithoutExtension($_) }
 
         $attributes = New-Object Collection[System.Attribute]
