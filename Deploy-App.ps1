@@ -1,4 +1,4 @@
-using namespace System.Collections.ObjectModel
+﻿using namespace System.Collections.ObjectModel
 using namespace System.Management.Automation
 
 function Deploy-App {
@@ -235,6 +235,16 @@ function Deploy-App {
                 Write-Host "Import $reg"
                 Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait
             }
+        }
+
+        $txt = Join-Path $package "$script.txt"
+        if (Test-Path $txt) {
+            Write-Host "Show $txt"
+            Write-Host ""
+            Get-Content $txt
+            Write-Host ""
+            Write-Host "Press any key..."
+            $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null
         }
 
         if (!$Remove -and !$Pack) { ie4uinit -show }
