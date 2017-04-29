@@ -28,7 +28,7 @@ function Deploy-All {
         return
     }
 
-    $essentials = "7-Zip", "Git", "Windows"
+    $essentials = "7-Zip", "Git"
 
     $other = "Chrome",
              "clink",
