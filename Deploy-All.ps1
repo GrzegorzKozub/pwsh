@@ -1,4 +1,4 @@
-function Deploy-All {
+﻿function Deploy-All {
     [CmdletBinding()]
     
     param (
@@ -56,7 +56,7 @@ function Deploy-All {
     $device = Get-Content Env:\COMPUTERNAME
 
     if ($device -eq "Slut") {
-        $other = $other + "NVIDIA Inspector"
+        $other = $other + "NVIDIA" + "NVIDIA Inspector"
     }
 
     if ($device -eq "XPS") {
