@@ -59,7 +59,7 @@
         $other = $other + "NVIDIA" + "NVIDIA Inspector"
     }
 
-    if ($device -eq "XPS") {
+    if ($device -eq "Drifter") {
         $other = $other + "MaxxAudioPro" + "ThrottleStop"
     }
 
