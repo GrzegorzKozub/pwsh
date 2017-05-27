@@ -45,7 +45,7 @@
 
     foreach ($gui in "no", "yes") {
         mingw32-make -j2 -f make_ming.mak `
-            OPTIMIZE=MAXSPEED `
+            OPTIMIZE=MAXSPEED STATIC_STDCPLUS=yes `
             FEATURES=HUGE CSCOPE=yes GIME=yes IME=yes MBYTE=yes NETBEANS=no `
             GUI=$gui OLE=$gui DIRECTX=$gui `
             PYTHON3=d:/Apps/Python DYNAMIC_PYTHON3=yes PYTHON3_VER=35 `
