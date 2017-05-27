@@ -45,7 +45,9 @@
 
     foreach ($gui in "no", "yes") {
         mingw32-make -j2 -f make_ming.mak `
-            FEATURES=HUGE MBYTE=yes IME=yes GIME=yes CSCOPE=yes NETBEANS=no GUI=$gui OLE=$gui DIRECTX=$gui `
+            OPTIMIZE=MAXSPEED `
+            FEATURES=HUGE CSCOPE=yes GIME=yes IME=yes MBYTE=yes NETBEANS=no `
+            GUI=$gui OLE=$gui DIRECTX=$gui `
             PYTHON3=d:/Apps/Python DYNAMIC_PYTHON3=yes PYTHON3_VER=35 `
             PERL=d:/Apps/Perl DYNAMIC_PERL=yes PERL_VER=524 `
             RUBY=d:/Apps/Ruby DYNAMIC_RUBY=yes RUBY_VER=23 RUBY_VER_LONG=2.3.0
