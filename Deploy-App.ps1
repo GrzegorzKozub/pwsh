@@ -166,7 +166,7 @@ function Deploy-App {
             $deviceCategoryPath = $categoryPath + "@" + (Get-Content Env:\COMPUTERNAME)
             if (Test-Path $deviceCategoryPath) { $categoryPath = $deviceCategoryPath }
 
-            foreach ($item in Get-ChildItem $categoryPath -ErrorAction SilentlyContinue) {
+            foreach ($item in Get-ChildItem $categoryPath -Force -ErrorAction SilentlyContinue) {
 
                 $fullPath = Join-Path $path $item.Name
                 $isDir = $item.Attributes.HasFlag([IO.FileAttributes]::Directory)
