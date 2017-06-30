@@ -32,7 +32,7 @@ function Deploy-App {
 
     DynamicParam {
 
-        $source = "D:\Dropbox\Apps"
+        $source = "D:\Dropbox\Packages"
 
         $values =
             Get-ChildItem -Path $source -Recurse -Include "*.zip" |
