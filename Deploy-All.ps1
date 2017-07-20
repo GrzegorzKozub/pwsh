@@ -60,7 +60,7 @@
     }
 
     if ($device -eq "Drifter") {
-        $other = $other + "MaxxAudioPro" + "ThrottleStop"
+        $other = $other + "MaxxAudioPro"
     }
 
     function Process ($apps) {
