@@ -1,16 +1,25 @@
+﻿Import-Module posh-git
+
+Get-ChildItem `
+    (Join-Path (Split-Path $PROFILE) "*.ps1") `
+    -Exclude "*profile.ps1" |
+ForEach-Object { . $_ }
+
 $backgroundColor = "Black"
 $separatorColor = "DarkGray"
 
-$Host.PrivateData.DebugBackgroundColor = $backgroundColor
-$Host.PrivateData.DebugForegroundColor = "DarkGray"
-$Host.PrivateData.ErrorBackgroundColor = $backgroundColor
-$Host.PrivateData.ErrorForegroundColor = "DarkRed"
-$Host.PrivateData.ProgressBackgroundColor = "DarkGray"
-$Host.PrivateData.ProgressForegroundColor = "White"
-$Host.PrivateData.VerboseBackgroundColor = $backgroundColor
-$Host.PrivateData.VerboseForegroundColor = "Gray"
-$Host.PrivateData.WarningBackgroundColor = $backgroundColor
-$Host.PrivateData.WarningForegroundColor = "DarkYellow"
+if ($Host.PrivateData -ne $null) {
+    $Host.PrivateData.DebugBackgroundColor = $backgroundColor
+    $Host.PrivateData.DebugForegroundColor = "DarkGray"
+    $Host.PrivateData.ErrorBackgroundColor = $backgroundColor
+    $Host.PrivateData.ErrorForegroundColor = "DarkRed"
+    $Host.PrivateData.ProgressBackgroundColor = "DarkGray"
+    $Host.PrivateData.ProgressForegroundColor = "White"
+    $Host.PrivateData.VerboseBackgroundColor = $backgroundColor
+    $Host.PrivateData.VerboseForegroundColor = "Gray"
+    $Host.PrivateData.WarningBackgroundColor = $backgroundColor
+    $Host.PrivateData.WarningForegroundColor = "DarkYellow"
+}
 
 Set-PSReadlineOption `
     -ContinuationPromptForegroundColor DarkGray `
