@@ -69,28 +69,28 @@ $prompt = @{
 function Prompt {
 
     $location = Get-Location
-	$path = $location.Path
+    $path = $location.Path
 
     if ($path -eq $Home) {
-		$path = "~"
-	} elseif ($path.Length -ge 64) {
-		$path = $path.Substring($path.LastIndexOf("\") + 1, $path.Length - $path.LastIndexOf("\") - 1)
-	}
+        $path = "~"
+    } elseif ($path.Length -ge 64) {
+        $path = $path.Substring($path.LastIndexOf("\") + 1, $path.Length - $path.LastIndexOf("\") - 1)
+    }
 
-	$Host.UI.RawUI.WindowTitle = "$path"
+    $Host.UI.RawUI.WindowTitle = "$path"
 
-	Write-Host $prompt.User -ForegroundColor $prompt.UserColor -NoNewLine
-	Write-Host "@" -ForegroundColor "DarkGray" -NoNewLine
-	Write-Host $prompt.Host -ForegroundColor "DarkYellow" -NoNewLine
+    Write-Host $prompt.User -ForegroundColor $prompt.UserColor -NoNewLine
+    Write-Host "@" -ForegroundColor "DarkGray" -NoNewLine
+    Write-Host $prompt.Host -ForegroundColor "DarkYellow" -NoNewLine
 
-	Write-Host " $path" -ForegroundColor "DarkCyan" -NoNewLine
+    Write-Host " $path" -ForegroundColor "DarkCyan" -NoNewLine
 
     if ($location.Provider.Name -eq "FileSystem") {
-		Write-VcsStatus
-	}
+        Write-VcsStatus
+    }
 
     Write-Host
     Write-Host ">" -ForegroundColor "DarkGray" -NoNewLine
 
-	return " "
+    return " "
 }
