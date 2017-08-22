@@ -1,4 +1,4 @@
-function Clean-NotificationAreaIcons {
+function Reset-TrayIcons {
     Stop-Process -Name "explorer"
     foreach ($value in "IconStreams", "PastIconsStream") {
         Remove-ItemProperty `
