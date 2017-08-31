@@ -51,18 +51,19 @@ $GitPromptSettings.BeforeForegroundColor = $separatorColor
 $GitPromptSettings.BeforeIndexForegroundColor = $separatorColor
 $GitPromptSettings.BeforeIndexText = ""
 $GitPromptSettings.BeforeText = " ("
-$GitPromptSettings.BranchAheadForegroundColor = "DarkGreen"
-$GitPromptSettings.BranchBehindForegroundColor = "DarkRed"
-$GitPromptSettings.BranchBehindAndAheadForegroundColor = "DarkYellow"
+$GitPromptSettings.BranchAheadStatusForegroundColor = "DarkGreen"
+$GitPromptSettings.BranchBehindAndAheadStatusForegroundColor = "DarkYellow"
+$GitPromptSettings.BranchBehindStatusForegroundColor = "DarkRed"
 $GitPromptSettings.BranchForegroundColor = "DarkBlue"
+$GitPromptSettings.BranchGoneStatusForegroundColor = "Red"
+$GitPromptSettings.BranchIdenticalStatusToForegroundColor = "DarkBlue"
 $GitPromptSettings.DefaultForegroundColor = "Gray"
 $GitPromptSettings.DelimForegroundColor = $separatorColor
 $GitPromptSettings.DelimText = ""
 $GitPromptSettings.EnableWindowTitle = ""
 $GitPromptSettings.IndexForegroundColor = "DarkGreen"
-$GitPromptSettings.UntrackedForegroundColor = "DarkYellow"
-$GitPromptSettings.UntrackedText = " *"
-$GitPromptSettings.WorkingForegroundColor = "DarkRed"
+$GitPromptSettings.LocalStagedStatusSymbol = ""
+$GitPromptSettings.LocalWorkingStatusSymbol = ""
 
 Clear-Variable backgroundColor
 Clear-Variable separatorColor
