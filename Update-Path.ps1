@@ -53,18 +53,15 @@
     if ($Remove) {
         if (!$pathContainsDir) {
             Write-Warning "$Dir not found in $Target Path"
-            return
+        } else {
+            $script:paths = $script:paths | Where-Object { $_ -ne $Dir }
         }
-
-        $script:paths = $script:paths | Where-Object { $_ -ne $Dir }
-
     } else {
         if ($pathContainsDir) {
             Write-Warning "$Dir already added to $Target Path"
-            return
+        } else {
+            $script:paths += $Dir
         }
-
-        $script:paths += $Dir
     }
 
     function ExtractPaths ($dir) {
@@ -103,6 +100,8 @@
         $appsPaths +
         $userProfilePaths +
         $otherPaths
+
+    $script:paths = $script:paths | Get-Unique
 
     $path = $script:paths -Join ";"
 
