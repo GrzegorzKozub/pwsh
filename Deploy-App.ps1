@@ -208,7 +208,8 @@ function Deploy-App {
         foreach ($category in (Get-ChildItem $package |
                 Select-Object -ExpandProperty Name |
                 Where-Object { $_.Contains("#") } |
-                ForEach-Object { $_.Split("@")[0] })) {
+                ForEach-Object { $_.Split("@")[0] }) |
+                Get-Unique) {
             $hashSeparated = $category.Split("#")
             $isC = $hashSeparated[0] -eq "c"
             $path = if ($isC) { $c.c } else { $d[$hashSeparated[0]] }
