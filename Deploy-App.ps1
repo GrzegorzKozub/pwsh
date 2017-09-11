@@ -205,14 +205,17 @@ function Deploy-App {
         Process "local" $d.local
         Process "roaming" $d.roaming
 
-        foreach ($category in (Get-ChildItem $package | Where-Object { $_.Name.Contains("#") })) {
-            $hashSeparated = $category.Name.Split("#")
+        foreach ($category in (Get-ChildItem $package |
+                Select-Object -ExpandProperty Name |
+                Where-Object { $_.Contains("#") } |
+                ForEach-Object { $_.Split("@")[0] })) {
+            $hashSeparated = $category.Split("#")
             $isC = $hashSeparated[0] -eq "c"
             $path = if ($isC) { $c.c } else { $d[$hashSeparated[0]] }
             for ($i = 1; $i -lt $hashSeparated.Length; $i++) {
                 $path = Join-Path $path $hashSeparated[$i]
             }
-            Process $category.Name $path $true (-not $isC)
+            Process $category $path $true (-not $isC)
         }
 
         Process "shortcuts" $c.shortcuts $false $false
