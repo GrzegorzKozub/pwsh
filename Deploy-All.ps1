@@ -34,8 +34,10 @@
              "clink",
              "Common",
              "ConEmu",
+             "Docker",
              "dotnet",
              "Dropbox",
+             "Go",
              "IrfanView",
              "KeePass",
              "MinGW",
@@ -51,12 +53,14 @@
              "SyncBackPro",
              "Total Commander",
              "Vim",
-             "Visual Studio Code"
+             "Visual Studio",
+             "Visual Studio Code",
+             "Yarn"
 
     $device = Get-Content Env:\COMPUTERNAME
 
     if ($device -eq "Slut") {
-        $other = $other + "NVIDIA" + "NVIDIA Inspector"
+        $other = $other + "NVIDIA" + "NVIDIA Inspector" + "Realtek"
     }
 
     if ($device -eq "Drifter") {
