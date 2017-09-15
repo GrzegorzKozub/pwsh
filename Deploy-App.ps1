@@ -82,6 +82,7 @@ function Deploy-App {
         $d = @{
             packages = Join-Path $installDir "Packages"
             apps = Join-Path $installDir "Apps"
+            programdata = Join-Path $installDir $home.TrimEnd((Get-Content Env:\USERNAME)).TrimStart($systemDrive) | Join-Path -ChildPath "All Users"
             home = Join-Path $installDir $home.TrimStart($systemDrive)
             documents = Join-Path $installDir $home.TrimStart($systemDrive) | Join-Path -ChildPath "Documents"
             local = Join-Path $installDir (Get-Content Env:\LOCALAPPDATA).TrimStart($systemDrive)
@@ -102,6 +103,7 @@ function Deploy-App {
 
         CreateDir $d.packages
         CreateDir $d.apps
+        CreateDir $d.programdata
         CreateDir $d.home
         CreateDir $d.documents
         CreateDir $d.local
@@ -200,6 +202,7 @@ function Deploy-App {
         }
 
         Process "apps" $d.apps $true $false
+        Process "programdata" $d.programdata
         Process "home" $d.home
         Process "documents" $d.documents
         Process "local" $d.local
