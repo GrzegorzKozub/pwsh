@@ -47,11 +47,11 @@ Set-PSReadlineOption -TokenKind Type -ForegroundColor Blue
 Set-PSReadlineOption -TokenKind Variable -ForegroundColor DarkMagenta
 
 $GitPromptSettings.AfterForegroundColor = $separatorColor
-$GitPromptSettings.AfterText = ")"
+$GitPromptSettings.AfterText = ""
 $GitPromptSettings.BeforeForegroundColor = $separatorColor
 $GitPromptSettings.BeforeIndexForegroundColor = $separatorColor
 $GitPromptSettings.BeforeIndexText = ""
-$GitPromptSettings.BeforeText = " ("
+$GitPromptSettings.BeforeText = " "
 $GitPromptSettings.BranchAheadStatusForegroundColor = "DarkGreen"
 $GitPromptSettings.BranchBehindAndAheadStatusForegroundColor = "DarkYellow"
 $GitPromptSettings.BranchBehindStatusForegroundColor = "DarkRed"
@@ -93,6 +93,10 @@ function Prompt {
     Write-Host $prompt.Host -ForegroundColor "DarkYellow" -NoNewLine
 
     Write-Host " $path" -ForegroundColor "DarkCyan" -NoNewLine
+
+    if ($VisualStudio) {
+        Write-Host " vs" -ForegroundColor "DarkMagenta" -NoNewLine
+    }
 
     if ($location.Provider.Name -eq "FileSystem") {
         Write-VcsStatus
