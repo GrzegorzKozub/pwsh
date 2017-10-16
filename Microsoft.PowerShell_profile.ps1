@@ -88,6 +88,9 @@ function Prompt {
 
     $Host.UI.RawUI.WindowTitle = "$path"
 
+    $Host.UI.RawUI.BackgroundColor = "Black"
+    $Host.UI.RawUI.ForegroundColor = "Gray"
+
     Write-Host $prompt.User -ForegroundColor $prompt.UserColor -NoNewLine
     Write-Host "@" -ForegroundColor "DarkGray" -NoNewLine
     Write-Host $prompt.Host -ForegroundColor "DarkYellow" -NoNewLine
