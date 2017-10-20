@@ -139,7 +139,7 @@ function Deploy-App {
 
         function CreateCopy ($from, $to, $isDir) {
             if ($isDir) {
-                xcopy $from $to /EYKHRIQ | Out-Null
+                robocopy $from $to /NJH /NJS /NFL /NDL /E | Out-Null
             } else {
                 xcopy $from ([IO.Path]::GetDirectoryName($to)) /YKHRQ | Out-Null
             }
