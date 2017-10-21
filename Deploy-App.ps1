@@ -98,6 +98,7 @@ function Deploy-App {
 
         function CreateDir ($dir) {
             if (Test-Path $dir) { return }
+            Write-Host "Create $dir"
             New-Item $dir -ItemType Directory | Out-Null
         }
 
@@ -108,25 +109,28 @@ function Deploy-App {
         CreateDir $d.documents
         CreateDir $d.local
         CreateDir $d.roaming
+        
+        $package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($zip))
 
-        $7z = Get-Command 7z -ErrorAction SilentlyContinue
-
-        function ExtractPackage () {
-            if ($7z) {
-                Write-Host "Extract with 7-Zip to $package"
-                7z x $zip -y -o"$($d.packages)" | Out-Null
-            } else {
-                Write-Host "Expand to $package"
-                Expand-Archive $zip $d.packages
-            }
+        function Remove ($path) {
+            Remove-Item $path -Recurse -Force -ErrorAction SilentlyContinue
         }
 
         function RemovePackage () {
             Write-Host "Remove $package"
-            Remove-Item $package -Recurse -Force
+            Remove $package
         }
 
-        $package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($zip))
+        $7z = Get-Command "7z" -ErrorAction SilentlyContinue
+
+        function ExtractPackage () {
+            Write-Host "Extract $package"
+            if ($7z) {
+                7z x $zip -y -o"$($d.packages)" | Out-Null
+            } else {
+                Expand-Archive $zip $d.packages
+            }
+        }
 
         if (Test-Path $package) {
             if (!$Remove -and !$Pack) {
@@ -151,17 +155,12 @@ function Deploy-App {
             cmd /c mklink $(if ($isDir) { "/J" } else { "" }) $symlink $path | Out-Null
         }
 
-        function RemoveSymlink ($symlink, $isDir = $true) {
+        function RemoveSymlink ($symlink) {
             Write-Host "Unlink $symLink"
-            if ($isDir) {
-                try { [IO.Directory]::Delete($symlink, $true) } catch { } # https://github.com/PowerShell/PowerShell/issues/621
-            } else {
-                Remove-Item $symlink -ErrorAction SilentlyContinue
-            }
+            Remove $symlink
         }
 
         function Process ($category, $path, $replace = $true, $createSymlinks = $true) {
-
             $isC = $path.StartsWith($systemDrive)
 
             $categoryPath = Join-Path $package $category
@@ -169,18 +168,17 @@ function Deploy-App {
             if (Test-Path $deviceCategoryPath) { $categoryPath = $deviceCategoryPath }
 
             foreach ($item in Get-ChildItem $categoryPath -Force -ErrorAction SilentlyContinue) {
-
                 $fullPath = Join-Path $path $item.Name
                 $isDir = $item.Attributes.HasFlag([IO.FileAttributes]::Directory)
 
                 if (($isC -and !$SkipC) -or (!$isC -and !$SkipD)) {
                     if (!$Pack -and ($Remove -or $replace)) {
                         Write-Host "Remove $fullPath"
-                        Remove-Item $fullPath -Recurse -Force -ErrorAction SilentlyContinue
+                        Remove $fullPath
                     }
                     if ($Pack) {
                         Write-Host "Pack $fullPath to $($item.FullName)"
-                        Remove-Item $item.FullName -Recurse -Force
+                        Remove $item.FullName
                         CreateCopy $fullPath $item.FullName $isDir
                     }
                     if (!$Remove -and !$Pack) { 
@@ -192,7 +190,7 @@ function Deploy-App {
 
                 if (!$SkipC -and !$Pack -and $createSymlinks) {
                     $symlink = Join-Path $systemDrive $fullPath.TrimStart($installDir)
-                    RemoveSymlink $symlink $isDir
+                    RemoveSymlink $symlink
                     if (!$Remove) {
                         CreateDir (Join-Path $systemDrive $path.TrimStart($installDir))
                         CreateSymlink $symlink $fullPath $isDir
@@ -258,13 +256,12 @@ function Deploy-App {
         if ($Remove) { RemovePackage }
 
         if ($Pack) {
-            Remove-Item "$package.zip" -ErrorAction SilentlyContinue
+            Remove "$package.zip"
+            Write-Host "Pack $zip"
 
             if ($7z) {
-                Write-Host "Pack with 7-Zip to $zip"
                 7z a "$package.zip" "$package" | Out-Null
             } else {
-                Write-Host "Compress to $zip"
                 Compress-Archive $package "$package.zip"
             }
 
