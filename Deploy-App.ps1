@@ -5,27 +5,27 @@ function Deploy-App {
     [CmdletBinding()]
 
     param (
-        [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
-        [switch]
-        $Remove = $false,
-
-        [Parameter(Position = 2, ValueFromRemainingArguments = $true)]
+        [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
         [switch]
         $SkipC = $false,
 
-        [Parameter(Position = 3, ValueFromRemainingArguments = $true)]
+        [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
         [switch]
         $SkipD = $false,
 
-        [Parameter(Position = 4, ValueFromRemainingArguments = $true)]
+        [Parameter(Position = 2, ValueFromRemainingArguments = $true)]
         [switch]
         $SkipPs1 = $false,
 
-        [Parameter(Position = 5, ValueFromRemainingArguments = $true)]
+        [Parameter(Position = 3, ValueFromRemainingArguments = $true)]
         [switch]
         $SkipReg = $false,
 
-        [Parameter(Position = 6, ValueFromRemainingArguments = $true)]
+        [Parameter(Position = 4, ValueFromRemainingArguments = $true)]
+        [switch]
+        $Remove = $false,
+
+        [Parameter(Position = 5, ValueFromRemainingArguments = $true)]
         [switch]
         $Pack = $false
     )

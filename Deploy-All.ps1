@@ -4,23 +4,23 @@
     param (
         [Parameter(Position = 0)]
         [switch]
-        $Remove = $false,
+        $SkipC = $false,
 
         [Parameter(Position = 1)]
         [switch]
-        $SkipC = $false,
+        $SkipD = $false,
 
         [Parameter(Position = 2)]
         [switch]
-        $SkipD = $false,
+        $SkipPs1 = $false,
 
         [Parameter(Position = 3)]
         [switch]
-        $SkipPs1 = $false,
+        $SkipReg = $false,
 
         [Parameter(Position = 4)]
         [switch]
-        $SkipReg = $false
+        $Remove = $false
     )
 
     if (!(Test-Admin)) {
@@ -69,7 +69,7 @@
 
     function Process ($apps) {
         foreach ($app in $apps) {
-            Deploy-App -App $app -Remove: $Remove -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg
+            Deploy-App -App $app -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Remove: $Remove
         }
     }
 
