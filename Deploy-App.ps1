@@ -60,7 +60,16 @@ function Deploy-App {
 
     Process {
 
-        if ($Remove -and $Pack) {
+        $switches = @{
+            remove = $Remove
+            skipC = $SkipC
+            skipD = $SkipD
+            skipPs1 = $SkipPs1
+            skipReg = $SkipReg
+            pack =$Pack
+        }
+
+        if ($switches.remove -and $switches.pack) {
             Write-Error "Can either remove or pack"    
             return
         }
@@ -72,35 +81,34 @@ function Deploy-App {
 
         $time = [Diagnostics.Stopwatch]::StartNew()
 
-        $installDir = "D:"
-        $systemDrive = Get-Content Env:\SystemDrive
+        $globals = @{
+            zip = Join-Path $source "$($PSBoundParameters.App).zip"
+            installDir = "D:"
+            systemDrive = Get-Content Env:\SystemDrive
+        }
 
-        $zip = Join-Path $source "$($PSBoundParameters.App).zip"
-
-        Write-Host "$(if ($Remove) { "Removing" } elseif ($Pack) { "Packing" } else { "Installing" }) $zip"
+        Write-Host "$(if ($switches.remove) { "Removing" } elseif ($switches.pack) { "Packing" } else { "Installing" }) $($globals.zip)"
 
         $d = @{
-            packages = Join-Path $installDir "Packages"
-            apps = Join-Path $installDir "Apps"
-            programdata = Join-Path $installDir $home.TrimEnd((Get-Content Env:\USERNAME)).TrimStart($systemDrive) | Join-Path -ChildPath "All Users"
-            home = Join-Path $installDir $home.TrimStart($systemDrive)
-            documents = Join-Path $installDir $home.TrimStart($systemDrive) | Join-Path -ChildPath "Documents"
-            local = Join-Path $installDir (Get-Content Env:\LOCALAPPDATA).TrimStart($systemDrive)
-            roaming = Join-Path $installDir (Get-Content Env:\APPDATA).TrimStart($systemDrive)
+            packages = Join-Path $globals.installDir "Packages"
+            apps = Join-Path $globals.installDir "Apps"
+            programdata = Join-Path $globals.installDir $home.TrimEnd((Get-Content Env:\USERNAME)).TrimStart($globals.systemDrive) | Join-Path -ChildPath "All Users"
+            home = Join-Path $globals.installDir $home.TrimStart($globals.systemDrive)
+            documents = Join-Path $globals.installDir $home.TrimStart($globals.systemDrive) | Join-Path -ChildPath "Documents"
+            local = Join-Path $globals.installDir (Get-Content Env:\LOCALAPPDATA).TrimStart($globals.systemDrive)
+            roaming = Join-Path $globals.installDir (Get-Content Env:\APPDATA).TrimStart($globals.systemDrive)
         }
 
         $c = @{
-            c = Join-Path $systemDrive "\"
-            apps = Join-Path $systemDrive "Apps"
+            c = Join-Path $globals.systemDrive "\"
+            apps = Join-Path $globals.systemDrive "Apps"
             shortcuts = Join-Path (Get-Content Env:\ProgramData) "Microsoft\Windows\Start Menu\Programs"
             startup = Join-Path (Get-Content Env:\APPDATA) "Microsoft\Windows\Start Menu\Programs\Startup"
         }
 
-        function CreateDir ($dir) {
-            if (Test-Path $dir) { return }
-            Write-Host "Create $dir"
-            New-Item $dir -ItemType Directory | Out-Null
-        }
+        $globals.package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($globals.zip))
+
+        . (Join-Path (Split-Path $PROFILE) "Deploy.ps1")
 
         CreateDir $d.packages
         CreateDir $d.apps
@@ -109,31 +117,25 @@ function Deploy-App {
         CreateDir $d.documents
         CreateDir $d.local
         CreateDir $d.roaming
-        
-        $package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($zip))
-
-        function Remove ($path) {
-            Remove-Item $path -Recurse -Force -ErrorAction SilentlyContinue
-        }
 
         function RemovePackage () {
-            Write-Host "Remove $package"
-            Remove $package
+            Write-Host "Remove $($globals.package)"
+            Remove $globals.package
         }
 
         $7z = Get-Command "7z" -ErrorAction SilentlyContinue
 
         function ExtractPackage () {
-            Write-Host "Extract $package"
+            Write-Host "Extract $($globals.package)"
             if ($7z) {
-                7z x $zip -y -o"$($d.packages)" | Out-Null
+                7z x $globals.zip -y -o"$($d.packages)" | Out-Null
             } else {
-                Expand-Archive $zip $d.packages
+                Expand-Archive $globals.zip $d.packages
             }
         }
 
-        if (Test-Path $package) {
-            if (!$Remove -and !$Pack) {
+        if (Test-Path $globals.package) {
+            if (!$switches.remove -and !$switches.pack) {
                 RemovePackage
                 ExtractPackage
             }
@@ -141,107 +143,52 @@ function Deploy-App {
             ExtractPackage
         }
 
-        function CreateCopy ($from, $to, $isDir) {
-            if ($isDir) {
-                robocopy $from $to /NJH /NJS /NFL /NDL /E | Out-Null
-            } else {
-                xcopy $from ([IO.Path]::GetDirectoryName($to)) /YKHRQ | Out-Null
-            }
-        }
+        Process $switches $globals "apps" $d.apps $true $false
+        Process $switches $globals "programdata" $d.programdata
+        Process $switches $globals "home" $d.home
+        Process $switches $globals "documents" $d.documents
+        Process $switches $globals "local" $d.local
+        Process $switches $globals "roaming" $d.roaming
 
-        function CreateSymlink ($symlink, $path, $isDir = $true) {
-            if (Test-Path $symlink) { return }
-            Write-Host "Symlink $symlink"
-            cmd /c mklink $(if ($isDir) { "/J" } else { "" }) $symlink $path | Out-Null
-        }
-
-        function RemoveSymlink ($symlink) {
-            Write-Host "Unlink $symLink"
-            Remove $symlink
-        }
-
-        function Process ($category, $path, $replace = $true, $createSymlinks = $true) {
-            $isC = $path.StartsWith($systemDrive)
-
-            $categoryPath = Join-Path $package $category
-            $deviceCategoryPath = $categoryPath + "@" + (Get-Content Env:\COMPUTERNAME)
-            if (Test-Path $deviceCategoryPath) { $categoryPath = $deviceCategoryPath }
-
-            foreach ($item in Get-ChildItem $categoryPath -Force -ErrorAction SilentlyContinue) {
-                $fullPath = Join-Path $path $item.Name
-                $isDir = $item.Attributes.HasFlag([IO.FileAttributes]::Directory)
-
-                if (($isC -and !$SkipC) -or (!$isC -and !$SkipD)) {
-                    if (!$Pack -and ($Remove -or $replace)) {
-                        Write-Host "Remove $fullPath"
-                        Remove $fullPath
-                    }
-                    if ($Pack) {
-                        Write-Host "Pack $fullPath to $($item.FullName)"
-                        Remove $item.FullName
-                        CreateCopy $fullPath $item.FullName $isDir
-                    }
-                    if (!$Remove -and !$Pack) { 
-                        Write-Host "Create $fullPath"
-                        CreateDir $path
-                        CreateCopy $item.FullName $fullPath $isDir
-                    }
-                }
-
-                if (!$SkipC -and !$Pack -and $createSymlinks) {
-                    $symlink = Join-Path $systemDrive $fullPath.TrimStart($installDir)
-                    RemoveSymlink $symlink
-                    if (!$Remove) {
-                        CreateDir (Join-Path $systemDrive $path.TrimStart($installDir))
-                        CreateSymlink $symlink $fullPath $isDir
-                    }
-                }
-            }
-        }
-
-        Process "apps" $d.apps $true $false
-        Process "programdata" $d.programdata
-        Process "home" $d.home
-        Process "documents" $d.documents
-        Process "local" $d.local
-        Process "roaming" $d.roaming
-
-        foreach ($category in (Get-ChildItem $package |
+        foreach ($category in (Get-ChildItem $globals.package |
                 Select-Object -ExpandProperty Name |
                 Where-Object { $_.Contains("#") } |
                 ForEach-Object { $_.Split("@")[0] }) |
                 Get-Unique) {
+
             $hashSeparated = $category.Split("#")
             $isC = $hashSeparated[0] -eq "c"
             $path = if ($isC) { $c.c } else { $d[$hashSeparated[0]] }
+
             for ($i = 1; $i -lt $hashSeparated.Length; $i++) {
                 $path = Join-Path $path $hashSeparated[$i]
             }
-            Process $category $path $true (-not $isC)
+
+            Process $switches $globals $category $path $true (-not $isC)
         }
 
-        Process "shortcuts" $c.shortcuts $false $false
-        Process "startup" $c.startup $false $false
+        Process $switches $globals "shortcuts" $c.shortcuts $false $false
+        Process $switches $globals "startup" $c.startup $false $false
 
-        $script = if ($Remove) { "remove" } elseif ($Pack) { "pack" } else { "install" }
+        $script = if ($switches.remove) { "remove" } elseif ($switches.pack) { "pack" } else { "install" }
 
-        if (!$SkipPs1) {
-            $ps1 = Join-Path $package "$script.ps1"
+        if (!$switches.skipPs1) {
+            $ps1 = Join-Path $globals.package "$script.ps1"
             if (Test-Path $ps1) {
                 Write-Host "Run $ps1"
                 & $ps1
             }
         }
 
-        if (!$SkipReg) {
-            $reg = Join-Path $package "$script.reg"
+        if (!$switches.skipReg) {
+            $reg = Join-Path $globals.package "$script.reg"
             if (Test-Path $reg) {
                 Write-Host "Import $reg"
                 Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait
             }
         }
 
-        $txt = Join-Path $package "$script.txt"
+        $txt = Join-Path $globals.package "$script.txt"
         if (Test-Path $txt) {
             Write-Host "Show $txt"
             Write-Host ""
@@ -251,21 +198,22 @@ function Deploy-App {
             $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null
         }
 
-        if (!$Remove -and !$Pack) { ie4uinit -show }
+        if (!$switches.remove -and !$switches.pack) { ie4uinit -show }
 
-        if ($Remove) { RemovePackage }
+        if ($switches.remove) { RemovePackage }
 
-        if ($Pack) {
-            Remove "$package.zip"
-            Write-Host "Pack $zip"
+        if ($switches.pack) {
+            $packageZip = "$($globals.package).zip"
+            Remove $packageZip
+            Write-Host "Pack $($globals.zip)"
 
             if ($7z) {
-                7z a "$package.zip" "$package" | Out-Null
+                7z a $packageZip $globals.package | Out-Null
             } else {
-                Compress-Archive $package "$package.zip"
+                Compress-Archive $globals.package $packageZip
             }
 
-            Move-Item "$package.zip" $zip -Force
+            Move-Item $packageZip $globals.zip -Force
         }
 
         $time.Stop()

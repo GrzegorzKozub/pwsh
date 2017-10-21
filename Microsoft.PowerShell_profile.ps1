@@ -9,9 +9,9 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
 }
 
 Get-ChildItem `
-    (Join-Path (Split-Path $PROFILE) "*.ps1") `
-    -Exclude "*profile.ps1" |
-ForEach-Object { . $_ }
+    (Split-Path $PROFILE) `
+    -Filter "*-*.ps1" |
+ForEach-Object { . $_.FullName }
 
 $backgroundColor = "Black"
 $separatorColor = "DarkGray"
