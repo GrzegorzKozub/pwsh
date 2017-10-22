@@ -20,7 +20,15 @@
 
         [Parameter(Position = 4)]
         [switch]
-        $Remove = $false
+        $Remove = $false,
+
+        [Parameter(Position = 5)]
+        [switch]
+        $Pack = $false,
+
+        [Parameter(Position = 6)]
+        [switch]
+        $Parallel = $true
     )
 
     if (!(Test-Admin)) {
@@ -67,13 +75,13 @@
         $other = $other + "MaxxAudioPro"
     }
 
-    function Process ($apps) {
+    function DeployApps ($apps) {
         foreach ($app in $apps) {
-            Deploy-App -App $app -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Remove: $Remove
+            Deploy-App -App $app -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Remove: $Remove -Pack: $Pack -Parallel: $Parallel
         }
     }
 
-    Process $essentials
-    Process $other
+    DeployApps $essentials
+    DeployApps $other
 }
 

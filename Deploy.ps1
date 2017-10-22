@@ -27,42 +27,41 @@ function RemoveSymlink ($symlink) {
     Remove $symlink
 }
 
-function Process ($switches, $globals, $category, $path, $replace = $true, $createSymlinks = $true) {
-    $isC = $path.StartsWith($globals.systemDrive)
+function DeployItems ($switches, $globals, $from, $to, $replace, $createSymlinks) {
+    $isC = $to.StartsWith($globals.systemDrive)
 
-    $categoryPath = Join-Path $globals.package $category
-    $deviceCategoryPath = $categoryPath + "@" + (Get-Content Env:\COMPUTERNAME)
-    if (Test-Path $deviceCategoryPath) { $categoryPath = $deviceCategoryPath }
+    $deviceFrom = $from + "@" + (Get-Content Env:\COMPUTERNAME)
+    if (Test-Path $deviceFrom) { $from = $deviceFrom }
 
-    foreach ($item in Get-ChildItem $categoryPath -Force -ErrorAction SilentlyContinue) {
-        $fullPath = Join-Path $path $item.Name
-        $isDir = $item.Attributes.HasFlag([IO.FileAttributes]::Directory)
+    foreach ($itemFrom in Get-ChildItem $from -Force -ErrorAction SilentlyContinue) {
+        $itemTo = Join-Path $to $itemFrom.Name
+        $isDir = $itemFrom.Attributes.HasFlag([IO.FileAttributes]::Directory)
 
         if (($isC -and !$switches.skipC) -or (!$isC -and !$switches.skipD)) {
             if (!$switches.pack -and ($switches.remove -or $replace)) {
-                Write-Host "Remove $fullPath"
-                Remove $fullPath
+                Write-Host "Remove $itemTo"
+                Remove $itemTo
             }
 
             if ($switches.pack) {
-                Write-Host "Pack $fullPath to $($item.FullName)"
-                Remove $item.FullName
-                CreateCopy $fullPath $item.FullName $isDir
+                Write-Host "Pack $itemTo to $($itemFrom.FullName)"
+                Remove $itemFrom.FullName
+                CreateCopy $itemTo $itemFrom.FullName $isDir
             }
 
-            if (!$switches.remove -and !$switches.pack) { 
-                Write-Host "Create $fullPath"
-                CreateDir $path
-                CreateCopy $item.FullName $fullPath $isDir
+            if (!$switches.remove -and !$switches.pack) {
+                Write-Host "Create $itemTo"
+                CreateDir $to
+                CreateCopy $itemFrom.FullName $itemTo $isDir
             }
         }
 
         if (!$switches.skipC -and !$switches.pack -and $createSymlinks) {
-            $symlink = Join-Path $globals.systemDrive $fullPath.TrimStart($globals.installDir)
+            $symlink = Join-Path $globals.systemDrive $itemTo.TrimStart($globals.installDir)
             RemoveSymlink $symlink
             if (!$Remove) {
-                CreateDir (Join-Path $globals.systemDrive $path.TrimStart($globals.installDir))
-                CreateSymlink $symlink $fullPath $isDir
+                CreateDir (Join-Path $globals.systemDrive $to.TrimStart($globals.installDir))
+                CreateSymlink $symlink $itemTo $isDir
             }
         }
     }

@@ -27,7 +27,11 @@ function Deploy-App {
 
         [Parameter(Position = 5, ValueFromRemainingArguments = $true)]
         [switch]
-        $Pack = $false
+        $Pack = $false,
+
+        [Parameter(Position = 6, ValueFromRemainingArguments = $true)]
+        [switch]
+        $Parallel = $true
     )
 
     DynamicParam {
@@ -66,11 +70,12 @@ function Deploy-App {
             skipD = $SkipD
             skipPs1 = $SkipPs1
             skipReg = $SkipReg
-            pack =$Pack
+            pack = $Pack
+            parallel = $Parallel
         }
 
         if ($switches.remove -and $switches.pack) {
-            Write-Error "Can either remove or pack"    
+            Write-Error "Can either remove or pack"
             return
         }
 
@@ -108,7 +113,8 @@ function Deploy-App {
 
         $globals.package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($globals.zip))
 
-        . (Join-Path (Split-Path $PROFILE) "Deploy.ps1")
+        $sourceDeployPs1 = ". $(Join-Path (Split-Path $PROFILE) 'Deploy.ps1')"
+        Invoke-Expression $sourceDeployPs1
 
         CreateDir $d.packages
         CreateDir $d.apps
@@ -143,19 +149,36 @@ function Deploy-App {
             ExtractPackage
         }
 
-        Process $switches $globals "apps" $d.apps $true $false
-        Process $switches $globals "programdata" $d.programdata
-        Process $switches $globals "home" $d.home
-        Process $switches $globals "documents" $d.documents
-        Process $switches $globals "local" $d.local
-        Process $switches $globals "roaming" $d.roaming
+        $script:jobs = @()
+
+        function DeployCategory ($category, $to, $replace = $true, $createSymlinks = $true) {
+            $from = Join-Path $globals.package $category
+            if (!(Test-Path $from)) { return }
+            if ($switches.parallel) {
+                $script:jobs += Start-Job `
+                    -InitializationScript ([ScriptBlock]::Create($sourceDeployPs1)) `
+                    -ScriptBlock {
+                        param($switches, $globals, $from, $to, $replace, $createSymlinks)
+                        DeployItems $switches $globals $from $to $replace $createSymlinks
+                    } `
+                    -ArgumentList @($switches, $globals, $from, $to, $replace, $createSymlinks)
+            } else {
+                DeployItems $switches $globals $from $to $replace $createSymlinks
+            }
+        }
+
+        DeployCategory "apps" $d.apps $true $false
+        DeployCategory "programdata" $d.programdata
+        DeployCategory "home" $d.home
+        DeployCategory "documents" $d.documents
+        DeployCategory "local" $d.local
+        DeployCategory "roaming" $d.roaming
 
         foreach ($category in (Get-ChildItem $globals.package |
                 Select-Object -ExpandProperty Name |
                 Where-Object { $_.Contains("#") } |
                 ForEach-Object { $_.Split("@")[0] }) |
                 Get-Unique) {
-
             $hashSeparated = $category.Split("#")
             $isC = $hashSeparated[0] -eq "c"
             $path = if ($isC) { $c.c } else { $d[$hashSeparated[0]] }
@@ -164,11 +187,16 @@ function Deploy-App {
                 $path = Join-Path $path $hashSeparated[$i]
             }
 
-            Process $switches $globals $category $path $true (-not $isC)
+            DeployCategory $category $path $true (-not $isC)
         }
 
-        Process $switches $globals "shortcuts" $c.shortcuts $false $false
-        Process $switches $globals "startup" $c.startup $false $false
+        DeployCategory "shortcuts" $c.shortcuts $false $false
+        DeployCategory "startup" $c.startup $false $false
+
+        if ($switches.parallel) {
+            $script:jobs | Wait-Job | Receive-Job
+            $script:jobs | Remove-Job
+        }
 
         $script = if ($switches.remove) { "remove" } elseif ($switches.pack) { "pack" } else { "install" }
 
