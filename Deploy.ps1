@@ -30,9 +30,6 @@ function RemoveSymlink ($symlink) {
 function DeployItems ($switches, $globals, $from, $to, $replace, $createSymlinks) {
     $isC = $to.StartsWith($globals.systemDrive)
 
-    $deviceFrom = $from + "@" + (Get-Content Env:\COMPUTERNAME)
-    if (Test-Path $deviceFrom) { $from = $deviceFrom }
-
     foreach ($itemFrom in Get-ChildItem $from -Force -ErrorAction SilentlyContinue) {
         $itemTo = Join-Path $to $itemFrom.Name
         $isDir = $itemFrom.Attributes.HasFlag([IO.FileAttributes]::Directory)

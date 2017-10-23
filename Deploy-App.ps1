@@ -153,7 +153,14 @@ function Deploy-App {
 
         function DeployCategory ($category, $to, $replace = $true, $createSymlinks = $true) {
             $from = Join-Path $globals.package $category
-            if (!(Test-Path $from)) { return }
+
+            $deviceFrom = $from + "@" + (Get-Content Env:\COMPUTERNAME)
+            if (Test-Path $deviceFrom) {
+                $from = $deviceFrom
+            } elseif (!(Test-Path $from)) {
+                return
+            }
+
             if ($switches.parallel) {
                 $script:jobs += Start-Job `
                     -InitializationScript ([ScriptBlock]::Create($sourceDeployPs1)) `
