@@ -62,7 +62,6 @@
              "SyncBackPro",
              "Total Commander",
              "Vim",
-             "Visual Studio",
              "Visual Studio Code",
              "Yarn"
 
