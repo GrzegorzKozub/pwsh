@@ -36,6 +36,8 @@
         return
     }
 
+    $time = [Diagnostics.Stopwatch]::StartNew()
+
     $essentials = "7-Zip", "Common", "Git"
 
     $other = "Chrome",
@@ -82,5 +84,8 @@
 
     DeployApps $essentials
     DeployApps $other
+
+    $time.Stop()
+    Write-Host "All done in $($time.Elapsed.ToString("mm\:ss\.fff"))"
 }
 

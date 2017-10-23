@@ -252,7 +252,6 @@ function Deploy-App {
         }
 
         $time.Stop()
-
         Write-Host "Done in $($time.Elapsed.ToString("mm\:ss\.fff"))"
     }
 }
