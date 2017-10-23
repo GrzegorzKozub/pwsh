@@ -36,11 +36,10 @@
         return
     }
 
-    $essentials = "7-Zip", "Git"
+    $essentials = "7-Zip", "Common", "Git"
 
     $other = "Chrome",
              "clink",
-             "Common",
              "ConEmu",
              "Docker",
              "dotnet",
