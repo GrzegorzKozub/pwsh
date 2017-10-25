@@ -7,29 +7,33 @@ function Deploy-App {
     param (
         [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
         [switch]
-        $SkipC = $false,
+        $SkipExtract = $false,
 
         [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
         [switch]
-        $SkipD = $false,
+        $SkipC = $false,
 
         [Parameter(Position = 2, ValueFromRemainingArguments = $true)]
         [switch]
-        $SkipPs1 = $false,
+        $SkipD = $false,
 
         [Parameter(Position = 3, ValueFromRemainingArguments = $true)]
         [switch]
-        $SkipReg = $false,
+        $SkipPs1 = $false,
 
         [Parameter(Position = 4, ValueFromRemainingArguments = $true)]
         [switch]
-        $Remove = $false,
+        $SkipReg = $false,
 
         [Parameter(Position = 5, ValueFromRemainingArguments = $true)]
         [switch]
-        $Pack = $false,
+        $Remove = $false,
 
         [Parameter(Position = 6, ValueFromRemainingArguments = $true)]
+        [switch]
+        $Pack = $false,
+
+        [Parameter(Position = 7, ValueFromRemainingArguments = $true)]
         [switch]
         $Parallel = $false
     )
@@ -65,11 +69,12 @@ function Deploy-App {
     Process {
 
         $switches = @{
-            remove = $Remove
+            skipExtract = $SkipExtract
             skipC = $SkipC
             skipD = $SkipD
             skipPs1 = $SkipPs1
             skipReg = $SkipReg
+            remove = $Remove
             pack = $Pack
             parallel = $Parallel
         }
@@ -133,11 +138,12 @@ function Deploy-App {
         }
 
         if (Test-Path $globals.package) {
-            if (!$switches.remove -and !$switches.pack) {
+            if (!$switches.remove -and !$switches.pack -and !$switches.skipExtract) {
                 RemovePackage
                 ExtractPackage
             }
         } else {
+            if ($switches.skipExtract) { Write-Warning "$($globals.package) is missing" }
             ExtractPackage
         }
 

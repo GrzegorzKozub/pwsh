@@ -4,29 +4,33 @@
     param (
         [Parameter(Position = 0)]
         [switch]
-        $SkipC = $false,
+        $SkipExtract = $false,
 
         [Parameter(Position = 1)]
         [switch]
-        $SkipD = $false,
+        $SkipC = $false,
 
         [Parameter(Position = 2)]
         [switch]
-        $SkipPs1 = $false,
+        $SkipD = $false,
 
         [Parameter(Position = 3)]
         [switch]
-        $SkipReg = $false,
+        $SkipPs1 = $false,
 
         [Parameter(Position = 4)]
         [switch]
-        $Remove = $false,
+        $SkipReg = $false,
 
         [Parameter(Position = 5)]
         [switch]
-        $Pack = $false,
+        $Remove = $false,
 
         [Parameter(Position = 6)]
+        [switch]
+        $Pack = $false,
+
+        [Parameter(Position = 7)]
         [switch]
         $Parallel = $false
     )
@@ -77,7 +81,7 @@
 
     function DeployApps ($apps) {
         foreach ($app in $apps) {
-            Deploy-App -App $app -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Remove: $Remove -Pack: $Pack -Parallel: $Parallel
+            Deploy-App -App $app -SkipExtract: $SkipExtract -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Remove: $Remove -Pack: $Pack -Parallel: $Parallel
         }
     }
 
