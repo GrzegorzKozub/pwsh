@@ -1,10 +1,21 @@
 function Login {
-    if (!$global:credential) {
-        $user = "$env:USERDOMAIN\$env:USERNAME"
-        $password = Read-Host -Prompt "Enter your password" -AsSecureString
-        $global:credential = New-Object System.Management.Automation.PSCredential($user, $password)
+    if ($global:credential) { return $true }
+    $user = "$env:USERDOMAIN\$env:USERNAME"
+    $password = Read-Host -Prompt "Enter your password" -AsSecureString
+    $credential = New-Object System.Management.Automation.PSCredential($user, $password)
+    try {
+        Start-Process `
+            -FilePath "cmd.exe" `
+            -Args "/c exit" `
+            -WindowStyle Hidden `
+            -Wait `
+            -Credential ($credential)
+        $global:credential = $credential
+        return $true
+    } catch {
+        Write-Error "Incorrect password"
+        return $false
     }
-    return $global:credential
 }
 
 function NotAsAdmin ($command) {
@@ -13,7 +24,7 @@ function NotAsAdmin ($command) {
         -ArgumentList @("-NoProfile", "-NoLogo", $command) `
         -WindowStyle Hidden `
         -Wait `
-        -Credential (Login)
+        -Credential ($global:credential)
 }
 
 function Remove ($path) {

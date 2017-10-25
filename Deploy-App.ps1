@@ -89,15 +89,11 @@ function Deploy-App {
             return
         }
 
-        $time = [Diagnostics.Stopwatch]::StartNew()
-
         $globals = @{
             zip = Join-Path $source "$($PSBoundParameters.App).zip"
             installDir = "D:"
             systemDrive = Get-Content Env:\SystemDrive
         }
-
-        Write-Host "$(if ($switches.remove) { "Removing" } elseif ($switches.pack) { "Packing" } else { "Installing" }) $($globals.zip)"
 
         $d = @{
             packages = Join-Path $globals.installDir "Packages"
@@ -121,7 +117,11 @@ function Deploy-App {
         $sourceDeployPs1 = ". $(Join-Path (Split-Path $PROFILE) 'Deploy.ps1')"
         Invoke-Expression $sourceDeployPs1
 
-        Login | Out-Null
+        if (!(Login)) { return }
+
+        $time = [Diagnostics.Stopwatch]::StartNew()
+
+        Write-Host "$(if ($switches.remove) { "Removing" } elseif ($switches.pack) { "Packing" } else { "Installing" }) $($globals.zip)"
 
         function RemovePackage {
             Write-Host "Remove $($globals.package)"
