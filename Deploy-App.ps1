@@ -121,6 +121,8 @@ function Deploy-App {
         $sourceDeployPs1 = ". $(Join-Path (Split-Path $PROFILE) 'Deploy.ps1')"
         Invoke-Expression $sourceDeployPs1
 
+        Login | Out-Null
+
         function RemovePackage {
             Write-Host "Remove $($globals.package)"
             Remove $globals.package
