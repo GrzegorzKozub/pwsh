@@ -19,7 +19,11 @@ function CreateCopy ($from, $to, $isDir) {
 function CreateSymlink ($symlink, $path, $isDir = $true) {
     if (Test-Path $symlink) { return }
     Write-Host "Symlink $symlink"
-    cmd /c mklink $(if ($isDir) { "/J" } else { "" }) $symlink $path | Out-Null
+    if ($isDir) {
+        New-Item -ItemType Junction -Path $symlink -Target $path | Out-Null
+    } else {
+        New-Item -ItemType SymbolicLink -Path $symlink -Target $path | Out-Null
+    }
 }
 
 function RemoveSymlink ($symlink) {
