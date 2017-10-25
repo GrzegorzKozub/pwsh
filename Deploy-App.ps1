@@ -31,7 +31,7 @@ function Deploy-App {
 
         [Parameter(Position = 6, ValueFromRemainingArguments = $true)]
         [switch]
-        $Parallel = $true
+        $Parallel = $false
     )
 
     DynamicParam {
@@ -116,19 +116,19 @@ function Deploy-App {
         $sourceDeployPs1 = ". $(Join-Path (Split-Path $PROFILE) 'Deploy.ps1')"
         Invoke-Expression $sourceDeployPs1
 
-        function RemovePackage () {
+        function RemovePackage {
             Write-Host "Remove $($globals.package)"
             Remove $globals.package
         }
 
         $7z = Get-Command "7z" -ErrorAction SilentlyContinue
 
-        function ExtractPackage () {
+        function ExtractPackage {
             Write-Host "Extract $($globals.package)"
             if ($7z) {
-                7z x $globals.zip -y -o"$($d.packages)" | Out-Null
+                NotAsAdmin "7z x '$($globals.zip)' -y -o'$($d.packages)' | Out-Null"
             } else {
-                Expand-Archive $globals.zip $d.packages
+                NotAsAdmin "Expand-Archive '$($globals.zip)' '$($d.packages)'"
             }
         }
 
@@ -235,9 +235,9 @@ function Deploy-App {
             Write-Host "Pack $($globals.zip)"
 
             if ($7z) {
-                7z a $packageZip $globals.package | Out-Null
+                NotAsAdmin "7z a '$packageZip' '$($globals.package)' | Out-Null"
             } else {
-                Compress-Archive $globals.package $packageZip
+                NotAsAdmin "Compress-Archive '$($globals.package)' '$packageZip'"
             }
 
             Move-Item $packageZip $globals.zip -Force

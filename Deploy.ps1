@@ -1,3 +1,21 @@
+function Login {
+    if (!$global:credential) {
+        $user = "$env:USERDOMAIN\$env:USERNAME"
+        $password = Read-Host -Prompt "Enter your password" -AsSecureString
+        $global:credential = New-Object System.Management.Automation.PSCredential($user, $password)
+    }
+    return $global:credential
+}
+
+function NotAsAdmin ($command) {
+    Start-Process `
+        -FilePath "powershell.exe" `
+        -ArgumentList @("-NoProfile", "-NoLogo", $command) `
+        -WindowStyle Hidden `
+        -Wait `
+        -Credential (Login)
+}
+
 function Remove ($path) {
     Remove-Item $path -Recurse -Force -ErrorAction SilentlyContinue
 }
@@ -5,14 +23,14 @@ function Remove ($path) {
 function CreateDir ($dir) {
     if (Test-Path $dir) { return }
     Write-Host "Create $dir"
-    New-Item $dir -ItemType Directory | Out-Null
+    NotAsAdmin "New-Item '$dir' -ItemType Directory | Out-Null"
 }
 
 function CreateCopy ($from, $to, $isDir) {
     if ($isDir) {
-        robocopy $from $to /NJH /NJS /NFL /NDL /E | Out-Null
+        NotAsAdmin "robocopy '$from' '$to' /NJH /NJS /NFL /NDL /E | Out-Null"
     } else {
-        xcopy $from ([IO.Path]::GetDirectoryName($to)) /YKHRQ | Out-Null
+        NotAsAdmin "xcopy '$from' '$([IO.Path]::GetDirectoryName($to))' /YKHRQ | Out-Null"
     }
 }
 
@@ -20,7 +38,7 @@ function CreateSymlink ($symlink, $path, $isDir = $true) {
     if (Test-Path $symlink) { return }
     Write-Host "Symlink $symlink"
     if ($isDir) {
-        New-Item -ItemType Junction -Path $symlink -Target $path | Out-Null
+        NotAsAdmin "New-Item -ItemType Junction -Path '$symlink' -Target '$path' | Out-Null"
     } else {
         New-Item -ItemType SymbolicLink -Path $symlink -Target $path | Out-Null
     }

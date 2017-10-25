@@ -28,7 +28,7 @@
 
         [Parameter(Position = 6)]
         [switch]
-        $Parallel = $true
+        $Parallel = $false
     )
 
     if (!(Test-Admin)) {
