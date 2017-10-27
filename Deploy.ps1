@@ -49,7 +49,11 @@ function CreateCopy ($from, $to, $isDir) {
     if ($isDir) {
         robocopy $from $to /NJH /NJS /NFL /NDL /E /COPY:DATO "/MT:$($env:NUMBER_OF_PROCESSORS / 2)" | Out-Null
     } else {
-        xcopy $from ([IO.Path]::GetDirectoryName($to)) /YKHRQO | Out-Null
+        robocopy `
+            ([IO.Path]::GetDirectoryName($from)) `
+            ([IO.Path]::GetDirectoryName($to)) `
+            ([IO.Path]::GetFileName($from)) `
+            /NJH /NJS /NFL /NDL /COPY:DATO | Out-Null
     }
 }
 
