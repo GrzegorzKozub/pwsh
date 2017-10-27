@@ -89,6 +89,8 @@ function Deploy-App {
             return
         }
 
+        $time = [Diagnostics.Stopwatch]::StartNew()
+
         $globals = @{
             zip = Join-Path $source "$($PSBoundParameters.App).zip"
             installDir = "D:"
@@ -107,36 +109,27 @@ function Deploy-App {
 
         $c = @{
             c = Join-Path $globals.systemDrive "\"
-            apps = Join-Path $globals.systemDrive "Apps"
             shortcuts = Join-Path (Get-Content Env:\ProgramData) "Microsoft\Windows\Start Menu\Programs"
             startup = Join-Path (Get-Content Env:\APPDATA) "Microsoft\Windows\Start Menu\Programs\Startup"
         }
 
         $globals.package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($globals.zip))
 
+        Write-Host "$(if ($switches.remove) { "Removing" } elseif ($switches.pack) { "Packing" } else { "Installing" }) $($globals.zip)"
+
         $sourceDeployPs1 = ". $(Join-Path (Split-Path $PROFILE) 'Deploy.ps1')"
         Invoke-Expression $sourceDeployPs1
-
-        if (!(Login)) { return }
-
-        $time = [Diagnostics.Stopwatch]::StartNew()
-
-        Write-Host "$(if ($switches.remove) { "Removing" } elseif ($switches.pack) { "Packing" } else { "Installing" }) $($globals.zip)"
 
         function RemovePackage {
             Write-Host "Remove $($globals.package)"
             Remove $globals.package
         }
 
-        $7z = Get-Command "7z" -ErrorAction SilentlyContinue
-
         function ExtractPackage {
             Write-Host "Extract $($globals.package)"
-            if ($7z) {
-                NotAsAdmin "7z x '$($globals.zip)' -y -o'$($d.packages)' | Out-Null"
-            } else {
-                NotAsAdmin "Expand-Archive '$($globals.zip)' '$($d.packages)'"
-            }
+            Extract $globals.zip $d.packages
+            SetOwnerToCurrentUser $globals.package
+            SetChildrenOwnerToCurrentUser $globals.package
         }
 
         if (Test-Path $globals.package) {
@@ -238,16 +231,11 @@ function Deploy-App {
         if ($switches.remove) { RemovePackage }
 
         if ($switches.pack) {
+            Write-Host "Pack $($globals.zip)"
             $packageZip = "$($globals.package).zip"
             Remove $packageZip
-            Write-Host "Pack $($globals.zip)"
-
-            if ($7z) {
-                NotAsAdmin "7z a '$packageZip' '$($globals.package)' | Out-Null"
-            } else {
-                NotAsAdmin "Compress-Archive '$($globals.package)' '$packageZip'"
-            }
-
+            Pack $globals.package $packageZip
+            SetOwnerToCurrentUser $packageZip 
             Move-Item $packageZip $globals.zip -Force
         }
 

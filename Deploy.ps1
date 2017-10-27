@@ -1,47 +1,55 @@
-function Login {
-    if ($global:credential) { return $true }
-    $user = "$env:USERDOMAIN\$env:USERNAME"
-    $password = Read-Host -Prompt "Enter your password" -AsSecureString
-    $credential = New-Object System.Management.Automation.PSCredential($user, $password)
-    try {
-        Start-Process `
-            -FilePath "cmd.exe" `
-            -Args "/c exit" `
-            -WindowStyle Hidden `
-            -Wait `
-            -Credential ($credential)
-        $global:credential = $credential
-        return $true
-    } catch {
-        Write-Error "Incorrect password"
-        return $false
+function SetOwner ($path, $user) {
+    $acl = Get-Acl -LiteralPath $path
+    $acl.SetOwner($user)
+    Set-Acl -LiteralPath $path -AclObject $acl
+}
+
+function GetCurrentUser {
+    return New-Object System.Security.Principal.NTAccount($env:USERNAME)
+}
+
+function SetOwnerToCurrentUser ($path) {
+    SetOwner $path (GetCurrentUser)
+}
+
+function SetChildrenOwnerToCurrentUser ($path) {
+    $user = GetCurrentUser
+    foreach ($item in (Get-ChildItem $path -Recurse)) {
+        SetOwner $item.FullName $user
     }
 }
 
-function NotAsAdmin ($command) {
-    Start-Process `
-        -FilePath "powershell.exe" `
-        -ArgumentList @("-NoProfile", "-NoLogo", $command) `
-        -WindowStyle Hidden `
-        -Wait `
-        -Credential ($global:credential)
+function Test7z {
+    return !!(Get-Command "7z" -ErrorAction SilentlyContinue)
 }
 
-function Remove ($path) {
-    Remove-Item $path -Recurse -Force -ErrorAction SilentlyContinue
+function Extract ($from, $to) {
+    if (Test7z) {
+        7z x $from -y -o"$to" | Out-Null
+    } else {
+        Expand-Archive $from $to
+    }
+}
+
+function Pack ($from, $to) {
+    if (Test7z) {
+        7z a $to $from | Out-Null
+    } else {
+        Compress-Archive $from $to
+    }
 }
 
 function CreateDir ($dir) {
     if (Test-Path $dir) { return }
     Write-Host "Create $dir"
-    NotAsAdmin "New-Item '$dir' -ItemType Directory | Out-Null"
+    New-Item $dir -ItemType Directory | Out-Null
 }
 
 function CreateCopy ($from, $to, $isDir) {
     if ($isDir) {
-        NotAsAdmin "robocopy '$from' '$to' /NJH /NJS /NFL /NDL /E | Out-Null"
+        robocopy $from $to /NJH /NJS /NFL /NDL /E /COPY:DATO | Out-Null
     } else {
-        NotAsAdmin "xcopy '$from' '$([IO.Path]::GetDirectoryName($to))' /YKHRQ | Out-Null"
+        xcopy $from ([IO.Path]::GetDirectoryName($to)) /YKHRQO | Out-Null
     }
 }
 
@@ -49,10 +57,15 @@ function CreateSymlink ($symlink, $path, $isDir = $true) {
     if (Test-Path $symlink) { return }
     Write-Host "Symlink $symlink"
     if ($isDir) {
-        NotAsAdmin "New-Item -ItemType Junction -Path '$symlink' -Target '$path' | Out-Null"
+        New-Item -ItemType Junction -Path $symlink -Target $path | Out-Null
     } else {
         New-Item -ItemType SymbolicLink -Path $symlink -Target $path | Out-Null
     }
+    SetOwnerToCurrentUser $symlink
+}
+
+function Remove ($path) {
+    Remove-Item $path -Recurse -Force -ErrorAction SilentlyContinue
 }
 
 function RemoveSymlink ($symlink) {
