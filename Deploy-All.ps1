@@ -69,13 +69,11 @@
              "Visual Studio Code",
              "Yarn"
 
-    $device = Get-Content Env:\COMPUTERNAME
-
-    if ($device -eq "Slut") {
+    if ($env:COMPUTERNAME -eq "Slut") {
         $other = $other + "NVIDIA" + "NVIDIA Inspector" + "Realtek"
     }
 
-    if ($device -eq "Drifter") {
+    if ($env:COMPUTERNAME -eq "Drifter") {
         $other = $other + "MaxxAudioPro"
     }
 

@@ -94,23 +94,23 @@ function Deploy-App {
         $globals = @{
             zip = Join-Path $source "$($PSBoundParameters.App).zip"
             installDir = "D:"
-            systemDrive = Get-Content Env:\SystemDrive
+            systemDrive = $env:SystemDrive
         }
 
         $d = @{
             packages = Join-Path $globals.installDir "Packages"
             apps = Join-Path $globals.installDir "Apps"
-            programdata = Join-Path $globals.installDir $home.TrimEnd((Get-Content Env:\USERNAME)).TrimStart($globals.systemDrive) | Join-Path -ChildPath "All Users"
+            programdata = Join-Path $globals.installDir $home.TrimEnd($env:USERNAME).TrimStart($globals.systemDrive) | Join-Path -ChildPath "All Users"
             home = Join-Path $globals.installDir $home.TrimStart($globals.systemDrive)
             documents = Join-Path $globals.installDir $home.TrimStart($globals.systemDrive) | Join-Path -ChildPath "Documents"
-            local = Join-Path $globals.installDir (Get-Content Env:\LOCALAPPDATA).TrimStart($globals.systemDrive)
-            roaming = Join-Path $globals.installDir (Get-Content Env:\APPDATA).TrimStart($globals.systemDrive)
+            local = Join-Path $globals.installDir $env:LOCALAPPDATA.TrimStart($globals.systemDrive)
+            roaming = Join-Path $globals.installDir $env:APPDATA.TrimStart($globals.systemDrive)
         }
 
         $c = @{
             c = Join-Path $globals.systemDrive "\"
-            shortcuts = Join-Path (Get-Content Env:\ProgramData) "Microsoft\Windows\Start Menu\Programs"
-            startup = Join-Path (Get-Content Env:\APPDATA) "Microsoft\Windows\Start Menu\Programs\Startup"
+            shortcuts = Join-Path $env:ProgramData "Microsoft\Windows\Start Menu\Programs"
+            startup = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup"
         }
 
         $globals.package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($globals.zip))
@@ -147,7 +147,7 @@ function Deploy-App {
         function DeployCategory ($category, $to, $replace = $true, $createSymlinks = $true) {
             $from = Join-Path $globals.package $category
 
-            $deviceFrom = $from + "@" + (Get-Content Env:\COMPUTERNAME)
+            $deviceFrom = $from + "@" + $env:COMPUTERNAME
             if (Test-Path $deviceFrom) {
                 $from = $deviceFrom
             } elseif (!(Test-Path $from)) {
