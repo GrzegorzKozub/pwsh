@@ -1,10 +1,10 @@
 ﻿function Deploy-All {
     [CmdletBinding()]
-    
+
     param (
         [Parameter(Position = 0)]
         [switch]
-        $SkipExtract = $false,
+        $SkipUnzip = $false,
 
         [Parameter(Position = 1)]
         [switch]
@@ -79,7 +79,8 @@
 
     function DeployApps ($apps) {
         foreach ($app in $apps) {
-            Deploy-App -App $app -SkipExtract: $SkipExtract -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Remove: $Remove -Pack: $Pack -Parallel: $Parallel
+            Deploy-App -App $app -SkipUnzip: $SkipUnzip -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Remove: $Remove -Pack: $Pack -Parallel: $Parallel
+            Write-Host ""
         }
     }
 
@@ -87,6 +88,6 @@
     DeployApps $other
 
     $time.Stop()
-    Write-Host "All done in $($time.Elapsed.ToString("mm\:ss\.fff"))"
+    Write-Host "All done in $($time.Elapsed.ToString("mm\:ss\.fff"))" -ForegroundColor DarkGray
 }
 

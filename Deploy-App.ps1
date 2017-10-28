@@ -7,7 +7,7 @@ function Deploy-App {
     param (
         [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
         [switch]
-        $SkipExtract = $false,
+        $SkipUnzip = $false,
 
         [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
         [switch]
@@ -69,7 +69,7 @@ function Deploy-App {
     Process {
 
         $switches = @{
-            skipExtract = $SkipExtract
+            skipUnzip = $SkipUnzip
             skipC = $SkipC
             skipD = $SkipD
             skipPs1 = $SkipPs1
@@ -115,36 +115,43 @@ function Deploy-App {
 
         $globals.package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($globals.zip))
 
-        Write-Host "$(if ($switches.remove) { "Removing" } elseif ($switches.pack) { "Packing" } else { "Installing" }) $($globals.zip)"
-
         $sourceDeployPs1 = ". $(Join-Path (Split-Path $PROFILE) 'Deploy.ps1')"
         Invoke-Expression $sourceDeployPs1
 
+        if ($switches.remove) {
+            Write-Host "Removing $($globals.zip)" -ForegroundColor Red
+            $customizations = "remove"
+        } elseif ($switches.pack) {
+            Write-Host "Packing $($globals.zip)" -ForegroundColor Blue
+            $customizations = "pack"
+        } else {
+            Write-Host "Installing $($globals.zip)" -ForegroundColor Green
+            $customizations = "install"
+        }
+
         function RemovePackage {
-            Write-Host "Remove $($globals.package)"
             Remove $globals.package
         }
 
-        function ExtractPackage {
-            Write-Host "Extract $($globals.package)"
-            Extract $globals.zip $d.packages
+        function UnzipPackage {
+            Unzip $globals.zip $d.packages
             SetOwnerToCurrentUser $globals.package
             SetChildrenOwnerToCurrentUser $globals.package
         }
 
         if (Test-Path $globals.package) {
-            if (!$switches.remove -and !$switches.pack -and !$switches.skipExtract) {
+            if (!$switches.remove -and !$switches.pack -and !$switches.skipUnzip) {
                 RemovePackage
-                ExtractPackage
+                UnzipPackage
             }
         } else {
-            if ($switches.skipExtract) { Write-Warning "$($globals.package) is missing" }
-            ExtractPackage
+            if ($switches.skipUnzip) { Write-Warning "$($globals.package) is missing" }
+            UnzipPackage
         }
 
         $script:jobs = @()
 
-        function DeployCategory ($category, $to, $replace = $true, $createSymlinks = $true) {
+        function DeployCategory ($category, $to, $replace = $true, $createLinks = $true) {
             $from = Join-Path $globals.package $category
 
             $deviceFrom = $from + "@" + $env:COMPUTERNAME
@@ -158,12 +165,12 @@ function Deploy-App {
                 $script:jobs += Start-Job `
                     -InitializationScript ([ScriptBlock]::Create($sourceDeployPs1)) `
                     -ScriptBlock {
-                        param($switches, $globals, $from, $to, $replace, $createSymlinks)
-                        DeployItems $switches $globals $from $to $replace $createSymlinks
+                        param($switches, $globals, $from, $to, $replace, $createLinks)
+                        DeployItems $switches $globals $from $to $replace $createLinks
                     } `
-                    -ArgumentList @($switches, $globals, $from, $to, $replace, $createSymlinks)
+                    -ArgumentList @($switches, $globals, $from, $to, $replace, $createLinks)
             } else {
-                DeployItems $switches $globals $from $to $replace $createSymlinks
+                DeployItems $switches $globals $from $to $replace $createLinks
             }
         }
 
@@ -198,30 +205,26 @@ function Deploy-App {
             $script:jobs | Remove-Job
         }
 
-        $script = if ($switches.remove) { "remove" } elseif ($switches.pack) { "pack" } else { "install" }
-
         if (!$switches.skipPs1) {
-            $ps1 = Join-Path $globals.package "$script.ps1"
+            $ps1 = Join-Path $globals.package "$customizations.ps1"
             if (Test-Path $ps1) {
-                Write-Host "Run $ps1"
+                Log "Run" $ps1
                 & $ps1
             }
         }
 
         if (!$switches.skipReg) {
-            $reg = Join-Path $globals.package "$script.reg"
+            $reg = Join-Path $globals.package "$customizations.reg"
             if (Test-Path $reg) {
-                Write-Host "Import $reg"
+                Log "Import" $reg
                 Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait
             }
         }
 
-        $txt = Join-Path $globals.package "$script.txt"
+        $txt = Join-Path $globals.package "$customizations.txt"
         if (Test-Path $txt) {
-            Write-Host "Show $txt"
-            Write-Host ""
-            Get-Content $txt
-            Write-Host ""
+            Log "Show" $txt
+            Get-Content $txt | Write-Host -ForegroundColor White
             Write-Host "Press any key..."
             $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null
         }
@@ -231,16 +234,16 @@ function Deploy-App {
         if ($switches.remove) { RemovePackage }
 
         if ($switches.pack) {
-            Write-Host "Pack $($globals.zip)"
             $packageZip = "$($globals.package).zip"
             Remove $packageZip
-            Pack $globals.package $packageZip
+            Zip $globals.package $packageZip
             SetOwnerToCurrentUser $packageZip 
+            Log "Move" $globals.zip
             Move-Item $packageZip $globals.zip -Force
         }
 
         $time.Stop()
-        Write-Host "Done in $($time.Elapsed.ToString("mm\:ss\.fff"))"
+        Write-Host "Done in $($time.Elapsed.ToString("mm\:ss\.fff"))" -ForegroundColor DarkGray
     }
 }
 

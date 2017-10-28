@@ -1,3 +1,8 @@
+function Log ($action, $path) {
+    Write-Host ("{0,-7}" -f $action) -NoNewLine
+    Write-Host $path -ForegroundColor DarkCyan
+}
+
 function SetOwner ($path, $user) {
     $acl = Get-Acl -LiteralPath $path
     $acl.SetOwner($user)
@@ -23,7 +28,8 @@ function Test7z {
     return !!(Get-Command "7z" -ErrorAction SilentlyContinue)
 }
 
-function Extract ($from, $to) {
+function Unzip ($from, $to) {
+    Log "Unzip" (Join-Path $to ([IO.Path]::GetFileNameWithoutExtension($from)))
     if (Test7z) {
         7z x $from -y -o"$to" | Out-Null
     } else {
@@ -31,7 +37,8 @@ function Extract ($from, $to) {
     }
 }
 
-function Pack ($from, $to) {
+function Zip ($from, $to) {
+    Log "Zip" $to
     if (Test7z) {
         7z a $to $from | Out-Null
     } else {
@@ -41,11 +48,12 @@ function Pack ($from, $to) {
 
 function CreateDir ($dir) {
     if (Test-Path $dir) { return }
-    Write-Host "Create $dir"
+    Log "Create" $dir
     New-Item $dir -ItemType Directory | Out-Null
 }
 
 function CreateCopy ($from, $to, $isDir) {
+    Log "Copy" $to
     if ($isDir) {
         robocopy $from $to /NJH /NJS /NFL /NDL /E /COPY:DATO "/MT:$($env:NUMBER_OF_PROCESSORS / 2)" | Out-Null
     } else {
@@ -57,27 +65,23 @@ function CreateCopy ($from, $to, $isDir) {
     }
 }
 
-function CreateSymlink ($symlink, $path, $isDir = $true) {
-    if (Test-Path $symlink) { return }
-    Write-Host "Symlink $symlink"
+function CreateLink ($link, $path, $isDir = $true) {
+    if (Test-Path $link) { return }
+    Log "Link" $link
     if ($isDir) {
-        New-Item -ItemType Junction -Path $symlink -Target $path | Out-Null
+        New-Item -ItemType Junction -Path $link -Target $path | Out-Null
     } else {
-        New-Item -ItemType SymbolicLink -Path $symlink -Target $path | Out-Null
+        New-Item -ItemType SymbolicLink -Path $link -Target $path | Out-Null
     }
-    SetOwnerToCurrentUser $symlink
+    SetOwnerToCurrentUser $link
 }
 
 function Remove ($path) {
+    Log "Remove" $path
     Remove-Item $path -Recurse -Force -ErrorAction SilentlyContinue
 }
 
-function RemoveSymlink ($symlink) {
-    Write-Host "Unlink $symLink"
-    Remove $symlink
-}
-
-function DeployItems ($switches, $globals, $from, $to, $replace, $createSymlinks) {
+function DeployItems ($switches, $globals, $from, $to, $replace, $createLinks) {
     $isC = $to.StartsWith($globals.systemDrive)
 
     foreach ($itemFrom in Get-ChildItem $from -Force -ErrorAction SilentlyContinue) {
@@ -86,29 +90,26 @@ function DeployItems ($switches, $globals, $from, $to, $replace, $createSymlinks
 
         if (($isC -and !$switches.skipC) -or (!$isC -and !$switches.skipD)) {
             if (!$switches.pack -and ($switches.remove -or $replace)) {
-                Write-Host "Remove $itemTo"
                 Remove $itemTo
             }
 
             if ($switches.pack) {
-                Write-Host "Pack $itemTo to $($itemFrom.FullName)"
                 Remove $itemFrom.FullName
                 CreateCopy $itemTo $itemFrom.FullName $isDir
             }
 
             if (!$switches.remove -and !$switches.pack) {
-                Write-Host "Create $itemTo"
                 CreateDir $to
                 CreateCopy $itemFrom.FullName $itemTo $isDir
             }
         }
 
-        if (!$switches.skipC -and !$switches.pack -and $createSymlinks) {
-            $symlink = Join-Path $globals.systemDrive $itemTo.TrimStart($globals.installDir)
-            RemoveSymlink $symlink
+        if (!$switches.skipC -and !$switches.pack -and $createLinks) {
+            $link = Join-Path $globals.systemDrive $itemTo.TrimStart($globals.installDir)
+            Remove $link
             if (!$Remove) {
                 CreateDir (Join-Path $globals.systemDrive $to.TrimStart($globals.installDir))
-                CreateSymlink $symlink $itemTo $isDir
+                CreateLink $link $itemTo $isDir
             }
         }
     }
