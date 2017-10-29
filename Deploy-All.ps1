@@ -80,7 +80,6 @@
     function DeployApps ($apps) {
         foreach ($app in $apps) {
             Deploy-App -App $app -SkipUnzip: $SkipUnzip -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Remove: $Remove -Pack: $Pack -Parallel: $Parallel
-            Write-Host ""
         }
     }
 
