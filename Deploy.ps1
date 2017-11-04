@@ -77,8 +77,9 @@ function CreateLink ($link, $path, $isDir = $true) {
 }
 
 function Remove ($path) {
+    if (!(Test-Path $path)) { return }
     Log "Remove" $path
-    Remove-Item $path -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item $path -Recurse -Force
 }
 
 function DeployItems ($switches, $globals, $from, $to, $replace, $createLinks) {
