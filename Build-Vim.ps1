@@ -75,7 +75,7 @@
         -Path "$vim\src\vim.exe", "$vim\src\gvim.exe", "$vim\src\vimrun.exe", "$vim\src\tee\tee.exe", "$vim\src\xxd\xxd.exe" `
         -Destination $runtimeDir
 
-    7z x -y $zipFile *.bat *.dll *.exe -o"$runtimeDir" | Out-Null
+    7z x -y $zipFile *.bat *.exe -o"$runtimeDir" | Out-Null
 
     Pop-Location
 }
