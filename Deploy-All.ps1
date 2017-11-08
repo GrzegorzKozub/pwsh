@@ -44,8 +44,7 @@
 
     $essentials = "7-Zip", "Common", "Git"
 
-    $other = "Chrome",
-             "clink",
+    $other = "clink",
              "ConEmu",
              "Docker",
              "dotnet",
