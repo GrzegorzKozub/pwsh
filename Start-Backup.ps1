@@ -87,7 +87,7 @@ function Start-Backup {
     }
 
     function Mirror ($map) {
-        robocopy $map.from $map.to /MIR /R:3 /W:5 /NP /NDL "/UNILOG:$($map.log)" | Out-Null
+        robocopy $map.from $map.to /MIR /R:3 /W:5 /NOOFFLOAD /J /NP /NDL "/UNILOG:$($map.log)" | Out-Null
     }
 
     $allTime = StartTimer
