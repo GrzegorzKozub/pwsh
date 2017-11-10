@@ -51,7 +51,9 @@ function Start-Backup {
     }
 
     function ConvertToMap ($source, $targetLocation) {
-        $to = Join-Path (Join-Path $targetLocation $source[0]) ([IO.Path]::GetFileName($source))
+        $to = Join-Path `
+            (Join-Path $targetLocation $source[0]) `
+            ([IO.Path]::GetFullPath($source)).Replace([IO.Path]::GetPathRoot($source), "")
         return @{
             from = $source
             to = $to
