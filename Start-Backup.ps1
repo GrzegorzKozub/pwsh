@@ -87,7 +87,15 @@ function Start-Backup {
     }
 
     function Mirror ($map) {
-        robocopy $map.from $map.to /MIR /R:3 /W:5 /NOOFFLOAD /J /NP /NDL "/UNILOG:$($map.log)" | Out-Null
+        $robocopy = Start-Process `
+            -FilePath "robocopy.exe" `
+            -ArgumentList "$($map.from)", "$($map.to)", "/MIR", "/R:3", "/W:5", "/NOOFFLOAD", "/J", "/NP", "/NDL", "/UNILOG:$($map.log)" `
+            -WindowStyle Hidden `
+            -PassThru `
+            -Wait
+        if ($robocopy.ExitCode -gt 2) {
+            throw "Robocopy finished with $($robocopy.ExitCode) so look at $($map.log)"
+        }
     }
 
     $allTime = StartTimer
