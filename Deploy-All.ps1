@@ -62,7 +62,6 @@
              "Resource Hacker",
              "Ruby",
              "SumatraPDF",
-             "SyncBackPro",
              "Total Commander",
              "Vim",
              "Visual Studio Code",
