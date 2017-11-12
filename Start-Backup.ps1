@@ -93,7 +93,7 @@ function Start-Backup {
             -WindowStyle Hidden `
             -PassThru `
             -Wait
-        if ($robocopy.ExitCode -gt 2) {
+        if ($robocopy.ExitCode -gt 3) {
             throw "Robocopy finished with $($robocopy.ExitCode) so look at $($map.log)"
         }
     }
