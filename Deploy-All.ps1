@@ -32,7 +32,15 @@
 
         [Parameter(Position = 7)]
         [switch]
-        $Parallel = $false
+        $Parallel = $false,
+
+        [Parameter(Position = 8)]
+        [string]
+        $Source,
+
+        [Parameter(Position = 9)]
+        [string]
+        $Target = "D:"
     )
 
     if (!(Test-Admin)) {
@@ -77,7 +85,7 @@
 
     function DeployApps ($apps) {
         foreach ($app in $apps) {
-            Deploy-App -App $app -SkipUnzip: $SkipUnzip -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Remove: $Remove -Pack: $Pack -Parallel: $Parallel
+            Deploy-App -App $app -SkipUnzip: $SkipUnzip -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Remove: $Remove -Pack: $Pack -Parallel: $Parallel -Source: $Source -Target: $Target
         }
     }
 
