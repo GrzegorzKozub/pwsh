@@ -54,9 +54,7 @@
 
     $other = "clink",
              "ConEmu",
-             "Docker",
              "dotnet",
-             "Dropbox",
              "Go",
              "IrfanView",
              "KeePass",
@@ -67,13 +65,16 @@
              "paint.net",
              "Perl",
              "Python",
-             "Resource Hacker",
              "Ruby",
              "SumatraPDF",
              "Total Commander",
              "Vim",
              "Visual Studio Code",
              "Yarn"
+
+    if (($env:COMPUTERNAME -eq "Slut") -or ($env:COMPUTERNAME -eq "Drifter")) {
+        $other = $other + "Docker" + "Dropbox" + "Resource Hacker"
+    }
 
     if ($env:COMPUTERNAME -eq "Slut") {
         $other = $other + "NVIDIA" + "NVIDIA Inspector" + "Realtek"
