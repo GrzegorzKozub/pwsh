@@ -4,35 +4,35 @@
     param (
         [Parameter(Position = 0)]
         [switch]
-        $SkipUnzip = $false,
+        $SkipUnzip,
 
         [Parameter(Position = 1)]
         [switch]
-        $SkipC = $false,
+        $SkipC,
 
         [Parameter(Position = 2)]
         [switch]
-        $SkipD = $false,
+        $SkipD,
 
         [Parameter(Position = 3)]
         [switch]
-        $SkipPs1 = $false,
+        $SkipPs1,
 
         [Parameter(Position = 4)]
         [switch]
-        $SkipReg = $false,
+        $SkipReg,
 
         [Parameter(Position = 5)]
         [switch]
-        $Remove = $false,
+        $Remove,
 
         [Parameter(Position = 6)]
         [switch]
-        $Pack = $false,
+        $Pack,
 
         [Parameter(Position = 7)]
         [switch]
-        $Parallel = $false,
+        $Parallel,
 
         [Parameter(Position = 8)]
         [string]
@@ -40,7 +40,7 @@
 
         [Parameter(Position = 9)]
         [string]
-        $Target = "D:"
+        $Target
     )
 
     if (!(Test-Admin)) {

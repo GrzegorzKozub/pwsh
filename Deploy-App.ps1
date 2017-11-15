@@ -43,7 +43,7 @@ function Deploy-App {
 
         [Parameter(Position = 9, ValueFromRemainingArguments = $true)]
         [string]
-        $Target = "D:"
+        $Target
     )
 
     DynamicParam {
@@ -101,7 +101,7 @@ function Deploy-App {
 
         $globals = @{
             zip = Join-Path $zipDir "$($PSBoundParameters.App).zip"
-            target = $Target
+            target = if ($Target) { $Target } else { "D:" }
             systemDrive = $env:SystemDrive
         }
 
