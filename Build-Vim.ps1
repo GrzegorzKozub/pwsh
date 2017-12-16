@@ -50,7 +50,7 @@
             GUI=$gui OLE=$gui DIRECTX=$gui `
             PYTHON3=d:/Apps/Python DYNAMIC_PYTHON3=yes PYTHON3_VER=35 `
             PERL=d:/Apps/Perl DYNAMIC_PERL=yes PERL_VER=524 `
-            RUBY=d:/Apps/Ruby DYNAMIC_RUBY=yes RUBY_VER=23 RUBY_VER_LONG=2.3.0
+            RUBY=d:/Apps/Ruby DYNAMIC_RUBY=yes RUBY_VER=24 RUBY_VER_LONG=2.4.0
     }
 
     $runtime = (Select-String -Path "version.h" -Pattern '#define VIM_VERSION_NODOT.\"(vim[0-9]{2})\"').Matches[0].Groups[1].Value
