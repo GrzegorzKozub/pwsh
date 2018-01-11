@@ -22,10 +22,10 @@ function Init-MsSqlContainer {
 
         [ValidateScript({ Test-Path $_ })]
         [string]
-        $RestorePath,
+        $Bak,
 
         [string]
-        $RestoreName,
+        $Name,
 
         [switch]
         $Force
@@ -52,20 +52,20 @@ function Init-MsSqlContainer {
         -p "$($HostPort):1433" `
         -d "microsoft/mssql-server-linux:$($ImageTag)" | Out-Null
 
-    if ($RestorePath -and $RestoreName) {
+    if ($Bak -and $Name) {
         $backupDir = "/var/opt/mssql/backup"
         $dataDir = "/var/opt/mssql/data"
-        $restoreFile = [IO.Path]::GetFileNameWithoutExtension($RestorePath)
+        $restoreFile = [IO.Path]::GetFileNameWithoutExtension($Bak)
 
         $sql = "
-            RESTORE DATABASE $($RestoreName)
+            RESTORE DATABASE $($Name)
             FROM DISK = N'$($backupDir)/$($restoreFile).bak'
             WITH
-                MOVE N'$($restoreFile)' TO N'$($dataDir)/$($RestoreName).mdf',
-                MOVE N'$($restoreFile)_log' TO N'$($dataDir)/$($RestoreName)_log.ldf'"
+                MOVE N'$($restoreFile)' TO N'$($dataDir)/$($Name).mdf',
+                MOVE N'$($restoreFile)_log' TO N'$($dataDir)/$($Name)_log.ldf'"
 
         docker exec -it $ContainerName mkdir $backupDir
-        docker cp $RestorePath "$($ContainerName):$($backupDir)"
+        docker cp $Bak "$($ContainerName):$($backupDir)"
 
         Start-Sleep -Seconds 5
 
