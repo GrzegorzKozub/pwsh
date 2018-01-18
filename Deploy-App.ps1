@@ -237,7 +237,7 @@ function Deploy-App {
             $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null
         }
 
-        if (!$switches.remove -and !$switches.pack) { ie4uinit -show }
+        if (!$switches.remove -and !$switches.pack) { Refresh-Icons }
 
         if ($switches.remove) { RemovePackage }
 
