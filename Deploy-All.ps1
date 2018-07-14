@@ -72,16 +72,8 @@
              "Visual Studio Code",
              "Yarn"
 
-    if (($env:COMPUTERNAME -eq "Slut") -or ($env:COMPUTERNAME -eq "Drifter")) {
-        $other = $other + "Docker" + "Dropbox" + "Resource Hacker"
-    }
-
-    if ($env:COMPUTERNAME -eq "Slut") {
-        $other = $other + "NVIDIA" + "NVIDIA Inspector" + "Realtek"
-    }
-
     if ($env:COMPUTERNAME -eq "Drifter") {
-        $other = $other + "MaxxAudioPro"
+        $other = $other + "Docker" + "Dropbox" + "MaxxAudioPro" + "Resource Hacker"
     }
 
     function DeployApps ($apps) {
