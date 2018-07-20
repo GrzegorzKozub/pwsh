@@ -54,10 +54,13 @@
 
     $other = "clink",
              "ConEmu",
+             "docker",
              "dotnet",
+             "Dropbox",
              "Go",
              "IrfanView",
              "KeePass",
+             "MaxxAudioPro",
              "MinGW",
              "MSYS2",
              "Node.js",
@@ -65,16 +68,13 @@
              "paint.net",
              "Perl",
              "Python",
+             "Resource Hacker",
              "Ruby",
              "SumatraPDF",
              "Total Commander",
              "Vim",
              "Visual Studio Code",
              "Yarn"
-
-    if ($env:COMPUTERNAME -eq "Drifter") {
-        $other = $other + "Docker" + "Dropbox" + "MaxxAudioPro" + "Resource Hacker"
-    }
 
     function DeployApps ($apps) {
         foreach ($app in $apps) {
