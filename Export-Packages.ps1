@@ -27,22 +27,14 @@ function Export-Packages {
         }
     }
 
-    function CreateCopy ($from, $to) {
-        Log $from $to
-        New-Item -Path ([IO.Path]::GetDirectoryName($to)) -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
-        Copy-Item $from $to
-    }
-
     $dropbox = "D:\Dropbox"
 
     $autoHotkeyGit = "Git\AutoHotkey.git"
     $windowsPowerShellGit = "Git\WindowsPowerShell.git"
     $packages = "Packages"
-    $packagesPs1 = "Windows\packages.ps1"
 
     Mirror (Join-Path $dropbox $autoHotkeyGit) (Join-Path $To $autoHotkeyGit)
     Mirror (Join-Path $dropbox $windowsPowerShellGit) (Join-Path $To $windowsPowerShellGit)
     Mirror (Join-Path $dropbox $packages) (Join-Path $To $packages)
-    CreateCopy (Join-Path $dropbox $packagesPs1) (Join-Path $To $packagesPs1)
 }
 
