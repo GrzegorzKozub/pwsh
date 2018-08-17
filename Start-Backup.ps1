@@ -5,7 +5,10 @@ function Start-Backup {
         [Parameter(Position = 0)]
         [ValidateNotNullOrEmpty()]
         [string[]]
-        $Sources = @("D:\Dropbox", "D:\Images", "D:\Software", "D:\VM"),
+        $Sources = @(
+            "D:\Dropbox", "D:\Images", "D:\Software", "D:\VM",
+            "D:\Apps\Steam", "D:\Users\Greg\AppData\Local\Steam"
+        ),
 
         [Parameter(Position = 1)]
         [ValidateNotNullOrEmpty()]
