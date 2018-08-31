@@ -7,7 +7,7 @@ function Start-Backup {
         [string[]]
         $Sources = @(
             "D:\Dropbox", "D:\Images", "D:\Software", "D:\VM",
-            "D:\Apps\Steam", "D:\Users\Greg\AppData\Local\Steam"
+            "D:\Apps\Steam", "D:\Users\$env:USERNAME\AppData\Local\Steam"
         ),
 
         [Parameter(Position = 1)]
