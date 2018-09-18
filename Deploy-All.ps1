@@ -60,7 +60,6 @@
              "Go",
              "IrfanView",
              "KeePass",
-             "MaxxAudioPro",
              "MinGW",
              "MSYS2",
              "Node.js",
@@ -75,6 +74,14 @@
              "Vim",
              "Visual Studio Code",
              "Yarn"
+
+    if ($env:COMPUTERNAME -eq "Drifter") {
+        $other = $other + "MaxxAudioPro"
+    }
+
+    if ($env:COMPUTERNAME -eq "Turing") {
+        $other = $other + "NVIDIA Inspector" + "MSI Afterburner" + "Steam"
+    }
 
     function DeployApps ($apps) {
         foreach ($app in $apps) {
