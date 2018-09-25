@@ -80,7 +80,7 @@
     }
 
     if ($env:COMPUTERNAME -eq "Turing") {
-        $other = $other + "NVIDIA Inspector" + "MSI Afterburner" + "Steam"
+        $other = $other + "NVIDIA Inspector" + "MSI Afterburner"
     }
 
     function DeployApps ($apps) {
