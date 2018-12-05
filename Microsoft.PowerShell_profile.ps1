@@ -8,6 +8,8 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
     }
 }
 
+. _rg.ps1
+
 Get-ChildItem `
     (Split-Path $PROFILE) `
     -Filter "*-*.ps1" |
@@ -110,3 +112,4 @@ function Prompt {
 
     return " "
 }
+
