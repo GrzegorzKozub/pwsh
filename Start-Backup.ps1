@@ -92,7 +92,7 @@ function Start-Backup {
     function Mirror ($map) {
         $robocopy = Start-Process `
             -FilePath "robocopy.exe" `
-            -ArgumentList "$($map.from)", "$($map.to)", "/MIR", "/R:3", "/W:5", "/NOOFFLOAD", "/J", "/NP", "/NDL", "/UNILOG:$($map.log)" `
+            -ArgumentList """$($map.from)""", """$($map.to)""", "/MIR", "/R:3", "/W:5", "/NOOFFLOAD", "/J", "/NP", "/NDL", "/UNILOG:""$($map.log)""" `
             -WindowStyle Hidden `
             -PassThru `
             -Wait
