@@ -115,3 +115,14 @@ function DeployItems ($switches, $globals, $from, $to, $replace, $createLinks) {
         }
     }
 }
+
+function BumpVersion ($json) {
+    if (Test-Path $json) {
+        $meta = Get-Content $json | ConvertFrom-Json
+        $meta.version++
+    } else {
+        $meta = @{ version = 1 }
+    }
+    $meta | ConvertTo-Json > $json
+}
+

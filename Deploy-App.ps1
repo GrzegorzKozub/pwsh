@@ -242,6 +242,7 @@ function Deploy-App {
         if ($switches.remove) { RemovePackage }
 
         if ($switches.pack) {
+            BumpVersion (Join-Path $globals.package "package.json")
             $packageZip = "$($globals.package).zip"
             Remove $packageZip
             Zip $globals.package $packageZip
