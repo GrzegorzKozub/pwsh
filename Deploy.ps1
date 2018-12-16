@@ -126,3 +126,24 @@ function BumpVersion ($json) {
     $meta | ConvertTo-Json > $json
 }
 
+function GetDeployedVersion ($json) {
+    if (Test-Path $json) {
+        $meta = Get-Content $json | ConvertFrom-Json
+    } else {
+        $meta = @{ version = 1 }
+    }
+    return $meta.version
+}
+
+function GetPackageVersion ($zip) {
+    if (Test7z) {
+        $meta = 7z e -so $zip "$((Get-Item $zip).BaseName)\package.json" | ConvertFrom-Json
+        if ($meta -ne $null) {
+            return $meta.version
+        } else {
+            return 1
+        }
+    }
+    return 1
+}
+

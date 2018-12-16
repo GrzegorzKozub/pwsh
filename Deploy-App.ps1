@@ -122,18 +122,20 @@ function Deploy-App {
         }
 
         $globals.package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($globals.zip))
+        $globals.json = Join-Path $globals.package "package.json"
 
         $sourceDeployPs1 = ". $(Join-Path (Split-Path $PROFILE) 'Deploy.ps1')"
         Invoke-Expression $sourceDeployPs1
 
         if ($switches.remove) {
-            Write-Host "Removing $($globals.zip)" -ForegroundColor Red
+            Write-Host "Removing $($globals.zip) version $(GetDeployedVersion $globals.json)" -ForegroundColor Red
             $customizations = "remove"
         } elseif ($switches.pack) {
-            Write-Host "Packing $($globals.zip)" -ForegroundColor Blue
+            BumpVersion $globals.json
+            Write-Host "Packing $($globals.zip) version $(GetDeployedVersion $globals.json) over $(GetPackageVersion $globals.zip)" -ForegroundColor Blue
             $customizations = "pack"
         } else {
-            Write-Host "Installing $($globals.zip)" -ForegroundColor Green
+            Write-Host "Installing $($globals.zip) version $(GetPackageVersion $globals.zip) over $(GetDeployedVersion $globals.json)" -ForegroundColor Green
             $customizations = "install"
         }
 
@@ -242,7 +244,6 @@ function Deploy-App {
         if ($switches.remove) { RemovePackage }
 
         if ($switches.pack) {
-            BumpVersion (Join-Path $globals.package "package.json")
             $packageZip = "$($globals.package).zip"
             Remove $packageZip
             Zip $globals.package $packageZip
