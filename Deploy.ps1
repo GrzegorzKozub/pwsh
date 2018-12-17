@@ -137,7 +137,7 @@ function GetDeployedVersion ($json) {
 
 function GetPackageVersion ($zip) {
     if (Test7z) {
-        $meta = 7z e -so $zip "$((Get-Item $zip).BaseName)\package.json" | ConvertFrom-Json
+        $meta = 7z e -so $zip "$((Get-Item $zip).BaseName)\meta.json" | ConvertFrom-Json
         if ($meta -ne $null) {
             return $meta.version
         } else {
