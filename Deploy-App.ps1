@@ -111,6 +111,7 @@ function Deploy-App {
             programdata = Join-Path $globals.target $home.TrimEnd($env:USERNAME).TrimStart($globals.systemDrive) | Join-Path -ChildPath "All Users"
             home = Join-Path $globals.target $home.TrimStart($globals.systemDrive)
             documents = Join-Path $globals.target $home.TrimStart($globals.systemDrive) | Join-Path -ChildPath "Documents"
+            savedgames = Join-Path $globals.target $home.TrimStart($globals.systemDrive) | Join-Path -ChildPath "Saved Games"
             local = Join-Path $globals.target $env:LOCALAPPDATA.TrimStart($globals.systemDrive)
             roaming = Join-Path $globals.target $env:APPDATA.TrimStart($globals.systemDrive)
         }
@@ -188,6 +189,7 @@ function Deploy-App {
         DeployCategory "programdata" $d.programdata
         DeployCategory "home" $d.home
         DeployCategory "documents" $d.documents
+        DeployCategory "savedgames" $d.savedgames
         DeployCategory "local" $d.local
         DeployCategory "roaming" $d.roaming
 
