@@ -1,3 +1,7 @@
+$config = @{
+    meta = "meta.json"
+}
+
 function Log ($action, $path) {
     Write-Host ("{0,-7}" -f $action) -NoNewLine
     Write-Host $path -ForegroundColor DarkCyan
@@ -137,7 +141,7 @@ function GetDeployedVersion ($json) {
 
 function GetPackageVersion ($zip) {
     if (Test7z) {
-        $meta = 7z e -so $zip "$((Get-Item $zip).BaseName)\meta.json" | ConvertFrom-Json
+        $meta = 7z e -so $zip "$((Get-Item $zip).BaseName)\$($config.meta)" | ConvertFrom-Json
         if ($meta -ne $null) {
             return $meta.version
         } else {
