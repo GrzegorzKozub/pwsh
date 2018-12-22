@@ -24,21 +24,25 @@
 
         [Parameter(Position = 5)]
         [switch]
-        $Remove,
+        $Update,
 
         [Parameter(Position = 6)]
         [switch]
-        $Pack,
+        $Remove,
 
         [Parameter(Position = 7)]
         [switch]
-        $Parallel,
+        $Pack,
 
         [Parameter(Position = 8)]
+        [switch]
+        $Parallel,
+
+        [Parameter(Position = 9)]
         [string]
         $Source,
 
-        [Parameter(Position = 9)]
+        [Parameter(Position = 10)]
         [string]
         $Target
     )
@@ -82,7 +86,7 @@
 
     function DeployApps ($apps) {
         foreach ($app in $apps) {
-            Deploy-App -App $app -SkipUnzip: $SkipUnzip -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Remove: $Remove -Pack: $Pack -Parallel: $Parallel -Source: $Source -Target: $Target
+            Deploy-App -App $app -SkipUnzip: $SkipUnzip -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg -Update: $Update -Remove: $Remove -Pack: $Pack -Parallel: $Parallel -Source: $Source -Target: $Target
         }
     }
 

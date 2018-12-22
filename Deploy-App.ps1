@@ -27,21 +27,25 @@ function Deploy-App {
 
         [Parameter(Position = 5, ValueFromRemainingArguments = $true)]
         [switch]
-        $Remove = $false,
+        $Update = $false,
 
         [Parameter(Position = 6, ValueFromRemainingArguments = $true)]
         [switch]
-        $Pack = $false,
+        $Remove = $false,
 
         [Parameter(Position = 7, ValueFromRemainingArguments = $true)]
         [switch]
-        $Parallel = $false,
+        $Pack = $false,
 
         [Parameter(Position = 8, ValueFromRemainingArguments = $true)]
+        [switch]
+        $Parallel = $false,
+
+        [Parameter(Position = 9, ValueFromRemainingArguments = $true)]
         [string]
         $Source,
 
-        [Parameter(Position = 9, ValueFromRemainingArguments = $true)]
+        [Parameter(Position = 10, ValueFromRemainingArguments = $true)]
         [string]
         $Target
     )
@@ -82,13 +86,16 @@ function Deploy-App {
             skipD = $SkipD
             skipPs1 = $SkipPs1
             skipReg = $SkipReg
+            update = $Update
             remove = $Remove
             pack = $Pack
             parallel = $Parallel
         }
 
-        if ($switches.remove -and $switches.pack) {
-            Write-Error "Can either remove or pack"
+        if (($switches.update -and $switches.pack) -or `
+            ($switches.remove -and $switches.pack) -or `
+            ($switches.remove -and $switches.update)) {
+            Write-Error "Can either update, remove or pack"
             return
         }
 
@@ -128,15 +135,25 @@ function Deploy-App {
         $sourceDeployPs1 = ". $(Join-Path (Split-Path $PROFILE) 'Deploy.ps1')"
         Invoke-Expression $sourceDeployPs1
 
-        if ($switches.remove) {
-            Write-Host "Removing $($globals.zip) version $(GetDeployedVersion $globals.json)" -ForegroundColor Red
+        $packageVersion = GetPackageVersion $globals.zip
+        $deployedVersion = GetDeployedVersion $globals.json
+
+        if ($switches.update) {
+            if ($deployedVersion -ge $packageVersion) {
+                Write-Host "Skipping $($globals.zip) version $packageVersion since $deployedVersion is installed" -ForegroundColor Yellow
+                return
+            }
+            Write-Host "Updating $($globals.zip) version $deployedVersion to $packageVersion" -ForegroundColor Green
+        } elseif ($switches.remove) {
+            Write-Host "Removing $($globals.zip) version $deployedVersion" -ForegroundColor Red
             $customizations = "remove"
         } elseif ($switches.pack) {
             BumpVersion $globals.json
-            Write-Host "Packing $($globals.zip) version $(GetDeployedVersion $globals.json) over $(GetPackageVersion $globals.zip)" -ForegroundColor Blue
+            $deployedVersion = GetDeployedVersion $globals.json
+            Write-Host "Packing $($globals.zip) version $deployedVersion over $packageVersion" -ForegroundColor Blue
             $customizations = "pack"
         } else {
-            Write-Host "Installing $($globals.zip) version $(GetPackageVersion $globals.zip) over $(GetDeployedVersion $globals.json)" -ForegroundColor Green
+            Write-Host "Installing $($globals.zip) version $packageVersion over $deployedVersion" -ForegroundColor Green
             $customizations = "install"
         }
 
