@@ -31,22 +31,26 @@ if ($Host.PrivateData -ne $null) {
     $Host.PrivateData.WarningForegroundColor = "DarkYellow"
 }
 
-Set-PSReadlineOption `
-    -ContinuationPromptForegroundColor DarkGray `
-    -EmphasisForegroundColor Yellow `
-    -ErrorForegroundColor DarkRed
+if ($Host.Version.Major -ge 6) {
+    
+} else {
+    Set-PSReadlineOption `
+        -ContinuationPromptForegroundColor DarkGray `
+        -EmphasisForegroundColor Yellow `
+        -ErrorForegroundColor DarkRed
 
-Set-PSReadlineOption -TokenKind Command -ForegroundColor DarkYellow
-Set-PSReadlineOption -TokenKind Comment -ForegroundColor DarkGray
-Set-PSReadlineOption -TokenKind Keyword -ForegroundColor DarkBlue
-Set-PSReadlineOption -TokenKind Member -ForegroundColor Gray
-Set-PSReadlineOption -TokenKind None -ForegroundColor Gray
-Set-PSReadlineOption -TokenKind Number -ForegroundColor White
-Set-PSReadlineOption -TokenKind Operator -ForegroundColor DarkCyan
-Set-PSReadlineOption -TokenKind Parameter -ForegroundColor DarkGray
-Set-PSReadlineOption -TokenKind String -ForegroundColor DarkGreen
-Set-PSReadlineOption -TokenKind Type -ForegroundColor Blue
-Set-PSReadlineOption -TokenKind Variable -ForegroundColor DarkMagenta
+    Set-PSReadlineOption -TokenKind Command -ForegroundColor DarkYellow
+    Set-PSReadlineOption -TokenKind Comment -ForegroundColor DarkGray
+    Set-PSReadlineOption -TokenKind Keyword -ForegroundColor DarkBlue
+    Set-PSReadlineOption -TokenKind Member -ForegroundColor Gray
+    Set-PSReadlineOption -TokenKind None -ForegroundColor Gray
+    Set-PSReadlineOption -TokenKind Number -ForegroundColor White
+    Set-PSReadlineOption -TokenKind Operator -ForegroundColor DarkCyan
+    Set-PSReadlineOption -TokenKind Parameter -ForegroundColor DarkGray
+    Set-PSReadlineOption -TokenKind String -ForegroundColor DarkGreen
+    Set-PSReadlineOption -TokenKind Type -ForegroundColor Blue
+    Set-PSReadlineOption -TokenKind Variable -ForegroundColor DarkMagenta
+}
 
 $GitPromptSettings.AfterForegroundColor = $separatorColor
 $GitPromptSettings.AfterText = ""
