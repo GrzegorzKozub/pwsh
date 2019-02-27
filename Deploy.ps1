@@ -141,7 +141,9 @@ function GetDeployedVersion ($json) {
 
 function GetPackageVersion ($zip) {
     if (Test7z) {
-        $meta = 7z e -so $zip "$((Get-Item $zip).BaseName)\$($config.meta)" | ConvertFrom-Json
+        7z e $zip "$((Get-Item $zip).BaseName)\$($config.meta)" -o"$env:TEMP" -aoa | Out-Null
+        $meta = Get-Content "$env:TEMP\$($config.meta)" | ConvertFrom-Json
+        Remove-Item -Path "$env:TEMP\$($config.meta)"
         if ($meta -ne $null) {
             return $meta.version
         } else {
