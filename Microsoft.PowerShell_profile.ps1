@@ -31,6 +31,8 @@ if ($Host.PrivateData -ne $null) {
     $Host.PrivateData.WarningForegroundColor = "DarkYellow"
 }
 
+Set-PSReadlineOption -BellStyle None
+
 if ($Host.Version.Major -ge 6) {
     Set-PSReadLineOption -Colors @{
         "Command" = "DarkYellow"
