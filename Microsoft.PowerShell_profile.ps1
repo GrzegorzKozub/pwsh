@@ -133,3 +133,9 @@ function Prompt {
     return " "
 }
 
+if ($Host.Version.Major -ge 6 -and $env:ConEmuPID) {
+    # First Write-Host call with -ForegroundColor param permanently sets $host.UI.RawUI.ForegroundColor
+    Write-Host ""
+    Clear-Host
+}
+
