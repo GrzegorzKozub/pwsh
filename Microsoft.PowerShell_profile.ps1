@@ -88,8 +88,8 @@ $GitPromptSettings.IndexForegroundColor = "DarkGreen"
 $GitPromptSettings.LocalStagedStatusSymbol = ""
 $GitPromptSettings.LocalWorkingStatusSymbol = ""
 
-Clear-Variable backgroundColor
-Clear-Variable separatorColor
+Remove-Variable backgroundColor
+Remove-Variable separatorColor
 
 $prompt = @{
     User = $env:USERNAME.ToLower()
