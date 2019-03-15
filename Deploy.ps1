@@ -130,7 +130,7 @@ function BumpVersion ($json) {
     $meta | ConvertTo-Json > $json
 }
 
-function GetDeployedVersion ($json) {
+function GetVersion ($json) {
     if (Test-Path $json) {
         $meta = Get-Content $json | ConvertFrom-Json
     } else {
@@ -140,16 +140,11 @@ function GetDeployedVersion ($json) {
 }
 
 function GetPackageVersion ($zip) {
-    if (Test7z) {
-        7z e $zip "$((Get-Item $zip).BaseName)\$($config.meta)" -o"$env:TEMP" -aoa | Out-Null
-        $meta = Get-Content "$env:TEMP\$($config.meta)" | ConvertFrom-Json
-        Remove-Item -Path "$env:TEMP\$($config.meta)"
-        if ($meta -ne $null) {
-            return $meta.version
-        } else {
-            return 1
-        }
-    }
-    return 1
+    if (!(Test7z)) { return 1 }
+    7z e $zip "$((Get-Item $zip).BaseName)\$($config.meta)" -o"$env:TEMP" -aoa | Out-Null
+    $meta = "$env:TEMP\$($config.meta)"
+    $version = GetVersion $meta
+    Remove-Item -Path $meta -ErrorAction SilentlyContinue
+    return $version
 }
 

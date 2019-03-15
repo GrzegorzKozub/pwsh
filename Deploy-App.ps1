@@ -137,7 +137,7 @@ function Deploy-App {
         $globals.json = Join-Path $globals.package $config.meta
 
         $packageVersion = GetPackageVersion $globals.zip
-        $deployedVersion = GetDeployedVersion $globals.json
+        $deployedVersion = GetVersion $globals.json
 
         if ($switches.update) {
             if ($deployedVersion -ge $packageVersion) {
@@ -150,7 +150,7 @@ function Deploy-App {
             $customizations = "remove"
         } elseif ($switches.pack) {
             BumpVersion $globals.json
-            $deployedVersion = GetDeployedVersion $globals.json
+            $deployedVersion = GetVersion $globals.json
             Write-Host "Packing $($globals.zip) version $deployedVersion over $packageVersion" -ForegroundColor Blue
             $customizations = "pack"
         } else {
