@@ -141,7 +141,7 @@ function Deploy-App {
 
         if ($switches.update) {
             if ($deployedVersion -ge $packageVersion) {
-                Write-Host "Skipping $($globals.zip) version $packageVersion since $deployedVersion is deployed" -ForegroundColor Yellow
+                Write-Host "Skipping $($globals.zip) version $packageVersion since $deployedVersion is added" -ForegroundColor Yellow
                 return
             }
             Write-Host "Updating $($globals.zip) version $deployedVersion to $packageVersion" -ForegroundColor Green
@@ -154,8 +154,8 @@ function Deploy-App {
             Write-Host "Packing $($globals.zip) version $deployedVersion over $packageVersion" -ForegroundColor Blue
             $customizations = "pack"
         } else {
-            Write-Host "Deploying $($globals.zip) version $packageVersion over $deployedVersion" -ForegroundColor Green
-            $customizations = "deploy"
+            Write-Host "Adding $($globals.zip) version $packageVersion over $deployedVersion" -ForegroundColor Green
+            $customizations = "add"
         }
 
         function RemovePackage {
