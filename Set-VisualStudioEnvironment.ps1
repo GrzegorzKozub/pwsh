@@ -4,7 +4,7 @@ function Set-VisualStudioEnvironment {
         return
     }
 
-    $vsPath = Join-Path ${Env:ProgramFiles(x86)} "Microsoft Visual Studio\2017"
+    $vsPath = Join-Path ${Env:ProgramFiles(x86)} "Microsoft Visual Studio\2019"
 
     if (!(Test-Path $vsPath)) {
         Write-Error "Visual Studio not found"
