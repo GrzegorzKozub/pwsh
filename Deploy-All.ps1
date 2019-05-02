@@ -70,6 +70,7 @@
              "MSYS2",
              "Node.js",
              "Perl",
+             "PostgreSQL",
              "PowerShell",
              "Python",
              "Ruby",
