@@ -50,7 +50,8 @@ function Init-MsSqlContainer {
         --name "$($ContainerName)"`
         -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$($SaPassword)" `
         -p "$($HostPort):1433" `
-        -d "microsoft/mssql-server-linux:$($ImageTag)" | Out-Null
+        -d `
+        "microsoft/mssql-server-linux:$($ImageTag)" | Out-Null
 
     if ($RestoreBackup -and $RestoreAs) {
         $backupDir = "/var/opt/mssql/backup"
