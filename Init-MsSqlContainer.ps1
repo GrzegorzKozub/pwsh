@@ -31,20 +31,8 @@ function Init-MsSqlContainer {
         $Force
     )
 
-    function GetId {
-        return docker ps -a --filter "name = $($ContainerName)" --format "{{.ID}}"
-    }
-
-    $containerId = GetId
-
-    if ($containerId) {
-        if (!$Force) {
-            Write-Error "Container $($ContainerName) already exists with ID $($containerId)"
-            return
-        }
-        docker stop $containerId | Out-Null
-        docker rm $containerId | Out-Null
-    }
+    Invoke-Expression ". $(Join-Path (Split-Path $PROFILE) 'Docker.ps1')"
+    HandleExistingContainer $ContainerName $Force   
 
     docker run `
         --name "$($ContainerName)"`
@@ -74,7 +62,7 @@ function Init-MsSqlContainer {
             -S localhost -U sa -P $SaPassword -Q $sql | Out-Null
     }
 
-    return GetId
+    return GetContainerId $ContainerName
 }
 
 Set-Alias mssql Init-MsSqlContainer

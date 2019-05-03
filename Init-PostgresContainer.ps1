@@ -30,20 +30,9 @@ function Init-PostgresContainer {
         $Force
     )
 
-    function GetId {
-        return docker ps -a --filter "name = $($ContainerName)" --format "{{.ID}}"
-    }
+    Invoke-Expression ". $(Join-Path (Split-Path $PROFILE) 'Docker.ps1')"
 
-    $containerId = GetId
-
-    if ($containerId) {
-        if (!$Force) {
-            Write-Error "Container $($ContainerName) already exists with ID $($containerId)"
-            return
-        }
-        docker stop $containerId | Out-Null
-        docker rm $containerId | Out-Null
-    }
+    HandleExistingContainer $ContainerName $Force   
 
     docker run `
         --name "$($ContainerName)"`
@@ -52,7 +41,7 @@ function Init-PostgresContainer {
         -d `
         "postgres:$($ImageTag)" | Out-Null
 
-    return GetId
+    return GetContainerId $ContainerName
 }
 
 Set-Alias postgres Init-PostgresContainer
