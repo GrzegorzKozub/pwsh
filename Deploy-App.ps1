@@ -133,7 +133,7 @@ function Deploy-App {
         }
 
         $globals.package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($globals.zip))
-        $globals.json = Join-Path $globals.package GetMetaFileName
+        $globals.json = Join-Path $globals.package (GetMetaFileName)
 
         $packageVersion = GetPackageVersion $globals.zip
         $deployedVersion = GetVersion $globals.json
