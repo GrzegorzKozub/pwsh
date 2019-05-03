@@ -1,3 +1,5 @@
+Import-Module Docker
+
 function Init-MsSqlContainer {
     [CmdletBinding()]
 
@@ -22,7 +24,6 @@ function Init-MsSqlContainer {
         $Force
     )
 
-    Invoke-Expression ". $(Join-Path (Split-Path $PROFILE) 'Docker.ps1')"
     HandleExistingContainer $ContainerName $Force   
 
     docker run `

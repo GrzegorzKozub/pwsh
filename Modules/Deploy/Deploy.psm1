@@ -1,5 +1,5 @@
-$config = @{
-    meta = "meta.json"
+function GetMetaFileName {
+    return "meta.json"
 }
 
 function Log ($action, $path) {
@@ -141,8 +141,8 @@ function GetVersion ($json) {
 
 function GetPackageVersion ($zip) {
     if (!(Test7z)) { return 1 }
-    7z e $zip "$((Get-Item $zip).BaseName)\$($config.meta)" -o"$env:TEMP" -aoa | Out-Null
-    $meta = "$env:TEMP\$($config.meta)"
+    7z e $zip "$((Get-Item $zip).BaseName)\$(GetMetaFileName)" -o"$env:TEMP" -aoa | Out-Null
+    $meta = "$env:TEMP\$(GetMetaFileName)"
     $version = GetVersion $meta
     Remove-Item -Path $meta -ErrorAction SilentlyContinue
     return $version

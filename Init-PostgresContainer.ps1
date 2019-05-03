@@ -1,3 +1,5 @@
+Import-Module Docker
+
 function Init-PostgresContainer {
     [CmdletBinding()]
 
@@ -30,7 +32,6 @@ function Init-PostgresContainer {
         $Force
     )
 
-    Invoke-Expression ". $(Join-Path (Split-Path $PROFILE) 'Docker.ps1')"
     HandleExistingContainer $ContainerName $Force   
 
     docker run `

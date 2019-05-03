@@ -1,6 +1,8 @@
 ﻿using namespace System.Collections.ObjectModel
 using namespace System.Management.Automation
 
+Import-Module Deploy
+
 function Deploy-App {
     [CmdletBinding()]
 
@@ -106,9 +108,6 @@ function Deploy-App {
 
         $time = [Diagnostics.Stopwatch]::StartNew()
 
-        $sourceDeployPs1 = ". $(Join-Path (Split-Path $PROFILE) 'Deploy.ps1')"
-        Invoke-Expression $sourceDeployPs1
-
         $globals = @{
             zip = Join-Path $zipDir "$($PSBoundParameters.App).zip"
             target = if ($Target) { $Target } else { "D:" }
@@ -134,7 +133,7 @@ function Deploy-App {
         }
 
         $globals.package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($globals.zip))
-        $globals.json = Join-Path $globals.package $config.meta
+        $globals.json = Join-Path $globals.package GetMetaFileName
 
         $packageVersion = GetPackageVersion $globals.zip
         $deployedVersion = GetVersion $globals.json
