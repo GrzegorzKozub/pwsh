@@ -26,11 +26,11 @@ function Init-MsSqlContainer {
     HandleExistingContainer $ContainerName $Force   
 
     docker run `
-        --name "$($ContainerName)"`
-        -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$($SaPassword)" `
+        --name "$ContainerName"`
+        -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$SaPassword" `
         -p "$($HostPort):1433" `
         -d `
-        "microsoft/mssql-server-linux:$($ImageTag)" | Out-Null
+        "microsoft/mssql-server-linux:$ImageTag" | Out-Null
 
     return GetContainerId $ContainerName
 }

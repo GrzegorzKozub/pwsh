@@ -31,15 +31,14 @@ function Init-PostgresContainer {
     )
 
     Invoke-Expression ". $(Join-Path (Split-Path $PROFILE) 'Docker.ps1')"
-
     HandleExistingContainer $ContainerName $Force   
 
     docker run `
-        --name "$($ContainerName)"`
-        -e "POSTGRES_DB=$($Database)" -e "POSTGRES_USER=$($User)" -e "POSTGRES_PASSWORD=$($Password)" `
+        --name "$ContainerName"`
+        -e "POSTGRES_DB=$Database" -e "POSTGRES_USER=$User" -e "POSTGRES_PASSWORD=$Password" `
         -p "$($HostPort):5432" `
         -d `
-        "postgres:$($ImageTag)" | Out-Null
+        "postgres:$ImageTag" | Out-Null
 
     return GetContainerId $ContainerName
 }
