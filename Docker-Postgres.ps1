@@ -1,6 +1,6 @@
 Import-Module Docker
 
-function Init-PostgresContainer {
+function Docker-PostgresContainer {
     [CmdletBinding()]
 
     param (
@@ -44,5 +44,5 @@ function Init-PostgresContainer {
     return GetContainerId $ContainerName
 }
 
-Set-Alias postgres Init-PostgresContainer
+Set-Alias postgres Docker-PostgresContainer
 

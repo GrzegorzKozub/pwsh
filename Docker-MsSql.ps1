@@ -1,6 +1,6 @@
 Import-Module Docker
 
-function Init-MsSqlContainer {
+function Docker-MsSqlContainer {
     [CmdletBinding()]
 
     param (
@@ -36,5 +36,5 @@ function Init-MsSqlContainer {
     return GetContainerId $ContainerName
 }
 
-Set-Alias mssql Init-MsSqlContainer
+Set-Alias mssql Docker-MsSqlContainer
 
