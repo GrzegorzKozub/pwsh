@@ -62,6 +62,7 @@
              "dotnet",
              "Dropbox",
              "Elixir",
+             "ElixirLS",
              "Erlang",
              "Go",
              "IrfanView",
