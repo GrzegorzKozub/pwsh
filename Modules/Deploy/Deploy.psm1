@@ -112,7 +112,7 @@ function DeployItems ($switches, $globals, $from, $to, $replace, $createLinks) {
         if (!$switches.skipC -and !$switches.pack -and $createLinks) {
             $link = Join-Path $globals.systemDrive $itemTo.TrimStart($globals.target)
             Remove $link
-            if (!$Remove) {
+            if (!$switches.remove) {
                 CreateDir (Join-Path $globals.systemDrive $to.TrimStart($globals.target))
                 CreateLink $link $itemTo $isDir
             }
