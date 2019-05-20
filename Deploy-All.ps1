@@ -77,6 +77,7 @@
              "SumatraPDF",
              "Total Commander",
              "Vim",
+             "NeoVim",
              "Visual Studio Code",
              "Yarn"
 
