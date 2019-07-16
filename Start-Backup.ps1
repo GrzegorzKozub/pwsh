@@ -6,7 +6,7 @@ function Start-Backup {
         [ValidateNotNullOrEmpty()]
         [string[]]
         $Sources = @(
-            "D:\Dropbox", "D:\Images", "D:\Software", "D:\VM",
+            "D:\Docker", "D:\Dropbox", "D:\Images", "D:\Software",
             "D:\Apps\Steam", "D:\Users\$env:USERNAME\AppData\Local\Steam",
             "D:\Apps\Uplay", "D:\Users\$env:USERNAME\AppData\Local\Ubisoft Game Launcher"
         ),
