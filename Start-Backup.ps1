@@ -7,6 +7,7 @@ function Start-Backup {
         [string[]]
         $Sources = @(
             "D:\Docker", "D:\Dropbox", "D:\Images", "D:\Software",
+            "D:\Apps\Epic Games", "D:\Users\$env:USERNAME\AppData\Local\EpicGamesLauncher", "D:\Users\$env:USERNAME\AppData\Local\UnrealEngineLauncher", "D:\Users\All Users\Epic",
             "D:\Apps\Steam", "D:\Users\$env:USERNAME\AppData\Local\Steam",
             "D:\Apps\Uplay", "D:\Users\$env:USERNAME\AppData\Local\Ubisoft Game Launcher"
         ),
