@@ -1,4 +1,6 @@
-﻿function Deploy-All {
+﻿# Does not deploy Windows, Chrome and Visual Studio
+
+function Deploy-All {
     [CmdletBinding()]
 
     param (
