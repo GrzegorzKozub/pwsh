@@ -36,39 +36,21 @@ if ($Host.PrivateData -ne $null) {
 
 Set-PSReadlineOption -BellStyle None
 
-if ($Host.Version.Major -ge 6) {
-    Set-PSReadLineOption -Colors @{
-        "Command" = "DarkYellow"
-        "Comment" = "DarkGray"
-        "ContinuationPrompt" = "DarkGray"
-        "Emphasis" = "Yellow"
-        "Error" = "DarkRed"
-        "Keyword" = "DarkBlue"
-        "Member" = "DarkBlue"
-        "None" = "Gray"
-        "Number" = "White"
-        "Operator" = "DarkCyan"
-        "Parameter" = "DarkGray"
-        "String" = "DarkGreen"
-        "Type" = "Blue"
-        "Variabe" = "DarkMagenta"
-    }
-} else {
-    Set-PSReadlineOption `
-        -ContinuationPromptForegroundColor DarkGray `
-        -EmphasisForegroundColor Yellow `
-        -ErrorForegroundColor DarkRed
-    Set-PSReadlineOption -TokenKind Command -ForegroundColor DarkYellow
-    Set-PSReadlineOption -TokenKind Comment -ForegroundColor DarkGray
-    Set-PSReadlineOption -TokenKind Keyword -ForegroundColor DarkBlue
-    Set-PSReadlineOption -TokenKind Member -ForegroundColor Gray
-    Set-PSReadlineOption -TokenKind None -ForegroundColor Gray
-    Set-PSReadlineOption -TokenKind Number -ForegroundColor White
-    Set-PSReadlineOption -TokenKind Operator -ForegroundColor DarkCyan
-    Set-PSReadlineOption -TokenKind Parameter -ForegroundColor DarkGray
-    Set-PSReadlineOption -TokenKind String -ForegroundColor DarkGreen
-    Set-PSReadlineOption -TokenKind Type -ForegroundColor Blue
-    Set-PSReadlineOption -TokenKind Variable -ForegroundColor DarkMagenta
+Set-PSReadLineOption -Colors @{
+    "Command" = "DarkYellow"
+    "Comment" = "DarkGray"
+    "ContinuationPrompt" = "DarkGray"
+    "Emphasis" = "Yellow"
+    "Error" = "DarkRed"
+    "Keyword" = "DarkBlue"
+    "Member" = "DarkBlue"
+    "None" = "Gray"
+    "Number" = "White"
+    "Operator" = "DarkCyan"
+    "Parameter" = "DarkGray"
+    "String" = "DarkGreen"
+    "Type" = "Blue"
+    "Variabe" = "DarkMagenta"
 }
 
 $GitPromptSettings.AfterForegroundColor = $separatorColor
