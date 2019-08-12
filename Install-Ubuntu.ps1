@@ -8,5 +8,3 @@ function Install-Ubuntu {
   Pop-Location
 }
 
-Set-Alias ubuntu Install-Ubuntu
-
