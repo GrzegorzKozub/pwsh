@@ -65,6 +65,7 @@ function Deploy-All {
              "Elixir",
              "Erlang",
              "Go",
+             "ImageMagick",
              "IrfanView",
              "JPEGView",
              "KeePass",
