@@ -8,6 +8,7 @@ function Start-Backup {
         $Sources = @(
             "D:\Docker", "D:\Dropbox", "D:\Images", "D:\Software",
             "D:\Apps\Epic Games", "D:\Users\$env:USERNAME\AppData\Local\EpicGamesLauncher", "D:\Users\$env:USERNAME\AppData\Local\UnrealEngineLauncher", "D:\Users\All Users\Epic",
+            "D:\Apps\Origin", "D:\Users\$env:USERNAME\AppData\Local\Origin", "D:\Users\$env:USERNAME\AppData\Roaming\Origin", "D:\Users\All Users\Origin",
             "D:\Apps\Steam", "D:\Users\$env:USERNAME\AppData\Local\Steam",
             "D:\Apps\Uplay", "D:\Users\$env:USERNAME\AppData\Local\Ubisoft Game Launcher"
         ),
