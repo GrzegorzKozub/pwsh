@@ -35,8 +35,8 @@ if ($Host.PrivateData -ne $null) {
     $Host.PrivateData.WarningForegroundColor = "DarkYellow"
 }
 
+Set-PSReadLineOption -EditMode Vi -ViModeIndicator Cursor
 Set-PSReadlineOption -BellStyle None
-
 Set-PSReadLineOption -Colors @{
     "Command" = "DarkYellow"
     "Comment" = "DarkGray"
