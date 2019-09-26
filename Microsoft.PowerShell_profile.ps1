@@ -36,6 +36,17 @@ if ($Host.PrivateData -ne $null) {
 }
 
 Set-PSReadLineOption -EditMode Vi -ViModeIndicator Cursor
+Set-PSReadLineKeyHandler -Chord Ctrl+Shift+E -ViMode Command -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::Copy()
+    $temp = (New-TemporaryFile).FullName
+    Get-ClipboardText > $temp
+    gvim $temp | Out-Null
+    Get-Content -Path $temp | Set-ClipboardText
+    [Microsoft.PowerShell.PSConsoleReadLine]::DeleteLine()
+    [Microsoft.PowerShell.PSConsoleReadLine]::Paste()
+    Remove-Item -Path $temp -ErrorAction SilentlyContinue
+}
+
 Set-PSReadlineOption -BellStyle None
 Set-PSReadLineOption -Colors @{
     "Command" = "DarkYellow"
