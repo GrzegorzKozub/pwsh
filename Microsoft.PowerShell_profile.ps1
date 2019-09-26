@@ -1,4 +1,5 @@
-﻿Import-Module posh-git
+﻿Import-Module ClipboardText
+Import-Module posh-git
 Import-Module posh-docker
 
 Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
