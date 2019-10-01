@@ -35,8 +35,7 @@ if ($Host.PrivateData -ne $null) {
     $Host.PrivateData.WarningForegroundColor = "DarkYellow"
 }
 
-Set-PSReadLineOption -EditMode Vi -ViModeIndicator Cursor
-Set-PSReadLineKeyHandler -Chord Ctrl+Shift+E -ViMode Command -ScriptBlock {
+Set-PSReadLineKeyHandler -Chord Ctrl+Shift+E -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::Copy()
     $temp = (New-TemporaryFile).FullName
     Get-ClipboardText > $temp
