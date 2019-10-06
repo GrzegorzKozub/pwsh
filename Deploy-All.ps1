@@ -72,6 +72,7 @@ function Deploy-All {
              "MinGW",
              "MSYS2",
              "Node.js",
+             "OpenSSH",
              "Perl",
              "PostgreSQL",
              "PowerShell",
