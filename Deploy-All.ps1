@@ -83,8 +83,7 @@ function Deploy-All {
              "Vim",
              "NeoVim",
              "Visual Studio Code",
-             "WSLtty",
-             "Yarn"
+             "WSLtty"
 
     if ($env:COMPUTERNAME -eq "Drifter") {
         $other = $other + "MaxxAudioPro"
