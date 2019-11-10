@@ -48,7 +48,7 @@
             OPTIMIZE=MAXSPEED STATIC_STDCPLUS=yes `
             FEATURES=HUGE CSCOPE=yes GIME=yes IME=yes MBYTE=yes NETBEANS=no `
             GUI=$gui OLE=$gui DIRECTX=$gui `
-            PYTHON3=d:/Apps/Python DYNAMIC_PYTHON3=yes PYTHON3_VER=35 `
+            PYTHON3=d:/Apps/Python DYNAMIC_PYTHON3=yes PYTHON3_VER=38 `
             PERL=d:/Apps/Perl DYNAMIC_PERL=yes PERL_VER=524 `
             RUBY=d:/Apps/Ruby DYNAMIC_RUBY=yes RUBY_VER=24 RUBY_VER_LONG=2.4.0
     }
