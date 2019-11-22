@@ -58,7 +58,8 @@ function Deploy-All {
 
     $essentials = "7-Zip", "Common", "Git"
 
-    $other = "ConEmu",
+    $other = "AWS",
+             "ConEmu",
              "docker",
              "dotnet",
              "Dropbox",
