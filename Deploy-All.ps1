@@ -59,7 +59,6 @@ function Deploy-All {
     $essentials = "7-Zip", "Common", "Git"
 
     $other = "AWS",
-             "ConEmu",
              "docker",
              "dotnet",
              "Dropbox",
@@ -84,6 +83,7 @@ function Deploy-All {
              "Vim",
              "NeoVim",
              "Visual Studio Code",
+             "Windows Terminal",
              "WSLtty"
 
     if ($env:COMPUTERNAME -eq "Drifter") {
