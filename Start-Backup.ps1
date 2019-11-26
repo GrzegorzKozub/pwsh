@@ -9,30 +9,7 @@ function Start-Backup {
             "D:\Docker",
             "D:\Dropbox",
             "D:\Images",
-            "D:\Software",
-
-            "D:\Apps\Battle.net",
-            "D:\Users\All Users\Battle.net",
-            "D:\Users\All Users\Blizzard Entertainment",
-            "D:\Users\$env:USERNAME\AppData\Local\Battle.net",
-            "D:\Users\$env:USERNAME\AppData\Local\Blizzard Entertainment",
-            "D:\Users\$env:USERNAME\AppData\Roaming\Battle.Net",
-
-            "D:\Apps\Epic Games",
-            "D:\Users\All Users\Epic",
-            "D:\Users\$env:USERNAME\AppData\Local\EpicGamesLauncher",
-            "D:\Users\$env:USERNAME\AppData\Local\UnrealEngineLauncher",
-
-            "D:\Apps\Steam",
-            "D:\Users\$env:USERNAME\AppData\Local\Steam"
-
-            #"D:\Apps\Origin",
-            #"D:\Users\All Users\Origin",
-            #"D:\Users\$env:USERNAME\AppData\Local\Origin",
-            #"D:\Users\$env:USERNAME\AppData\Roaming\Origin",
-
-            #"D:\Apps\Uplay",
-            #"D:\Users\$env:USERNAME\AppData\Local\Ubisoft Game Launcher",
+            "D:\Software"
         ),
 
         [Parameter(Position = 1)]
