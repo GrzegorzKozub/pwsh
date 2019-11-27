@@ -16,7 +16,7 @@ function RunAs-Admin {
       -ArgumentList @"
         -NoLogo
         -Command
-        & {Set-Location $(Get-Location); $($Cmd.ToString()); Read-Host -Prompt 'Press Enter to close this window...'}
+        & {Set-Location $(Get-Location); $($Cmd.ToString()); Write-Host 'Press any key...'; `$Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown') | Out-Null }
 "@
   }
 }
