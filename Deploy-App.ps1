@@ -204,6 +204,19 @@ function Deploy-App {
             }
         }
 
+        function RunPs1 ($name) {
+            if ($switches.skipPs1) { return }
+            $ps1 = Join-Path $globals.package "$name.ps1"
+            if (Test-Path $ps1) {
+                Log "Run" $ps1
+                & $ps1
+            }
+        }
+
+        if (!$switches.remove -and !$switches.pack) {
+            RunPs1 "install"
+        }
+        
         DeployCategory "apps" $d.apps $true $false
         DeployCategory "programdata" $d.programdata
         DeployCategory "home" $d.home
@@ -237,13 +250,7 @@ function Deploy-App {
             $script:jobs | Remove-Job
         }
 
-        if (!$switches.skipPs1) {
-            $ps1 = Join-Path $globals.package "$customizations.ps1"
-            if (Test-Path $ps1) {
-                Log "Run" $ps1
-                & $ps1
-            }
-        }
+        RunPs1 $customizations
 
         if (!$switches.skipReg) {
             $reg = Join-Path $globals.package "$customizations.reg"
