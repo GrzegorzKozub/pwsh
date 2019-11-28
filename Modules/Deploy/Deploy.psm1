@@ -125,7 +125,7 @@ function BumpVersion ($json) {
         $meta = Get-Content $json | ConvertFrom-Json
         $meta.version++
     } else {
-        $meta = @{ version = 2 }
+        $meta = @{ version = 1 }
     }
     $meta | ConvertTo-Json > $json
 }
@@ -134,7 +134,7 @@ function GetVersion ($json) {
     if (Test-Path $json) {
         $meta = Get-Content $json | ConvertFrom-Json
     } else {
-        $meta = @{ version = 1 }
+        $meta = @{ version = 0 }
     }
     return $meta.version
 }

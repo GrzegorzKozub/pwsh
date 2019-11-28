@@ -153,7 +153,9 @@ function Deploy-App {
             Write-Host "Packing $($globals.zip) version $deployedVersion over $packageVersion" -ForegroundColor Blue
             $customizations = "pack"
         } else {
-            Write-Host "Adding $($globals.zip) version $packageVersion over $deployedVersion" -ForegroundColor Green
+            $message = "Adding $($globals.zip) version $packageVersion"
+            if ($deployedVersion -gt 0) { $message += " over $deployedVersion" }
+            Write-Host $message -ForegroundColor Green
             $customizations = "add"
         }
 
