@@ -1,4 +1,4 @@
-function Start-Backup {
+function Backup-Dirs {
     [CmdletBinding()]
 
     param (
@@ -115,5 +115,5 @@ function Start-Backup {
     StopTimer $allTime "All done"
 }
 
-Set-Alias backup Start-Backup
+Set-Alias backup Backup-Dirs
 
