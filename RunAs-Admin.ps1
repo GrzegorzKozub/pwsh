@@ -1,3 +1,5 @@
+Import-Module Admin
+
 function RunAs-Admin {
   [CmdletBinding()]
 
@@ -7,7 +9,7 @@ function RunAs-Admin {
     $Cmd
   )
 
-  if (Test-Admin) {
+  if (RunningAsAdmin) {
     Invoke-Command -ScriptBlock $Cmd
   } else {
     Start-Process `

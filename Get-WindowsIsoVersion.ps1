@@ -1,3 +1,5 @@
+Import-Module Admin
+
 function Get-WindowsIsoVersion {
   [CmdletBinding()]
 
@@ -8,7 +10,7 @@ function Get-WindowsIsoVersion {
     $IsoPath
   )
 
-  if (!(Test-Admin)) {
+  if (!(RunningAsAdmin)) {
       Write-Error "Must run as admin"
       return
   }

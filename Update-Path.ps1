@@ -1,4 +1,6 @@
-﻿function Update-Path {
+﻿Import-Module Admin
+
+function Update-Path {
     [CmdletBinding()]
 
     param (
@@ -17,7 +19,7 @@
         $Remove = $false
     )
 
-    if (!(Test-Admin)) {
+    if (!(RunningAsAdmin)) {
         Write-Error "Must run as admin"
         return
     }

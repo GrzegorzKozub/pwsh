@@ -1,6 +1,7 @@
 ﻿using namespace System.Collections.ObjectModel
 using namespace System.Management.Automation
 
+Import-Module Admin
 Import-Module Deploy
 
 function Deploy-App {
@@ -101,7 +102,7 @@ function Deploy-App {
             return
         }
 
-        if (!(Test-Admin)) {
+        if (!(RunningAsAdmin)) {
             Write-Error "Must run as admin"
             return
         }

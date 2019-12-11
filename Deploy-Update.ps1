@@ -1,4 +1,6 @@
-﻿function Deploy-Update {
+﻿Import-Module Admin
+
+function Deploy-Update {
     [CmdletBinding()]
 
     param (
@@ -15,7 +17,7 @@
         $Target
     )
 
-    if (!(Test-Admin)) {
+    if (!(RunningAsAdmin)) {
         Write-Error "Must run as admin"
         return
     }

@@ -1,4 +1,5 @@
-﻿Import-Module ClipboardText
+﻿Import-Module Admin
+Import-Module ClipboardText
 Import-Module posh-git
 Import-Module posh-docker
 
@@ -90,7 +91,7 @@ Remove-Variable separatorColor
 $prompt = @{
     User = $env:USERNAME.ToLower()
     Host = $env:COMPUTERNAME.ToLower()
-    UserColor = if (Test-Admin) { "DarkRed" } else { "DarkGreen" }
+    UserColor = if (RunningAsAdmin) { "DarkRed" } else { "DarkGreen" }
 }
 
 function Prompt {
