@@ -19,10 +19,7 @@ function Update-Path {
         $Remove = $false
     )
 
-    if (!(RunningAsAdmin)) {
-        Write-Error "Must run as admin"
-        return
-    }
+    AssertRunningAsAdmin
 
     if ($Target -eq "Machine") {
         $key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("SYSTEM\CurrentControlSet\Control\Session Manager\Environment", $true)

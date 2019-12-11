@@ -17,10 +17,7 @@ function Deploy-Update {
         $Target
     )
 
-    if (!(RunningAsAdmin)) {
-        Write-Error "Must run as admin"
-        return
-    }
+    AssertRunningAsAdmin
 
     $time = [Diagnostics.Stopwatch]::StartNew()
 

@@ -102,10 +102,7 @@ function Deploy-App {
             return
         }
 
-        if (!(RunningAsAdmin)) {
-            Write-Error "Must run as admin"
-            return
-        }
+        AssertRunningAsAdmin
 
         $time = [Diagnostics.Stopwatch]::StartNew()
 
