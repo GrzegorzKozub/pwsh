@@ -4,10 +4,10 @@ Import-Module posh-git
 Import-Module posh-docker
 
 Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
-    param ($commandName, $wordToComplete, $cursorPosition)
-    dotnet complete --position $cursorPosition "$wordToComplete" | ForEach-Object {
-        [System.Management.Automation.CompletionResult]::new($_, $_, "ParameterValue", $_)
-    }
+  param ($commandName, $wordToComplete, $cursorPosition)
+  dotnet complete --position $cursorPosition "$wordToComplete" | ForEach-Object {
+    [System.Management.Automation.CompletionResult]::new($_, $_, "ParameterValue", $_)
+  }
 }
 
 . _rg.ps1
@@ -16,53 +16,53 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
 chcp 65001 | Out-Null
 
 Get-ChildItem `
-    (Split-Path $PROFILE) `
-    -Filter "*-*.ps1" |
+  (Split-Path $PROFILE) `
+  -Filter "*-*.ps1" |
 ForEach-Object { . $_.FullName }
 
 $backgroundColor = "Black"
 $separatorColor = "DarkGray"
 
 if ($Host.PrivateData -ne $null) {
-    $Host.PrivateData.DebugBackgroundColor = $backgroundColor
-    $Host.PrivateData.DebugForegroundColor = "DarkGray"
-    $Host.PrivateData.ErrorBackgroundColor = $backgroundColor
-    $Host.PrivateData.ErrorForegroundColor = "DarkRed"
-    $Host.PrivateData.ProgressBackgroundColor = "DarkGray"
-    $Host.PrivateData.ProgressForegroundColor = "White"
-    $Host.PrivateData.VerboseBackgroundColor = $backgroundColor
-    $Host.PrivateData.VerboseForegroundColor = "Gray"
-    $Host.PrivateData.WarningBackgroundColor = $backgroundColor
-    $Host.PrivateData.WarningForegroundColor = "DarkYellow"
+  $Host.PrivateData.DebugBackgroundColor = $backgroundColor
+  $Host.PrivateData.DebugForegroundColor = "DarkGray"
+  $Host.PrivateData.ErrorBackgroundColor = $backgroundColor
+  $Host.PrivateData.ErrorForegroundColor = "DarkRed"
+  $Host.PrivateData.ProgressBackgroundColor = "DarkGray"
+  $Host.PrivateData.ProgressForegroundColor = "White"
+  $Host.PrivateData.VerboseBackgroundColor = $backgroundColor
+  $Host.PrivateData.VerboseForegroundColor = "Gray"
+  $Host.PrivateData.WarningBackgroundColor = $backgroundColor
+  $Host.PrivateData.WarningForegroundColor = "DarkYellow"
 }
 
 Set-PSReadLineKeyHandler -Chord Ctrl+Shift+E -ScriptBlock {
-    [Microsoft.PowerShell.PSConsoleReadLine]::Copy()
-    $temp = (New-TemporaryFile).FullName
-    Get-ClipboardText > $temp
-    gvim $temp | Out-Null
-    Get-Content -Path $temp | Set-ClipboardText
-    [Microsoft.PowerShell.PSConsoleReadLine]::DeleteLine()
-    [Microsoft.PowerShell.PSConsoleReadLine]::Paste()
-    Remove-Item -Path $temp -ErrorAction SilentlyContinue
+  [Microsoft.PowerShell.PSConsoleReadLine]::Copy()
+  $temp = (New-TemporaryFile).FullName
+  Get-ClipboardText > $temp
+  gvim $temp | Out-Null
+  Get-Content -Path $temp | Set-ClipboardText
+  [Microsoft.PowerShell.PSConsoleReadLine]::DeleteLine()
+  [Microsoft.PowerShell.PSConsoleReadLine]::Paste()
+  Remove-Item -Path $temp -ErrorAction SilentlyContinue
 }
 
 Set-PSReadlineOption -BellStyle None
 Set-PSReadLineOption -Colors @{
-    "Command" = "DarkYellow"
-    "Comment" = "DarkGray"
-    "ContinuationPrompt" = "DarkGray"
-    "Emphasis" = "Yellow"
-    "Error" = "DarkRed"
-    "Keyword" = "DarkBlue"
-    "Member" = "DarkBlue"
-    "None" = "Gray"
-    "Number" = "White"
-    "Operator" = "DarkCyan"
-    "Parameter" = "DarkGray"
-    "String" = "DarkGreen"
-    "Type" = "Blue"
-    "Variabe" = "DarkMagenta"
+  "Command" = "DarkYellow"
+  "Comment" = "DarkGray"
+  "ContinuationPrompt" = "DarkGray"
+  "Emphasis" = "Yellow"
+  "Error" = "DarkRed"
+  "Keyword" = "DarkBlue"
+  "Member" = "DarkBlue"
+  "None" = "Gray"
+  "Number" = "White"
+  "Operator" = "DarkCyan"
+  "Parameter" = "DarkGray"
+  "String" = "DarkGreen"
+  "Type" = "Blue"
+  "Variabe" = "DarkMagenta"
 }
 
 $GitPromptSettings.AfterForegroundColor = $separatorColor
@@ -89,50 +89,50 @@ Remove-Variable backgroundColor
 Remove-Variable separatorColor
 
 $prompt = @{
-    User = $env:USERNAME.ToLower()
-    Host = $env:COMPUTERNAME.ToLower()
-    UserColor = if (RunningAsAdmin) { "DarkRed" } else { "DarkGreen" }
+  User = $env:USERNAME.ToLower()
+  Host = $env:COMPUTERNAME.ToLower()
+  UserColor = if (RunningAsAdmin) { "DarkRed" } else { "DarkGreen" }
 }
 
 function Prompt {
 
-    $location = Get-Location
-    $path = $location.Path
+  $location = Get-Location
+  $path = $location.Path
 
-    if ($path -eq $Home) {
-        $path = "~"
-    } elseif ($path.Length -ge 64) {
-        $path = $path.Substring($path.LastIndexOf("\") + 1, $path.Length - $path.LastIndexOf("\") - 1)
-    }
+  if ($path -eq $Home) {
+    $path = "~"
+  } elseif ($path.Length -ge 64) {
+    $path = $path.Substring($path.LastIndexOf("\") + 1, $path.Length - $path.LastIndexOf("\") - 1)
+  }
 
-    $Host.UI.RawUI.WindowTitle = "$path"
+  $Host.UI.RawUI.WindowTitle = "$path"
 
-    $Host.UI.RawUI.BackgroundColor = "Black"
-    $Host.UI.RawUI.ForegroundColor = "Gray"
+  $Host.UI.RawUI.BackgroundColor = "Black"
+  $Host.UI.RawUI.ForegroundColor = "Gray"
 
-    Write-Host $prompt.User -ForegroundColor $prompt.UserColor -NoNewLine
-    Write-Host "@" -ForegroundColor "DarkGray" -NoNewLine
-    Write-Host $prompt.Host -ForegroundColor "DarkYellow" -NoNewLine
+  Write-Host $prompt.User -ForegroundColor $prompt.UserColor -NoNewLine
+  Write-Host "@" -ForegroundColor "DarkGray" -NoNewLine
+  Write-Host $prompt.Host -ForegroundColor "DarkYellow" -NoNewLine
 
-    Write-Host " $path" -ForegroundColor "DarkCyan" -NoNewLine
+  Write-Host " $path" -ForegroundColor "DarkCyan" -NoNewLine
 
-    if ($VisualStudio) {
-        Write-Host " vs" -ForegroundColor "DarkMagenta" -NoNewLine
-    }
+  if ($VisualStudio) {
+    Write-Host " vs" -ForegroundColor "DarkMagenta" -NoNewLine
+  }
 
-    if ($location.Provider.Name -eq "FileSystem") {
-        Write-VcsStatus
-    }
+  if ($location.Provider.Name -eq "FileSystem") {
+    Write-VcsStatus
+  }
 
-    Write-Host
-    Write-Host ">" -ForegroundColor "DarkGray" -NoNewLine
+  Write-Host
+  Write-Host ">" -ForegroundColor "DarkGray" -NoNewLine
 
-    return " "
+  return " "
 }
 
 if ($Host.Version.Major -ge 6 -and $env:ConEmuPID) {
-    # First Write-Host call with -ForegroundColor param permanently sets $host.UI.RawUI.ForegroundColor
-    Write-Host ""
-    Clear-Host
+  # First Write-Host call with -ForegroundColor param permanently sets $host.UI.RawUI.ForegroundColor
+  Write-Host ""
+  Clear-Host
 }
 
