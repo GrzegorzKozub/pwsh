@@ -49,11 +49,7 @@ function Backup-Repos {
   }
 
   function Zip ($from, $to) {
-    if (Get-Command "7z" -ErrorAction SilentlyContinue) {
-      7z a $to $from | Out-Null
-    } else {
-      Compress-Archive $from $to
-    }
+    7z a $to $from | Out-Null
   }
 
   function StartTimer {
