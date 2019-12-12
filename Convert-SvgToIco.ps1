@@ -1,4 +1,4 @@
-function Create-Icon {
+function Convert-SvgToIco {
     [CmdletBinding()]
 
     param (
@@ -29,5 +29,5 @@ function Create-Icon {
     Remove-Item -Path $pngPattern
 }
 
-Set-Alias icon Create-Icon
+Set-Alias svgtoico Convert-SvgToIco
 
