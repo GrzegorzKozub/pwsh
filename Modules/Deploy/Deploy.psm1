@@ -148,3 +148,7 @@ function GetPackageVersion ($zip) {
     return $version
 }
 
+function RefreshIcons {
+    ie4uinit -show
+}
+

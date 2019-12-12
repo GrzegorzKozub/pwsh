@@ -266,7 +266,7 @@ function Deploy-App {
             $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown") | Out-Null
         }
 
-        if (!$switches.remove -and !$switches.pack) { Refresh-Icons }
+        if (!$switches.remove -and !$switches.pack) { RefreshIcons }
 
         if ($switches.remove) { RemovePackage }
 
