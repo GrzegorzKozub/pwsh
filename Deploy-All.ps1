@@ -89,7 +89,7 @@ function Deploy-All {
   }
 
   if ($env:COMPUTERNAME -eq "Turing") {
-    $other = $other + "MSI Afterburner" + "NVIDIA" + "RivaTuner Statistics Server"
+    $other = $other + "MSI Afterburner" + "RivaTuner Statistics Server"
   }
 
   function DeployApps ($apps) {
