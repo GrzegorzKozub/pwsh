@@ -55,7 +55,7 @@ function Deploy-App {
 
   DynamicParam {
 
-    if ($Source) { $zipDir = $Source } else { $zipDir = "D:\Dropbox\Packages" }
+    if ($Source) { $zipDir = $Source } else { $zipDir = "D:\Dropbox\packages" }
 
     $values =
       Get-ChildItem -Path $zipDir -Recurse -Include "*.zip" |
