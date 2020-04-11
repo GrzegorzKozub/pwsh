@@ -10,7 +10,7 @@ function Backup-Repos {
     [Parameter(Position = 1)]
     [ValidateScript({ Test-Path $_ })]
     [string]
-    $To = "D:\Dropbox\github"
+    $To = "E:\GitHub"
   )
 
   function GetRepos {
