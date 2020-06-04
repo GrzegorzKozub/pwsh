@@ -52,17 +52,17 @@ Set-PSReadLineOption -Colors @{
   "Command" = "DarkYellow"
   "Comment" = "DarkGray"
   "ContinuationPrompt" = "DarkGray"
+  "Default" = "Gray"
   "Emphasis" = "Yellow"
   "Error" = "DarkRed"
   "Keyword" = "DarkBlue"
   "Member" = "DarkBlue"
-  "None" = "Gray"
   "Number" = "White"
   "Operator" = "DarkCyan"
   "Parameter" = "DarkGray"
   "String" = "DarkGreen"
   "Type" = "Blue"
-  "Variabe" = "DarkMagenta"
+  "Variable" = "DarkMagenta"
 }
 
 $GitPromptSettings.AfterForegroundColor = $separatorColor
