@@ -53,7 +53,11 @@
       RUBY=d:/Apps/Ruby DYNAMIC_RUBY=yes RUBY_VER=24 RUBY_VER_LONG=2.4.0
   }
 
-  $runtime = (Select-String -Path "version.h" -Pattern '#define VIM_VERSION_NODOT.\"(vim[0-9]{2})\"').Matches[0].Groups[1].Value
+  $runtime = "vim"
+
+  foreach ($var in "VIM_VERSION_MAJOR", "VIM_VERSION_MINOR") {
+    $runtime = $runtime + (Select-String -Path "version.h" -Pattern "#define $var.+([0-9])").Matches[0].Groups[1].Value
+  }
 
   Set-Location "tee"
   mingw32-make
