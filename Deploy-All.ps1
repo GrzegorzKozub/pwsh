@@ -57,7 +57,8 @@ function Deploy-All {
 
   $essentials = "7-Zip", "Common", "Git"
 
-  $other = "dotnet",
+  $other = 
+    "AWS",
     "Dropbox",
     "Elixir",
     "Erlang",
