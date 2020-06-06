@@ -1,16 +1,7 @@
 function Backup-Repos {
-  [CmdletBinding()]
-
   param (
-    [Parameter(Position = 0)]
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $GitHubUser = "GrzegorzKozub",
-
-    [Parameter(Position = 1)]
-    [ValidateScript({ Test-Path $_ })]
-    [string]
-    $To = "E:\GitHub"
+    [ValidateNotNullOrEmpty()] [string] $GitHubUser = "GrzegorzKozub",
+    [ValidateScript({ Test-Path $_ })] [string] $To = "E:\GitHub"
   )
 
   function GetRepos {

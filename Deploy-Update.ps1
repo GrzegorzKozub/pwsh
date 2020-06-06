@@ -1,20 +1,9 @@
 ﻿Import-Module Admin
 
 function Deploy-Update {
-  [CmdletBinding()]
-
   param (
-    [Parameter(Position = 0)]
-    [switch]
-    $Parallel,
-
-    [Parameter(Position = 1)]
-    [string]
-    $Source,
-
-    [Parameter(Position = 2)]
-    [string]
-    $Target
+    [switch] $Parallel,
+    [string] $Source, [string] $Target
   )
 
   AssertRunningAsAdmin

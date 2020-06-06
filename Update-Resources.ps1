@@ -1,16 +1,7 @@
 ﻿function Update-Resources {
-  [CmdletBinding()]
-
   param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $ExeDir,
-
-    [Parameter(Position = 1)]
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $ResourceDir = ".\resources"
+    [ValidateNotNullOrEmpty()] [string] $ExeDir,
+    [ValidateNotNullOrEmpty()] [string] $ResourceDir = ".\resources"
   )
 
   $resourceHacker = Get-Command "resourcehacker.exe" -ErrorAction SilentlyContinue

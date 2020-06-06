@@ -1,22 +1,10 @@
 ﻿Import-Module Admin
 
 function Update-Path {
-  [CmdletBinding()]
-
   param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $Dir,
-
-    [Parameter(Position = 1)]
-    [ValidateSet("Machine", "User")]
-    [string]
-    $Target = "Machine",
-
-    [Parameter(Position = 2)]
-    [switch]
-    $Remove = $false
+    [ValidateNotNullOrEmpty()] [string] $Dir,
+    [ValidateSet("Machine", "User")] [string] $Target = "Machine",
+    [switch] $Remove = $false
   )
 
   AssertRunningAsAdmin

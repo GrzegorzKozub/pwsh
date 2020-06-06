@@ -1,21 +1,7 @@
 function Backup-Dirs {
-  [CmdletBinding()]
-
   param (
-    [Parameter(Position = 0)]
-    [ValidateNotNullOrEmpty()]
-    [string[]]
-    $Sources = @(
-      "D:\Docker",
-      "D:\Dropbox",
-      "D:\Images",
-      "D:\Software"
-    ),
-
-    [Parameter(Position = 1)]
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $Target = "Backup"
+    [ValidateNotNullOrEmpty()] [string[]] $Sources = @("D:\Drive", "D:\Images", "D:\Software"),
+    [ValidateNotNullOrEmpty()] [string] $Target = "Backup"
   )
 
   function GetTargetDrive ($label) {

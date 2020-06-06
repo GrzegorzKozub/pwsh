@@ -1,35 +1,14 @@
 Import-Module Docker
 
 function Docker-PostgresContainer {
-  [CmdletBinding()]
-
   param (
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $Database = "postgres",
-
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $User = "postgres",
-
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $Password = "postgres",
-
-    [ValidateNotNullOrEmpty()]
-    [int]
-    $HostPort = 5432,
-
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $ImageTag = "latest",
-
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $ContainerName = "postgres",
-
-    [switch]
-    $Force
+    [ValidateNotNullOrEmpty()] [string] $Database = "postgres",
+    [ValidateNotNullOrEmpty()] [string] $User = "postgres",
+    [ValidateNotNullOrEmpty()] [string] $Password = "postgres",
+    [ValidateNotNullOrEmpty()] [int] $HostPort = 5432,
+    [ValidateNotNullOrEmpty()] [string] $ImageTag = "latest",
+    [ValidateNotNullOrEmpty()] [string] $ContainerName = "postgres",
+    [switch] $Force
   )
 
   HandleExistingContainer $ContainerName $Force   

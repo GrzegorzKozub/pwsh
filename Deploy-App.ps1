@@ -5,57 +5,23 @@ Import-Module Admin
 Import-Module Deploy
 
 function Deploy-App {
-  [CmdletBinding()]
-
   param (
-    [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
-    [switch]
-    $SkipUnzip = $false,
-
-    [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
-    [switch]
-    $SkipC = $false,
-
-    [Parameter(Position = 2, ValueFromRemainingArguments = $true)]
-    [switch]
-    $SkipD = $false,
-
-    [Parameter(Position = 3, ValueFromRemainingArguments = $true)]
-    [switch]
-    $SkipPs1 = $false,
-
-    [Parameter(Position = 4, ValueFromRemainingArguments = $true)]
-    [switch]
-    $SkipReg = $false,
-
-    [Parameter(Position = 5, ValueFromRemainingArguments = $true)]
-    [switch]
-    $Update = $false,
-
-    [Parameter(Position = 6, ValueFromRemainingArguments = $true)]
-    [switch]
-    $Remove = $false,
-
-    [Parameter(Position = 7, ValueFromRemainingArguments = $true)]
-    [switch]
-    $Pack = $false,
-
-    [Parameter(Position = 8, ValueFromRemainingArguments = $true)]
-    [switch]
-    $Parallel = $false,
-
-    [Parameter(Position = 9, ValueFromRemainingArguments = $true)]
-    [string]
-    $Source,
-
-    [Parameter(Position = 10, ValueFromRemainingArguments = $true)]
-    [string]
-    $Target
+    [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipUnzip = $false,
+    [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipC = $false,
+    [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipD = $false,
+    [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipPs1 = $false,
+    [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipReg = $false,
+    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Update = $false,
+    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Remove = $false,
+    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Pack = $false,
+    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Parallel = $false,
+    [Parameter(ValueFromRemainingArguments = $true)] [string] $Source,
+    [Parameter(ValueFromRemainingArguments = $true)] [string] $Target
   )
 
   DynamicParam {
 
-    if ($Source) { $zipDir = $Source } else { $zipDir = "D:\Dropbox\Packages" }
+    if ($Source) { $zipDir = $Source } else { $zipDir = "D:\Drive\Packages" }
 
     $values =
       Get-ChildItem -Path $zipDir -Recurse -Include "*.zip" |

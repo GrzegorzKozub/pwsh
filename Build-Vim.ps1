@@ -1,16 +1,7 @@
 ﻿function Build-Vim {
-  [CmdletBinding()]
-
   param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateScript({ Test-Path $_ })]
-    [string]
-    $WorkDir,
-
-    [Parameter(Position = 1, Mandatory = $true)]
-    [ValidateScript({ Test-Path $_ })]
-    [string]
-    $OutDir
+    [ValidateScript({ Test-Path $_ })] [string] $WorkDir = "D:/Code",
+    [ValidateScript({ Test-Path $_ })] [string] $OutDir = "D:/Apps"
   )
 
   Push-Location

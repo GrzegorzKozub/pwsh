@@ -1,18 +1,8 @@
 function Reset-Explorer {
-  [CmdletBinding()]
-
   param (
-    [Parameter(Position = 0)]
-    [switch]
-    $DialogPaths,
-
-    [Parameter(Position = 1)]
-    [switch]
-    $TrayIcons,
-
-    [Parameter(Position = 2)]
-    [switch]
-    $Windows
+    [switch] $DialogPaths,
+    [switch] $TrayIcons,
+    [switch] $Windows
   )
 
   function Log ($message) {

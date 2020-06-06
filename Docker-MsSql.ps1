@@ -1,27 +1,12 @@
 Import-Module Docker
 
 function Docker-MsSqlContainer {
-  [CmdletBinding()]
-
   param (
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $SaPassword = "p@ssw0rd",
-
-    [ValidateNotNullOrEmpty()]
-    [int]
-    $HostPort = 1433,
-
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $ImageTag = "latest",
-
-    [ValidateNotNullOrEmpty()]
-    [string]
-    $ContainerName = "mssql",
-
-    [switch]
-    $Force
+    [ValidateNotNullOrEmpty()] [string] $SaPassword = "p@ssw0rd",
+    [ValidateNotNullOrEmpty()] [int] $HostPort = 1433,
+    [ValidateNotNullOrEmpty()] [string] $ImageTag = "latest",
+    [ValidateNotNullOrEmpty()] [string] $ContainerName = "mssql",
+    [switch] $Force
   )
 
   HandleExistingContainer $ContainerName $Force   

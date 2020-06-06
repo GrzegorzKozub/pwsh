@@ -1,12 +1,8 @@
 Import-Module Admin
 
 function RunAs-Admin {
-  [CmdletBinding()]
-
   param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [ScriptBlock]
-    $Cmd
+    [ValidateNotNullOrEmpty()] [ScriptBlock] $Cmd
   )
 
   if (RunningAsAdmin) {

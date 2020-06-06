@@ -1,13 +1,8 @@
 Import-Module Admin
 
 function Get-WindowsIsoVersion {
-  [CmdletBinding()]
-
   param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateScript({ Test-Path $_ })]
-    [string]
-    $IsoPath
+    [ValidateScript({ Test-Path $_ })] [string] $IsoPath
   )
 
   AssertRunningAsAdmin

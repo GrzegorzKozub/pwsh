@@ -1,16 +1,7 @@
 function Convert-SvgToIco {
-  [CmdletBinding()]
-
   param (
-    [Parameter(Position = 0, Mandatory = $true)]
-    [ValidateScript({ Test-Path $_ })]
-    [string]
-    $Svg,
-
-    [Parameter(Position = 1, Mandatory = $true)]
-    [ValidateScript({ Test-Path ([IO.Path]::GetDirectoryName($_)) })]
-    [string]
-    $Ico
+    [ValidateScript({ Test-Path $_ })] [string] $Svg,
+    [ValidateScript({ Test-Path ([IO.Path]::GetDirectoryName($_)) })] [string] $Ico
   )
 
   $icoDir = [IO.Path]::GetDirectoryName($Ico)
