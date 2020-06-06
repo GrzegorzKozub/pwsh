@@ -13,33 +13,14 @@ function Deploy-All {
   $time = [Diagnostics.Stopwatch]::StartNew()
 
   $apps =
-    "7-Zip",
-    "Common",
-    "Git",
-    "AWS",
-    "Drive",
-    "Elixir",
-    "Erlang",
-    "Go",
-    "ImageMagick",
-    "IrfanView",
-    "JPEGView",
-    "KeePass",
-    "MinGW",
-    "MSYS2",
-    "Node.js",
-    "OpenSSH",
-    "Perl",
-    "PowerShell",
-    "Python",
-    "Ruby",
-    "SumatraPDF",
-    "Total Commander",
-    "Vim",
-    "NeoVim",
-    "Visual Studio Code",
-    "Windows Terminal",
-    "WSLtty"
+    "7-Zip", "Common", "Git",
+    "MinGW", "MSYS2",
+    "AWS", "OpenSSH",
+    "PowerShell", "Windows Terminal", "WSLtty",
+    "Erlang", "Elixir", "Go", "Node.js", "Perl", "Python", "Ruby",
+    "ImageMagick", "IrfanView", "JPEGView",
+    "Vim", "NeoVim", "Visual Studio Code",
+    "Drive", "Chrome", "KeePass", "SumatraPDF", "Total Commander"
 
   if ($env:COMPUTERNAME -eq "Drifter") {
     $apps = $apps + "MaxxAudioPro"
