@@ -6,7 +6,6 @@ Import-Module Deploy
 
 function Deploy-App {
   param (
-    [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipUnzip = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipC = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipD = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipPs1 = $false,
@@ -49,7 +48,6 @@ function Deploy-App {
   Process {
 
     $switches = @{
-      skipUnzip = $SkipUnzip
       skipC = $SkipC
       skipD = $SkipD
       skipPs1 = $SkipPs1
@@ -133,12 +131,11 @@ function Deploy-App {
     }
 
     if (Test-Path $globals.package) {
-      if (!$switches.remove -and !$switches.pack -and !$switches.skipUnzip) {
+      if (!$switches.remove -and !$switches.pack) {
         RemovePackage
         UnzipPackage
       }
     } else {
-      if ($switches.skipUnzip) { Write-Warning "$($globals.package) is missing" }
       UnzipPackage
     }
 
