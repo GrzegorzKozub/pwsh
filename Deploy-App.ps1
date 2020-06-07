@@ -13,16 +13,15 @@ function Deploy-App {
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $Update = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $Remove = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $Pack = $false,
-    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Parallel = $false,
-    [Parameter(ValueFromRemainingArguments = $true)] [string] $Target
+    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Parallel = $false
   )
 
   DynamicParam {
 
-    $zipDir = "D:\Win\Packages"
+    $packages = "D:\Win\Packages"
 
     $values =
-      Get-ChildItem -Path $zipDir -Recurse -Include "*.zip" |
+      Get-ChildItem -Path $packages -Recurse -Include "*.zip" |
       Select-Object -ExpandProperty Name |
       ForEach-Object { [IO.Path]::GetFileNameWithoutExtension($_) }
 
@@ -70,21 +69,21 @@ function Deploy-App {
     $time = [Diagnostics.Stopwatch]::StartNew()
 
     $globals = @{
-      zip = Join-Path $zipDir "$($PSBoundParameters.App).zip"
-      target = if ($Target) { $Target } else { "D:" }
+      zip = Join-Path $packages "$($PSBoundParameters.App).zip"
+      targetDrive = "D:"
       systemDrive = $env:SystemDrive
     }
 
     $d = @{
-      packages = Join-Path $globals.target "Packages"
-      apps = Join-Path $globals.target "Apps"
-      programdata = Join-Path $globals.target $home.TrimEnd($env:USERNAME).TrimStart($globals.systemDrive) | Join-Path -ChildPath "All Users"
-      home = Join-Path $globals.target $home.TrimStart($globals.systemDrive)
-      documents = Join-Path $globals.target $home.TrimStart($globals.systemDrive) | Join-Path -ChildPath "Documents"
-      savedgames = Join-Path $globals.target $home.TrimStart($globals.systemDrive) | Join-Path -ChildPath "Saved Games"
-      local = Join-Path $globals.target $env:LOCALAPPDATA.TrimStart($globals.systemDrive)
-      locallow = Join-Path $globals.target ($env:LOCALAPPDATA.TrimStart($globals.systemDrive) + "Low")
-      roaming = Join-Path $globals.target $env:APPDATA.TrimStart($globals.systemDrive)
+      packages = Join-Path $globals.targetDrive "Packages"
+      apps = Join-Path $globals.targetDrive "Apps"
+      programdata = Join-Path $globals.targetDrive $home.TrimEnd($env:USERNAME).TrimStart($globals.systemDrive) | Join-Path -ChildPath "All Users"
+      home = Join-Path $globals.targetDrive $home.TrimStart($globals.systemDrive)
+      documents = Join-Path $globals.targetDrive $home.TrimStart($globals.systemDrive) | Join-Path -ChildPath "Documents"
+      savedgames = Join-Path $globals.targetDrive $home.TrimStart($globals.systemDrive) | Join-Path -ChildPath "Saved Games"
+      local = Join-Path $globals.targetDrive $env:LOCALAPPDATA.TrimStart($globals.systemDrive)
+      locallow = Join-Path $globals.targetDrive ($env:LOCALAPPDATA.TrimStart($globals.systemDrive) + "Low")
+      roaming = Join-Path $globals.targetDrive $env:APPDATA.TrimStart($globals.systemDrive)
     }
 
     $c = @{
