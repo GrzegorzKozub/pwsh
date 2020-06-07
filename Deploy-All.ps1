@@ -15,9 +15,9 @@ function Deploy-All {
   $apps =
     "7-Zip", "Common", "Git",
     "MinGW", "MSYS2",
+    "Erlang", "Elixir", "Go", "Node.js", "Perl", "Python", "Ruby",
     "AWS", "OpenSSH",
     "PowerShell", "Windows Terminal", "WSLtty",
-    "Erlang", "Elixir", "Go", "Node.js", "Perl", "Python", "Ruby",
     "ImageMagick", "IrfanView", "JPEGView",
     "Vim", "NeoVim", "Visual Studio Code",
     "Drive", "Chrome", "KeePass", "SumatraPDF", "Total Commander"
