@@ -1,6 +1,6 @@
 function Backup-Dirs {
   param (
-    [ValidateNotNullOrEmpty()] [string[]] $Sources = @("D:\Drive", "D:\Images", "D:\Software"),
+    [ValidateNotNullOrEmpty()] [string[]] $Sources = @("D:\Images", "D:\Software", "D:\Reflect", "D:\Win"),
     [ValidateNotNullOrEmpty()] [string] $Target = "Backup"
   )
 
