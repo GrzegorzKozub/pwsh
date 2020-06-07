@@ -20,7 +20,7 @@ function Deploy-All {
     "PowerShell", "Windows Terminal", "WSLtty",
     "ImageMagick", "IrfanView", "JPEGView",
     "Vim", "NeoVim", "Visual Studio Code",
-    "Drive", "Chrome", "KeePass", "SumatraPDF", "Total Commander"
+    "Chrome", "KeePass", "SumatraPDF", "Total Commander"
 
   if ($env:COMPUTERNAME -eq "Drifter") {
     $apps = $apps + "MaxxAudioPro"
