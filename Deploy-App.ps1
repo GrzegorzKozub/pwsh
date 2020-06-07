@@ -15,13 +15,12 @@ function Deploy-App {
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $Remove = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $Pack = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $Parallel = $false,
-    [Parameter(ValueFromRemainingArguments = $true)] [string] $Source,
     [Parameter(ValueFromRemainingArguments = $true)] [string] $Target
   )
 
   DynamicParam {
 
-    if ($Source) { $zipDir = $Source } else { $zipDir = "D:\Win\Packages" }
+    $zipDir = "D:\Win\Packages"
 
     $values =
       Get-ChildItem -Path $zipDir -Recurse -Include "*.zip" |

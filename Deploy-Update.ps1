@@ -3,7 +3,7 @@
 function Deploy-Update {
   param (
     [switch] $Parallel,
-    [string] $Source, [string] $Target
+    [string] $Target
   )
 
   AssertRunningAsAdmin
@@ -11,7 +11,7 @@ function Deploy-Update {
   $time = [Diagnostics.Stopwatch]::StartNew()
 
   foreach ($app in $(Get-ChildItem -Path $(Join-Path $(if ($Target) { $Target } else { "D:" }) "Apps") -Directory -Name)) {
-    Deploy-App -App $app -Update -Parallel: $Parallel -Source: $Source -Target: $Target
+    Deploy-App -App $app -Update -Parallel: $Parallel -Target: $Target
   }
 
   $time.Stop()
