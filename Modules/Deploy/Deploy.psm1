@@ -1,7 +1,3 @@
-function GetMetaFileName {
-  return "meta.json"
-}
-
 function Log ($action, $path) {
   Write-Host ("{0,-7}" -f $action) -NoNewLine
   Write-Host $path -ForegroundColor DarkCyan
@@ -118,34 +114,6 @@ function DeployItems ($switches, $globals, $from, $to, $replace, $createLinks) {
       }
     }
   }
-}
-
-function BumpVersion ($json) {
-  if (Test-Path $json) {
-    $meta = Get-Content $json | ConvertFrom-Json
-    $meta.version++
-  } else {
-    $meta = @{ version = 1 }
-  }
-  $meta | ConvertTo-Json > $json
-}
-
-function GetVersion ($json) {
-  if (Test-Path $json) {
-    $meta = Get-Content $json | ConvertFrom-Json
-  } else {
-    $meta = @{ version = 0 }
-  }
-  return $meta.version
-}
-
-function GetPackageVersion ($zip) {
-  if (!(Test7z)) { return 1 }
-  7z e $zip "$((Get-Item $zip).BaseName)\$(GetMetaFileName)" -o"$env:TEMP" -aoa | Out-Null
-  $meta = "$env:TEMP\$(GetMetaFileName)"
-  $version = GetVersion $meta
-  Remove-Item -Path $meta -ErrorAction SilentlyContinue
-  return $version
 }
 
 function RefreshIcons {

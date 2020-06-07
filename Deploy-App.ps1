@@ -10,7 +10,6 @@ function Deploy-App {
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipD = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipPs1 = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipReg = $false,
-    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Update = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $Remove = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $Pack = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $Parallel = $false
@@ -51,16 +50,13 @@ function Deploy-App {
       skipD = $SkipD
       skipPs1 = $SkipPs1
       skipReg = $SkipReg
-      update = $Update
       remove = $Remove
       pack = $Pack
       parallel = $Parallel
     }
 
-    if (($switches.update -and $switches.pack) -or `
-      ($switches.remove -and $switches.pack) -or `
-      ($switches.remove -and $switches.update)) {
-      Write-Error "Can either update, remove or pack"
+    if ($switches.remove -and $switches.pack) {
+      Write-Error "Can either add, remove or pack"
       return
     }
 
@@ -93,29 +89,15 @@ function Deploy-App {
     }
 
     $globals.package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($globals.zip))
-    $globals.json = Join-Path $globals.package (GetMetaFileName)
 
-    $packageVersion = GetPackageVersion $globals.zip
-    $deployedVersion = GetVersion $globals.json
-
-    if ($switches.update) {
-      if ($deployedVersion -ge $packageVersion) {
-        Write-Host "Skipping $($globals.zip) version $packageVersion since $deployedVersion is added" -ForegroundColor Yellow
-        return
-      }
-      Write-Host "Updating $($globals.zip) version $deployedVersion to $packageVersion" -ForegroundColor Green
-    } elseif ($switches.remove) {
-      Write-Host "Removing $($globals.zip) version $deployedVersion" -ForegroundColor Red
+    if ($switches.remove) {
+      Write-Host "Removing $($globals.zip)" -ForegroundColor Red
       $customizations = "remove"
     } elseif ($switches.pack) {
-      BumpVersion $globals.json
-      $deployedVersion = GetVersion $globals.json
-      Write-Host "Packing $($globals.zip) version $deployedVersion over $packageVersion" -ForegroundColor Blue
+      Write-Host "Packing $($globals.zip)" -ForegroundColor Blue
       $customizations = "pack"
     } else {
-      $message = "Adding $($globals.zip) version $packageVersion"
-      if ($deployedVersion -gt 0) { $message += " over $deployedVersion" }
-      Write-Host $message -ForegroundColor Green
+      Write-Host "Adding $($globals.zip)" -ForegroundColor Green
       $customizations = "add"
     }
 

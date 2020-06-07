@@ -3,7 +3,7 @@
 function Deploy-All {
   param (
     [switch] $SkipC, [switch] $SkipD, [switch] $SkipPs1, [switch] $SkipReg,
-    [switch] $Update, [switch] $Remove, [switch] $Pack,
+    [switch] $Remove, [switch] $Pack,
     [switch] $Parallel
   )
 
@@ -32,7 +32,7 @@ function Deploy-All {
   foreach ($app in $apps) {
     Deploy-App -App $app `
       -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg `
-      -Update: $Update -Remove: $Remove -Pack: $Pack `
+      -Remove: $Remove -Pack: $Pack `
       -Parallel: $Parallel
   }
 
