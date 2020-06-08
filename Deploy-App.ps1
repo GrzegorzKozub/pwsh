@@ -110,12 +110,8 @@ function Deploy-App {
       SetChildrenOwnerToCurrentUser $globals.package
     }
 
-    if (Test-Path $globals.package) {
-      if (!$switches.remove -and !$switches.pack) {
-        RemovePackage
-        UnzipPackage
-      }
-    } else { UnzipPackage }
+    if (Test-Path $globals.package) { RemovePackage }
+    UnzipPackage
 
     function DeployCategory ($category, $to, $replace = $true, $createLinks = $true) {
       $from = Join-Path $globals.package $category
@@ -187,8 +183,6 @@ function Deploy-App {
 
     if (!$switches.remove -and !$switches.pack) { RefreshIcons }
 
-    if ($switches.remove) { RemovePackage }
-
     if ($switches.pack) {
       $packageZip = "$($globals.package).zip"
       Remove $packageZip
@@ -197,6 +191,8 @@ function Deploy-App {
       Log "Move" $globals.zip
       Move-Item $packageZip $globals.zip -Force
     }
+
+    RemovePackage
 
     $time.Stop()
     Write-Host "Done in $($time.Elapsed.ToString("mm\:ss\.fff"))" -ForegroundColor DarkGray
