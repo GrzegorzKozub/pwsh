@@ -15,7 +15,6 @@ function Deploy-App {
   )
 
   dynamicparam {
-
     $packages = "D:\Win\Packages"
 
     $values =
@@ -43,7 +42,6 @@ function Deploy-App {
   }
 
   process {
-
     $switches = @{
       skipC = $SkipC
       skipD = $SkipD
