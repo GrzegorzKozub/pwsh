@@ -6,15 +6,15 @@ Import-Module Deploy
 
 function Deploy-App {
   param (
-    [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipC = $false,
-    [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipD = $false,
-    [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipPs1 = $false,
-    [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipReg = $false,
-    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Remove = $false,
-    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Pack = $false
+    [Parameter(ValueFromRemainingArguments)] [switch] $SkipC = $false,
+    [Parameter(ValueFromRemainingArguments)] [switch] $SkipD = $false,
+    [Parameter(ValueFromRemainingArguments)] [switch] $SkipPs1 = $false,
+    [Parameter(ValueFromRemainingArguments)] [switch] $SkipReg = $false,
+    [Parameter(ValueFromRemainingArguments)] [switch] $Remove = $false,
+    [Parameter(ValueFromRemainingArguments)] [switch] $Pack = $false
   )
 
-  DynamicParam {
+  dynamicparam {
 
     $packages = "D:\Win\Packages"
 
@@ -42,7 +42,7 @@ function Deploy-App {
     return $dynamicParameters
   }
 
-  Process {
+  process {
 
     $switches = @{
       skipC = $SkipC
@@ -91,13 +91,13 @@ function Deploy-App {
 
     if ($switches.remove) {
       Write-Host "Removing $($globals.zip)" -ForegroundColor Red
-      $customizations = "remove"
+      $hook = "remove"
     } elseif ($switches.pack) {
       Write-Host "Packing $($globals.zip)" -ForegroundColor Blue
-      $customizations = "pack"
+      $hook = "pack"
     } else {
       Write-Host "Adding $($globals.zip)" -ForegroundColor Green
-      $customizations = "add"
+      $hook = "add"
     }
 
     function RemovePackage {
@@ -115,9 +115,7 @@ function Deploy-App {
         RemovePackage
         UnzipPackage
       }
-    } else {
-      UnzipPackage
-    }
+    } else { UnzipPackage }
 
     function DeployCategory ($category, $to, $replace = $true, $createLinks = $true) {
       $from = Join-Path $globals.package $category
@@ -125,9 +123,7 @@ function Deploy-App {
       $deviceFrom = $from + "@" + $env:COMPUTERNAME
       if (Test-Path $deviceFrom) {
         $from = $deviceFrom
-      } elseif (!(Test-Path $from)) {
-        return
-      }
+      } elseif (!(Test-Path $from)) { return }
 
       DeployItems $switches $globals $from $to $replace $createLinks
     }
@@ -141,9 +137,7 @@ function Deploy-App {
       }
     }
 
-    if (!$switches.remove -and !$switches.pack) {
-      RunPs1 "install"
-    }
+    if (!$switches.remove -and !$switches.pack) { RunPs1 "install" }
 
     DeployCategory "apps" $d.apps $true $false
     DeployCategory "programdata" $d.programdata
@@ -173,17 +167,17 @@ function Deploy-App {
     DeployCategory "shortcuts" $c.shortcuts $false $false
     DeployCategory "startup" $c.startup $false $false
 
-    RunPs1 $customizations
+    RunPs1 $hook
 
     if (!$switches.skipReg) {
-      $reg = Join-Path $globals.package "$customizations.reg"
+      $reg = Join-Path $globals.package "$hook.reg"
       if (Test-Path $reg) {
         Log "Import" $reg
         Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait
       }
     }
 
-    $txt = Join-Path $globals.package "$customizations.txt"
+    $txt = Join-Path $globals.package "$hook.txt"
     if (Test-Path $txt) {
       Log "Show" $txt
       Get-Content $txt | Write-Host -ForegroundColor White
