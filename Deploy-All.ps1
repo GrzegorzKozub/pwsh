@@ -3,8 +3,7 @@
 function Deploy-All {
   param (
     [switch] $SkipC, [switch] $SkipD, [switch] $SkipPs1, [switch] $SkipReg,
-    [switch] $Remove, [switch] $Pack,
-    [switch] $Parallel
+    [switch] $Remove, [switch] $Pack
   )
 
   AssertRunningAsAdmin
@@ -32,8 +31,7 @@ function Deploy-All {
   foreach ($app in $apps) {
     Deploy-App -App $app `
       -SkipC: $SkipC -SkipD: $SkipD -SkipPs1: $SkipPs1 -SkipReg: $SkipReg `
-      -Remove: $Remove -Pack: $Pack `
-      -Parallel: $Parallel
+      -Remove: $Remove -Pack: $Pack
   }
 
   $time.Stop()

@@ -11,8 +11,7 @@ function Deploy-App {
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipPs1 = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $SkipReg = $false,
     [Parameter(ValueFromRemainingArguments = $true)] [switch] $Remove = $false,
-    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Pack = $false,
-    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Parallel = $false
+    [Parameter(ValueFromRemainingArguments = $true)] [switch] $Pack = $false
   )
 
   DynamicParam {
@@ -120,8 +119,6 @@ function Deploy-App {
       UnzipPackage
     }
 
-    $script:jobs = @()
-
     function DeployCategory ($category, $to, $replace = $true, $createLinks = $true) {
       $from = Join-Path $globals.package $category
 
@@ -132,17 +129,7 @@ function Deploy-App {
         return
       }
 
-      if ($switches.parallel) {
-        $script:jobs += Start-Job `
-          -InitializationScript ([ScriptBlock]::Create($sourceDeployPs1)) `
-          -ScriptBlock {
-            param($switches, $globals, $from, $to, $replace, $createLinks)
-            DeployItems $switches $globals $from $to $replace $createLinks
-          } `
-          -ArgumentList @($switches, $globals, $from, $to, $replace, $createLinks)
-      } else {
-        DeployItems $switches $globals $from $to $replace $createLinks
-      }
+      DeployItems $switches $globals $from $to $replace $createLinks
     }
 
     function RunPs1 ($name) {
@@ -185,11 +172,6 @@ function Deploy-App {
 
     DeployCategory "shortcuts" $c.shortcuts $false $false
     DeployCategory "startup" $c.startup $false $false
-
-    if ($switches.parallel) {
-      $script:jobs | Wait-Job | Receive-Job
-      $script:jobs | Remove-Job
-    }
 
     RunPs1 $customizations
 
