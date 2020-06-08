@@ -15,10 +15,17 @@ function Deploy-App {
   )
 
   dynamicparam {
-    $packages = "D:\Win\Packages"
+    $win = "D:\Win"
+
+    $globals = @{
+      packagesDir = Join-Path $win "Packages"
+      unpackedDir = Join-Path $win "Unpacked"
+      targetDrive = "D:"
+      systemDrive = $env:SystemDrive
+    }
 
     $values =
-      Get-ChildItem -Path $packages -Recurse -Include "*.zip" |
+      Get-ChildItem -Path $globals.packagesDir -Recurse -Include "*.zip" |
       Select-Object -ExpandProperty Name |
       ForEach-Object { [IO.Path]::GetFileNameWithoutExtension($_) }
 
@@ -49,7 +56,6 @@ function Deploy-App {
       skipReg = $SkipReg
       remove = $Remove
       pack = $Pack
-      parallel = $Parallel
     }
 
     if ($switches.remove -and $switches.pack) {
@@ -61,14 +67,9 @@ function Deploy-App {
 
     $time = [Diagnostics.Stopwatch]::StartNew()
 
-    $globals = @{
-      zip = Join-Path $packages "$($PSBoundParameters.App).zip"
-      targetDrive = "D:"
-      systemDrive = $env:SystemDrive
-    }
+    $globals.package = Join-Path $globals.packagesDir "$($PSBoundParameters.App).zip"
 
     $d = @{
-      packages = Join-Path $globals.targetDrive "Packages"
       apps = Join-Path $globals.targetDrive "Apps"
       programdata = Join-Path $globals.targetDrive $home.TrimEnd($env:USERNAME).TrimStart($globals.systemDrive) | Join-Path -ChildPath "All Users"
       home = Join-Path $globals.targetDrive $home.TrimStart($globals.systemDrive)
@@ -85,34 +86,34 @@ function Deploy-App {
       startup = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\Startup"
     }
 
-    $globals.package = Join-Path $d.packages ([IO.Path]::GetFileNameWithoutExtension($globals.zip))
+    $globals.unpacked = Join-Path $globals.unpackedDir ([IO.Path]::GetFileNameWithoutExtension($globals.package))
 
     if ($switches.remove) {
-      Write-Host "Removing $($globals.zip)" -ForegroundColor Red
+      Write-Host "Removing $($globals.package)" -ForegroundColor Red
       $hook = "remove"
     } elseif ($switches.pack) {
-      Write-Host "Packing $($globals.zip)" -ForegroundColor Blue
+      Write-Host "Packing $($globals.package)" -ForegroundColor Blue
       $hook = "pack"
     } else {
-      Write-Host "Adding $($globals.zip)" -ForegroundColor Green
+      Write-Host "Adding $($globals.package)" -ForegroundColor Green
       $hook = "add"
     }
 
-    function RemovePackage {
-      Remove $globals.package
+    function RemoveUnpacked {
+      Remove $globals.unpacked
     }
 
     function UnzipPackage {
-      Unzip $globals.zip $d.packages
-      SetOwnerToCurrentUser $globals.package
-      SetChildrenOwnerToCurrentUser $globals.package
+      Unzip $globals.package $globals.unpackedDir
+      SetOwnerToCurrentUser $globals.unpacked
+      SetChildrenOwnerToCurrentUser $globals.unpacked
     }
 
-    if (Test-Path $globals.package) { RemovePackage }
+    if (Test-Path $globals.unpacked) { RemoveUnpacked }
     UnzipPackage
 
     function DeployCategory ($category, $to, $replace = $true, $createLinks = $true) {
-      $from = Join-Path $globals.package $category
+      $from = Join-Path $globals.unpacked $category
 
       $deviceFrom = $from + "@" + $env:COMPUTERNAME
       if (Test-Path $deviceFrom) {
@@ -124,7 +125,7 @@ function Deploy-App {
 
     function RunPs1 ($name) {
       if ($switches.skipPs1) { return }
-      $ps1 = Join-Path $globals.package "$name.ps1"
+      $ps1 = Join-Path $globals.unpacked "$name.ps1"
       if (Test-Path $ps1) {
         Log "Run" $ps1
         & $ps1
@@ -142,7 +143,7 @@ function Deploy-App {
     DeployCategory "locallow" $d.locallow
     DeployCategory "roaming" $d.roaming
 
-    foreach ($category in (Get-ChildItem $globals.package |
+    foreach ($category in (Get-ChildItem $globals.unpacked |
         Select-Object -ExpandProperty Name |
         Where-Object { $_.Contains("#") } |
         ForEach-Object { $_.Split("@")[0] }) |
@@ -164,14 +165,14 @@ function Deploy-App {
     RunPs1 $hook
 
     if (!$switches.skipReg) {
-      $reg = Join-Path $globals.package "$hook.reg"
+      $reg = Join-Path $globals.unpacked "$hook.reg"
       if (Test-Path $reg) {
         Log "Import" $reg
         Start-Process -FilePath "regedit.exe" -ArgumentList "/s", """$reg""" -Wait
       }
     }
 
-    $txt = Join-Path $globals.package "$hook.txt"
+    $txt = Join-Path $globals.unpacked "$hook.txt"
     if (Test-Path $txt) {
       Log "Show" $txt
       Get-Content $txt | Write-Host -ForegroundColor White
@@ -182,15 +183,15 @@ function Deploy-App {
     if (!$switches.remove -and !$switches.pack) { RefreshIcons }
 
     if ($switches.pack) {
-      $packageZip = "$($globals.package).zip"
-      Remove $packageZip
-      Zip $globals.package $packageZip
-      SetOwnerToCurrentUser $packageZip
-      Log "Move" $globals.zip
-      Move-Item $packageZip $globals.zip -Force
+      $zip = "$($globals.unpacked).zip"
+      Remove $zip
+      Zip $globals.unpacked $zip
+      SetOwnerToCurrentUser $zip
+      Log "Move" $globals.package
+      Move-Item $zip $globals.package -Force
     }
 
-    RemovePackage
+    RemoveUnpacked
 
     $time.Stop()
     Write-Host "Done in $($time.Elapsed.ToString("mm\:ss\.fff"))" -ForegroundColor DarkGray
