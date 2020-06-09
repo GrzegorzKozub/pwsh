@@ -1,13 +1,18 @@
-﻿Import-Module Admin
-
-function Update-Path {
+﻿function Update-Path {
   param (
     [ValidateNotNullOrEmpty()] [string] $Dir,
     [ValidateSet("Machine", "User")] [string] $Target = "Machine",
     [switch] $Remove = $false
   )
 
-  AssertRunningAsAdmin
+  function RunningAsAdmin {
+    return ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+  }
+
+  if (!(RunningAsAdmin)) {
+    Write-Error "Must run as admin"
+    break
+  }
 
   if ($Target -eq "Machine") {
     $key = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("SYSTEM\CurrentControlSet\Control\Session Manager\Environment", $true)

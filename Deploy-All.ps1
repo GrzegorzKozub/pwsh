@@ -1,12 +1,8 @@
-﻿Import-Module Admin
-
-function Deploy-All {
+﻿function Deploy-All {
   param (
     [switch] $SkipC, [switch] $SkipD, [switch] $SkipPs1, [switch] $SkipReg,
     [switch] $Remove, [switch] $Pack
   )
-
-  AssertRunningAsAdmin
 
   $time = [Diagnostics.Stopwatch]::StartNew()
 

@@ -1,8 +1,6 @@
 ﻿using namespace System.Collections.ObjectModel
 using namespace System.Management.Automation
 
-Import-Module Admin
-
 function Deploy-App {
   param (
     [Parameter(ValueFromRemainingArguments)] [switch] $SkipC = $false,
@@ -62,7 +60,14 @@ function Deploy-App {
       return
     }
 
-    AssertRunningAsAdmin
+    function RunningAsAdmin {
+      return ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+    }
+
+    if (!(RunningAsAdmin)) {
+      Write-Error "Must run as admin"
+      break
+    }
 
     $time = [Diagnostics.Stopwatch]::StartNew()
 

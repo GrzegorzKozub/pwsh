@@ -1,5 +1,4 @@
-﻿Import-Module Admin
-Import-Module ClipboardText
+﻿Import-Module ClipboardText
 Import-Module posh-git
 Import-Module posh-docker
 
@@ -87,6 +86,10 @@ $GitPromptSettings.LocalWorkingStatusSymbol = ""
 
 Remove-Variable backgroundColor
 Remove-Variable separatorColor
+
+function RunningAsAdmin {
+  return ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+}
 
 $prompt = @{
   User = $env:USERNAME.ToLower()
