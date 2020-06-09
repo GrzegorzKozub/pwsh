@@ -81,7 +81,7 @@
   $programFilesX86Paths = ExtractPaths "%ProgramFiles(x86)%"
   $userProfilePaths = ExtractPaths "%USERPROFILE%"
 
-  $appsPaths = @(ExtractPaths "C:\Apps\") + @(ExtractPaths "D:\Apps\")
+  $appsPaths = @(ExtractPaths "D:\Apps\")
   
   $otherPaths = $script:paths
 
