@@ -1,3 +1,5 @@
 Modules/ClipboardText
+Modules/PackageManagement
+Modules/PowerShellGet
 Modules/posh-docker
 Modules/posh-git
