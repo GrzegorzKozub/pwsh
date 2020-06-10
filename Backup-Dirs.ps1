@@ -101,5 +101,3 @@ function Backup-Dirs {
   StopTimer $allTime "All done"
 }
 
-Set-Alias backup Backup-Dirs
-

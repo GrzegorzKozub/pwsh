@@ -1,4 +1,4 @@
-function Backup-Repos {
+function Backup-GitHub {
   param (
     [ValidateNotNullOrEmpty()] [string] $GitHubUser = "GrzegorzKozub",
     [ValidateScript({ Test-Path $_ })] [string] $To = "E:\GitHub"
@@ -80,6 +80,4 @@ function Backup-Repos {
 
   StopTimer $allTime "All done"
 }
-
-Set-Alias repos Backup-Repos
 
