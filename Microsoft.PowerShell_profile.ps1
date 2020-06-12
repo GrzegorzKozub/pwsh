@@ -14,11 +14,6 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
 # Enable UTF-8 support for Interactive Elixir
 chcp 65001 | Out-Null
 
-Get-ChildItem `
-  (Split-Path $PROFILE) `
-  -Filter "*-*.ps1" |
-ForEach-Object { . $_.FullName }
-
 $backgroundColor = "Black"
 $separatorColor = "DarkGray"
 
