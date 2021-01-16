@@ -11,126 +11,72 @@ Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
 
 . _rg.ps1
 
-# Enable UTF-8 support for Interactive Elixir
-chcp 65001 | Out-Null
-
-$backgroundColor = "Black"
-$separatorColor = "DarkGray"
-
-if ($Host.PrivateData -ne $null) {
-  $Host.PrivateData.DebugBackgroundColor = $backgroundColor
-  $Host.PrivateData.DebugForegroundColor = "DarkGray"
-  $Host.PrivateData.ErrorBackgroundColor = $backgroundColor
-  $Host.PrivateData.ErrorForegroundColor = "DarkRed"
-  $Host.PrivateData.ProgressBackgroundColor = "DarkGray"
-  $Host.PrivateData.ProgressForegroundColor = "White"
-  $Host.PrivateData.VerboseBackgroundColor = $backgroundColor
-  $Host.PrivateData.VerboseForegroundColor = "Gray"
-  $Host.PrivateData.WarningBackgroundColor = $backgroundColor
-  $Host.PrivateData.WarningForegroundColor = "DarkYellow"
-}
-
-Set-PSReadLineKeyHandler -Chord Ctrl+Shift+E -ScriptBlock {
-  [Microsoft.PowerShell.PSConsoleReadLine]::Copy()
-  $temp = (New-TemporaryFile).FullName
-  Get-ClipboardText > $temp
-  gvim $temp | Out-Null
-  Get-Content -Path $temp | Set-ClipboardText
-  [Microsoft.PowerShell.PSConsoleReadLine]::DeleteLine()
-  [Microsoft.PowerShell.PSConsoleReadLine]::Paste()
-  Remove-Item -Path $temp -ErrorAction SilentlyContinue
-}
+chcp 65001 | Out-Null # support UTF-8 in iex
 
 Set-PSReadlineOption -BellStyle None
+Set-PSReadLineOption -PredictionSource History
+
 Set-PSReadLineOption -Colors @{
-  "Command" = "DarkYellow"
-  "Comment" = "DarkGray"
-  "ContinuationPrompt" = "DarkGray"
-  "Default" = "Gray"
-  "Emphasis" = "Yellow"
+  "Command" = "DarkGreen"
+  "Comment" = "Cyan"
+  "ContinuationPrompt" = "Cyan"
+  "Default" = "Yellow"
+  "Emphasis" = "Red"
   "Error" = "DarkRed"
-  "Keyword" = "DarkBlue"
-  "Member" = "DarkBlue"
-  "Number" = "White"
-  "Operator" = "DarkCyan"
-  "Parameter" = "DarkGray"
-  "String" = "DarkGreen"
-  "Type" = "Blue"
-  "Variable" = "DarkMagenta"
+  "InlinePrediction" = "White"
+  "Keyword" = "DarkYellow"
+  "Member" = "DarkYellow"
+  "Number" = "DarkMagenta"
+  "Operator" = "Cyan"
+  "Parameter" = "DarkBlue"
+  "Selection" = "White"
+  "String" = "Magenta"
+  "Type" = "DarkGreen"
+  "Variable" = "Red"
 }
 
-$GitPromptSettings.AfterForegroundColor = $separatorColor
+$Host.PrivateData.DebugForegroundColor = "Cyan"
+$Host.PrivateData.ErrorForegroundColor = "DarkRed"
+$Host.PrivateData.ProgressBackgroundColor = "Blue"
+$Host.PrivateData.ProgressForegroundColor = "White"
+$Host.PrivateData.VerboseForegroundColor = "Yellow"
+$Host.PrivateData.WarningForegroundColor = "DarkYellow"
+
 $GitPromptSettings.AfterText = ""
-$GitPromptSettings.BeforeForegroundColor = $separatorColor
-$GitPromptSettings.BeforeIndexForegroundColor = $separatorColor
-$GitPromptSettings.BeforeIndexText = ""
 $GitPromptSettings.BeforeText = " "
 $GitPromptSettings.BranchAheadStatusForegroundColor = "DarkGreen"
-$GitPromptSettings.BranchBehindAndAheadStatusForegroundColor = "DarkYellow"
-$GitPromptSettings.BranchBehindStatusForegroundColor = "DarkRed"
+$GitPromptSettings.BranchBehindAndAheadStatusForegroundColor = "DarkRed"
+$GitPromptSettings.BranchBehindStatusForegroundColor = "Red"
 $GitPromptSettings.BranchForegroundColor = "DarkBlue"
-$GitPromptSettings.BranchGoneStatusForegroundColor = "Red"
+$GitPromptSettings.BranchGoneStatusForegroundColor = "DarkRed"
 $GitPromptSettings.BranchIdenticalStatusToForegroundColor = "DarkBlue"
-$GitPromptSettings.DefaultForegroundColor = "Gray"
-$GitPromptSettings.DelimForegroundColor = $separatorColor
+$GitPromptSettings.BranchIdenticalStatusToSymbol = ""
 $GitPromptSettings.DelimText = ""
 $GitPromptSettings.EnableWindowTitle = ""
 $GitPromptSettings.IndexForegroundColor = "DarkGreen"
 $GitPromptSettings.LocalStagedStatusSymbol = ""
 $GitPromptSettings.LocalWorkingStatusSymbol = ""
-
-Remove-Variable backgroundColor
-Remove-Variable separatorColor
+$GitPromptSettings.WorkingForegroundColor = "Red"
 
 function RunningAsAdmin {
   return ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 }
 
-$prompt = @{
-  User = $env:USERNAME.ToLower()
-  Host = $env:COMPUTERNAME.ToLower()
-  UserColor = if (RunningAsAdmin) { "DarkRed" } else { "DarkGreen" }
-}
+$promptColor = if (RunningAsAdmin) { "DarkRed" } else { "DarkBlue" }
 
 function Prompt {
-
   $location = Get-Location
   $path = $location.Path
-
   if ($path -eq $Home) {
     $path = "~"
-  } elseif ($path.Length -ge 64) {
+  } elseif ($path.Length -ge 60) {
     $path = $path.Substring($path.LastIndexOf("\") + 1, $path.Length - $path.LastIndexOf("\") - 1)
   }
-
   $Host.UI.RawUI.WindowTitle = "$path"
-
-  $Host.UI.RawUI.BackgroundColor = "Black"
-  $Host.UI.RawUI.ForegroundColor = "Gray"
-
-  Write-Host $prompt.User -ForegroundColor $prompt.UserColor -NoNewLine
-  Write-Host "@" -ForegroundColor "DarkGray" -NoNewLine
-  Write-Host $prompt.Host -ForegroundColor "DarkYellow" -NoNewLine
-
-  Write-Host " $path" -ForegroundColor "DarkCyan" -NoNewLine
-
-  if ($VisualStudio) {
-    Write-Host " vs" -ForegroundColor "DarkMagenta" -NoNewLine
-  }
-
-  if ($location.Provider.Name -eq "FileSystem") {
-    Write-VcsStatus
-  }
-
+  Write-Host "$path" -ForegroundColor "DarkCyan" -NoNewLine
+  if ($location.Provider.Name -eq "FileSystem") { Write-VcsStatus }
   Write-Host
-  Write-Host ">" -ForegroundColor "DarkGray" -NoNewLine
-
+  Write-Host "●•" -ForegroundColor $promptColor -NoNewLine
   return " "
-}
-
-if ($Host.Version.Major -ge 6 -and $env:ConEmuPID) {
-  # First Write-Host call with -ForegroundColor param permanently sets $host.UI.RawUI.ForegroundColor
-  Write-Host ""
-  Clear-Host
 }
 
