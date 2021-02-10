@@ -60,7 +60,7 @@ function StartTimer {
 
 function StopTimer ($timer, $message) {
   $timer.Stop()
-  Write-Host "$message in $($timer.Elapsed.ToString("mm\:ss\.fff"))" -ForegroundColor DarkGray
+  Write-Host "$message in $($timer.Elapsed.ToString("mm\:ss\.fff"))" -ForegroundColor Cyan
 }
 
 function Log ($map) {

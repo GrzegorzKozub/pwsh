@@ -48,7 +48,7 @@ function StartTimer {
 
 function StopTimer ($timer, $message) {
   $timer.Stop()
-  Write-Host "$message in $($timer.Elapsed.ToString("mm\:ss\.fff"))" -ForegroundColor DarkGray
+  Write-Host "$message in $($timer.Elapsed.ToString("mm\:ss\.fff"))" -ForegroundColor Cyan
 }
 
 function Log ($repoName) {
@@ -64,10 +64,10 @@ foreach ($repo in (GetRepos)) {
   $backupVersion = GetBackupVersion $repo.name
   $repoVersion = GetRepoVersion $repo.name
   if ($backupVersion -eq $repoVersion) {
-    Write-Host "Backup version $backupVersion is up to date" -ForegroundColor DarkGray
+    Write-Host "Backup version $backupVersion is up to date"
     continue
   }
-  Write-Host "Updating backup to version $repoVersion" -ForegroundColor DarkGray
+  Write-Host "Updating backup to version $repoVersion"
   $tempPath = GetTempPath $repo.name
   Remove $tempPath
   Remove (GetBackupPath $repo.name $backupVersion)
