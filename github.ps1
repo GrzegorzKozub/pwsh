@@ -1,6 +1,6 @@
 param (
   [ValidateNotNullOrEmpty()] [string] $GitHubUser = "GrzegorzKozub",
-  [ValidateScript({ Test-Path $_ })] [string] $To = "E:\github"
+  [ValidateScript({ Test-Path $_ })] [string] $To = "E:\GitHub"
 )
 
 function GetRepos {
@@ -17,7 +17,7 @@ function GetRepoVersion ($repoName) {
 }
 
 function GetBackupVersion ($repoName) {
-  $backups = Get-ChildItem -Path (GetBackupPath $repoName "*")
+  $backups = Get-ChildItem -Path (GetBackupPath $repoName "*") -ErrorAction SilentlyContinue
   if (!$backups) { return $null }
   return $backups[0].BaseName.Split(".")[2]
 }
