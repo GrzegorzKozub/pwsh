@@ -42,21 +42,20 @@ $Host.PrivateData.ProgressForegroundColor = "White"
 $Host.PrivateData.VerboseForegroundColor = "Yellow"
 $Host.PrivateData.WarningForegroundColor = "DarkYellow"
 
-$GitPromptSettings.AfterText = ""
-$GitPromptSettings.BeforeText = " "
-$GitPromptSettings.BranchAheadStatusForegroundColor = "DarkGreen"
-$GitPromptSettings.BranchBehindAndAheadStatusForegroundColor = "DarkRed"
-$GitPromptSettings.BranchBehindStatusForegroundColor = "Red"
-$GitPromptSettings.BranchForegroundColor = "DarkBlue"
-$GitPromptSettings.BranchGoneStatusForegroundColor = "DarkRed"
-$GitPromptSettings.BranchIdenticalStatusToForegroundColor = "DarkBlue"
-$GitPromptSettings.BranchIdenticalStatusToSymbol = ""
-$GitPromptSettings.DelimText = ""
-$GitPromptSettings.EnableWindowTitle = ""
-$GitPromptSettings.IndexForegroundColor = "DarkGreen"
-$GitPromptSettings.LocalStagedStatusSymbol = ""
-$GitPromptSettings.LocalWorkingStatusSymbol = ""
-$GitPromptSettings.WorkingForegroundColor = "Red"
+$GitPromptSettings.AfterStatus = ""
+$GitPromptSettings.BeforeStatus = ""
+$GitPromptSettings.BranchAheadStatusSymbol.ForegroundColor = "DarkGreen"
+$GitPromptSettings.BranchBehindAndAheadStatusSymbol.ForegroundColor = "DarkRed"
+$GitPromptSettings.BranchBehindStatusSymbol.ForegroundColor = "Red"
+$GitPromptSettings.BranchColor.ForegroundColor = "DarkBlue"
+$GitPromptSettings.BranchGoneStatusSymbol.ForegroundColor = "DarkRed"
+$GitPromptSettings.BranchIdenticalStatusSymbol.ForegroundColor = "DarkBlue"
+$GitPromptSettings.BranchIdenticalStatusSymbol.Text = ""
+$GitPromptSettings.DelimStatus.Text = ""
+$GitPromptSettings.IndexColor.ForegroundColor = "DarkGreen"
+$GitPromptSettings.LocalStagedStatusSymbol.Text = ""
+$GitPromptSettings.LocalWorkingStatusSymbol.Text = ""
+$GitPromptSettings.WorkingColor.ForegroundColor = "Red"
 
 function RunningAsAdmin {
   return ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
@@ -74,7 +73,7 @@ function Prompt {
   }
   $Host.UI.RawUI.WindowTitle = "$path"
   Write-Host "$path" -ForegroundColor "DarkCyan" -NoNewLine
-  if ($location.Provider.Name -eq "FileSystem") { Write-VcsStatus }
+  if ($location.Provider.Name -eq "FileSystem") { Write-Host $(Write-VcsStatus) -NoNewLine }
   Write-Host
   Write-Host "●•" -ForegroundColor $promptColor -NoNewLine
   return " "
