@@ -1,81 +1,81 @@
-﻿Import-Module ClipboardText
-Import-Module posh-git
-Import-Module posh-docker
-
-Register-ArgumentCompleter -Native -CommandName dotnet -ScriptBlock {
-  param ($commandName, $wordToComplete, $cursorPosition)
-  dotnet complete --position $cursorPosition "$wordToComplete" | ForEach-Object {
-    [System.Management.Automation.CompletionResult]::new($_, $_, "ParameterValue", $_)
-  }
-}
+﻿Import-Module posh-git
 
 . _rg.ps1
 
 chcp 65001 | Out-Null # support UTF-8 in iex
 
 Set-PSReadlineOption -BellStyle None
-Set-PSReadLineOption -PredictionSource History
-
 Set-PSReadLineOption -Colors @{
-  "Command" = "DarkGreen"
-  "Comment" = "Cyan"
-  "ContinuationPrompt" = "Cyan"
-  "Default" = "Yellow"
-  "Emphasis" = "Red"
-  "Error" = "DarkRed"
-  "InlinePrediction" = "White"
-  "Keyword" = "DarkYellow"
-  "Member" = "DarkYellow"
-  "Number" = "DarkMagenta"
-  "Operator" = "Cyan"
-  "Parameter" = "DarkBlue"
-  "Selection" = "White"
-  "String" = "Magenta"
-  "Type" = "DarkGreen"
-  "Variable" = "Red"
+  "Command" = [ConsoleColor]::DarkGreen
+  "Comment" = [ConsoleColor]::Cyan
+  "ContinuationPrompt" = [ConsoleColor]::Cyan
+  "Default" = [ConsoleColor]::Yellow
+  "Emphasis" = [ConsoleColor]::Red
+  "Error" = [ConsoleColor]::DarkRed
+  "InlinePrediction" = [ConsoleColor]::White
+  "Keyword" = [ConsoleColor]::DarkYellow
+  "Member" = [ConsoleColor]::DarkYellow
+  "Number" = [ConsoleColor]::DarkMagenta
+  "Operator" = [ConsoleColor]::Cyan
+  "Parameter" = [ConsoleColor]::DarkBlue
+  "Selection" = [ConsoleColor]::White
+  "String" = [ConsoleColor]::Magenta
+  "Type" = [ConsoleColor]::DarkGreen
+  "Variable" = [ConsoleColor]::Red
+}
+Set-PSReadLineOption -EditMode Vi
+Set-PSReadLineOption -PredictionSource History
+Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
+  if ($args[0] -eq "Command") {
+    Write-Host -NoNewLine "`e[1 q"
+  } else {
+    Write-Host -NoNewLine "`e[0 q"
+  }
 }
 
-$Host.PrivateData.DebugForegroundColor = "Cyan"
-$Host.PrivateData.ErrorForegroundColor = "DarkRed"
-$Host.PrivateData.ProgressBackgroundColor = "Blue"
-$Host.PrivateData.ProgressForegroundColor = "White"
-$Host.PrivateData.VerboseForegroundColor = "Yellow"
-$Host.PrivateData.WarningForegroundColor = "DarkYellow"
+$Host.PrivateData.DebugForegroundColor = [ConsoleColor]::Cyan
+$Host.PrivateData.ErrorForegroundColor = [ConsoleColor]::DarkRed
+$Host.PrivateData.ProgressBackgroundColor = [ConsoleColor]::Blue
+$Host.PrivateData.ProgressForegroundColor = [ConsoleColor]::White
+$Host.PrivateData.VerboseForegroundColor = [ConsoleColor]::Yellow
+$Host.PrivateData.WarningForegroundColor = [ConsoleColor]::DarkYellow
 
 $GitPromptSettings.AfterStatus = ""
 $GitPromptSettings.BeforeStatus = ""
-$GitPromptSettings.BranchAheadStatusSymbol.ForegroundColor = "DarkGreen"
-$GitPromptSettings.BranchBehindAndAheadStatusSymbol.ForegroundColor = "DarkRed"
-$GitPromptSettings.BranchBehindStatusSymbol.ForegroundColor = "Red"
-$GitPromptSettings.BranchColor.ForegroundColor = "DarkBlue"
-$GitPromptSettings.BranchGoneStatusSymbol.ForegroundColor = "DarkRed"
-$GitPromptSettings.BranchIdenticalStatusSymbol.ForegroundColor = "DarkBlue"
+$GitPromptSettings.BranchAheadStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkGreen)
+$GitPromptSettings.BranchBehindAndAheadStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
+$GitPromptSettings.BranchBehindStatusSymbol.ForegroundColor = $([ConsoleColor]::Red)
+$GitPromptSettings.BranchColor.ForegroundColor = $([ConsoleColor]::DarkBlue)
+$GitPromptSettings.BranchGoneStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
+$GitPromptSettings.BranchIdenticalStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkBlue)
 $GitPromptSettings.BranchIdenticalStatusSymbol.Text = ""
 $GitPromptSettings.DelimStatus.Text = ""
-$GitPromptSettings.IndexColor.ForegroundColor = "DarkGreen"
+$GitPromptSettings.IndexColor.ForegroundColor = $([ConsoleColor]::DarkGreen)
 $GitPromptSettings.LocalStagedStatusSymbol.Text = ""
 $GitPromptSettings.LocalWorkingStatusSymbol.Text = ""
-$GitPromptSettings.WorkingColor.ForegroundColor = "Red"
+$GitPromptSettings.WorkingColor.ForegroundColor = $([ConsoleColor]::Red)
 
 function RunningAsAdmin {
   return ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 }
 
-$promptColor = if (RunningAsAdmin) { "DarkRed" } else { "DarkBlue" }
+$promptColor = if (RunningAsAdmin) { [ConsoleColor]::DarkRed } else { [ConsoleColor]::DarkBlue }
 
-function Prompt {
-  $location = Get-Location
-  $path = $location.Path
+function prompt {
+  $exitCode = $LASTEXITCODE
+  $path = $(Get-Location).Path
   if ($path -eq $Home) {
     $path = "~"
-  } elseif ($path.Length -ge 60) {
+  } elseif ($path.Length -ge 64) {
     $path = $path.Substring($path.LastIndexOf("\") + 1, $path.Length - $path.LastIndexOf("\") - 1)
   }
   $Host.UI.RawUI.WindowTitle = "$path"
-  Write-Host "$path" -ForegroundColor "DarkCyan" -NoNewLine
-  if ($location.Provider.Name -eq "FileSystem") { Write-Host $(Write-VcsStatus) -NoNewLine }
-  Write-Host
-  Write-Host "●•" -ForegroundColor $promptColor -NoNewLine
-  return " "
+  $prompt = Write-Prompt $path -ForegroundColor $([ConsoleColor]::DarkCyan)
+  $prompt += Write-VcsStatus
+  $prompt += Write-Prompt $([System.Environment]::NewLine)
+  $prompt += Write-Prompt "●•" -ForegroundColor $promptColor
+  $prompt += Write-Prompt " "
+  $LASTEXITCODE = $exitCode
+  $prompt
 }
 
