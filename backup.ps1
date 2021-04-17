@@ -13,7 +13,9 @@ function GetTargetDrive ($label) {
 }
 
 function GetHostName {
-  return (Get-Culture).TextInfo.ToTitleCase($env:COMPUTERNAME.ToLower())
+  $hostName = (Get-Culture).TextInfo.ToTitleCase($env:COMPUTERNAME.ToLower())
+  if ($hostName.StartsWith("Aad-")) { $hostName = "Drifter" }
+  return $hostName
 }
 
 function GetTargetLocation ($label) {
