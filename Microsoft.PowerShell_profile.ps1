@@ -24,7 +24,7 @@ Set-PSReadLineOption -Colors @{
   "Variable" = [ConsoleColor]::Red
 }
 Set-PSReadLineOption -EditMode Vi
-Set-PSReadLineOption -PredictionSource History
+Set-PSReadLineOption -PredictionSource None
 Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
   if ($args[0] -eq "Command") {
     Write-Host -NoNewLine "`e[1 q"
