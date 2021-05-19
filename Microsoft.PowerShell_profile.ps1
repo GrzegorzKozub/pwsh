@@ -33,6 +33,9 @@ Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
   }
 }
 
+Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Command
+Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Insert
+
 $Host.PrivateData.DebugForegroundColor = [ConsoleColor]::Cyan
 $Host.PrivateData.ErrorForegroundColor = [ConsoleColor]::DarkRed
 $Host.PrivateData.ProgressBackgroundColor = [ConsoleColor]::Blue
