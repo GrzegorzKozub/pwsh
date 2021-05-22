@@ -4,6 +4,8 @@
 
 chcp 65001 | Out-Null # support UTF-8 in iex
 
+$env:MY_THEME="gruvbox-dark"
+
 Set-PSReadlineOption -BellStyle None
 Set-PSReadLineOption -Colors @{
   "Command" = [ConsoleColor]::DarkGreen
