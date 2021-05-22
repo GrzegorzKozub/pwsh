@@ -4,7 +4,8 @@
 
 chcp 65001 | Out-Null # support UTF-8 in iex
 
-$env:MY_THEME="gruvbox-dark"
+$env:TERM="xterm-256color" # makes nvim clear terminal buffer upon exit
+$env:MY_THEME="gruvbox-dark" # vim and nvim theme
 
 Set-PSReadlineOption -BellStyle None
 Set-PSReadLineOption -Colors @{
