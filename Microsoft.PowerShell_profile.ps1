@@ -2,32 +2,15 @@
 
 . _rg.ps1
 
-chcp 65001 | Out-Null # support UTF-8 in iex
+chcp 65001 | Out-Null # support utf-8 in iex
 
 $env:TERM="screen-256color" # makes nvim clear terminal buffer upon exit
 $env:MY_THEME="gruvbox-dark" # vim and nvim theme
 
 Set-PSReadlineOption -BellStyle None
-Set-PSReadLineOption -Colors @{
-  "Command" = [ConsoleColor]::DarkGreen
-  "Comment" = [ConsoleColor]::Cyan
-  "ContinuationPrompt" = [ConsoleColor]::Cyan
-  "Default" = [ConsoleColor]::Yellow
-  "Emphasis" = [ConsoleColor]::Red
-  "Error" = [ConsoleColor]::DarkRed
-  "InlinePrediction" = [ConsoleColor]::White
-  "Keyword" = [ConsoleColor]::DarkYellow
-  "Member" = [ConsoleColor]::DarkYellow
-  "Number" = [ConsoleColor]::DarkMagenta
-  "Operator" = [ConsoleColor]::Cyan
-  "Parameter" = [ConsoleColor]::DarkBlue
-  "Selection" = [ConsoleColor]::White
-  "String" = [ConsoleColor]::Magenta
-  "Type" = [ConsoleColor]::DarkGreen
-  "Variable" = [ConsoleColor]::Red
-}
 Set-PSReadLineOption -EditMode Vi
-Set-PSReadLineOption -PredictionSource None
+Set-PSReadLineOption -PredictionSource History
+
 Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
   if ($args[0] -eq "Command") {
     Write-Host -NoNewLine "`e[1 q"
@@ -39,11 +22,30 @@ Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
 Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Command
 Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Insert
 
-$Host.PrivateData.DebugForegroundColor = [ConsoleColor]::Cyan
+Set-PSReadLineOption -Colors @{
+  "Command" = [ConsoleColor]::DarkGreen
+  "Comment" = [ConsoleColor]::DarkGray
+  "ContinuationPrompt" = [ConsoleColor]::DarkBlue
+  "Default" = [ConsoleColor]::White
+  "Emphasis" = [ConsoleColor]::Red
+  "Error" = [ConsoleColor]::DarkRed
+  "InlinePrediction" = [ConsoleColor]::Black
+  "Keyword" = [ConsoleColor]::DarkYellow
+  "Member" = [ConsoleColor]::DarkYellow
+  "Number" = [ConsoleColor]::DarkMagenta
+  "Operator" = [ConsoleColor]::White
+  "Parameter" = [ConsoleColor]::DarkBlue
+  "Selection" = [ConsoleColor]::White
+  "String" = [ConsoleColor]::Magenta
+  "Type" = [ConsoleColor]::DarkGreen
+  "Variable" = [ConsoleColor]::Red
+}
+
+$Host.PrivateData.DebugForegroundColor = [ConsoleColor]::DarkGray
 $Host.PrivateData.ErrorForegroundColor = [ConsoleColor]::DarkRed
-$Host.PrivateData.ProgressBackgroundColor = [ConsoleColor]::Blue
-$Host.PrivateData.ProgressForegroundColor = [ConsoleColor]::White
-$Host.PrivateData.VerboseForegroundColor = [ConsoleColor]::Yellow
+$Host.PrivateData.ProgressBackgroundColor = [ConsoleColor]::Gray
+$Host.PrivateData.ProgressForegroundColor = [ConsoleColor]::Black
+$Host.PrivateData.VerboseForegroundColor = [ConsoleColor]::Black
 $Host.PrivateData.WarningForegroundColor = [ConsoleColor]::DarkYellow
 
 $GitPromptSettings.AfterStatus = ""
