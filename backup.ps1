@@ -1,5 +1,5 @@
 param (
-  [ValidateNotNullOrEmpty()] [string[]] $Sources = @("D:\Images", "D:\Reflect", "D:\Software", "D:\Win"),
+  [ValidateNotNullOrEmpty()] [string[]] $Sources = @("D:\Images", "D:\Software"),
   [ValidateNotNullOrEmpty()] [string] $Target = "Backup"
 )
 
@@ -12,14 +12,8 @@ function GetTargetDrive ($label) {
   }
 }
 
-function GetHostName {
-  $hostName = (Get-Culture).TextInfo.ToTitleCase($env:COMPUTERNAME.ToLower())
-  if ($hostName.StartsWith("Aad-")) { $hostName = "Drifter" }
-  return $hostName
-}
-
 function GetTargetLocation ($label) {
-  return Join-Path (GetTargetDrive $label) (GetHostName)
+  return Join-Path (GetTargetDrive $label) "Windows"
 }
 
 function MustBeDir ($path) {
@@ -43,7 +37,7 @@ function GetSources ($sources) {
 
 function ConvertToMap ($source, $targetLocation) {
   $to = Join-Path `
-    (Join-Path $targetLocation $source[0]) `
+    $targetLocation `
     ([IO.Path]::GetFullPath($source)).Replace([IO.Path]::GetPathRoot($source), "")
   return @{
     from = $source
