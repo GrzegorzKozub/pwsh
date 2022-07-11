@@ -1,6 +1,6 @@
 param (
   [ValidateNotNullOrEmpty()] [string] $GitHubUser = "GrzegorzKozub",
-  [ValidateScript({ Test-Path $_ })] [string] $To = "E:\GitHub"
+  [ValidateScript({ Test-Path $_ })] [string] $To = "F:\GitHub"
 )
 
 function GetRepos {
