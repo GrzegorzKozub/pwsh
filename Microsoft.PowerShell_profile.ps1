@@ -9,6 +9,8 @@ chcp 65001 | Out-Null # support utf-8 in iex
 
 $env:MY_THEME="gruvbox-dark" # vim and nvim theme
 
+# Set-Alias -Name vim -Value nvim
+
 Set-PSReadlineOption -BellStyle None
 Set-PSReadLineOption -EditMode Vi
 Set-PSReadLineOption -PredictionSource History
@@ -24,7 +26,7 @@ Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
 Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Command
 Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Insert
 
-Set-PSReadLineKeyHandler -ViMode Command -Chord "Escape,l" -ScriptBlock {
+Set-PSReadLineKeyHandler -Chord "escape,l" -ViMode Command -ScriptBlock {
   $tempFile = New-TemporaryFile
   Start-Process -FilePath "lf" -ArgumentList "-last-dir-path", $tempFile.FullName -Wait
   Set-Location -Path $(Get-Content -Path $tempFile)
