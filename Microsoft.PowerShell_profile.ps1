@@ -21,6 +21,10 @@ Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
 Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Command
 Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Insert
 
+Set-PSReadLineKeyHandler -ViMode Command -Chord "Escape,l" -ScriptBlock {
+  Start-Process -FilePath "lf"
+}
+
 Set-PSReadLineOption -Colors @{
   "Command" = [ConsoleColor]::DarkGreen
   "Comment" = [ConsoleColor]::DarkGray
