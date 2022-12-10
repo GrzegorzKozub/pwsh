@@ -2,6 +2,9 @@
 
 . _rg.ps1
 
+# https://github.com/PowerShell/PSReadLine/issues/2866
+$OutputEncoding = [Console]::OutputEncoding = [Console]::InputEncoding = [System.Text.UTF8Encoding]::new()
+
 chcp 65001 | Out-Null # support utf-8 in iex
 
 $env:MY_THEME="gruvbox-dark" # vim and nvim theme
@@ -22,7 +25,11 @@ Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Comm
 Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Insert
 
 Set-PSReadLineKeyHandler -ViMode Command -Chord "Escape,l" -ScriptBlock {
-  Start-Process -FilePath "lf"
+  $tempFile = New-TemporaryFile
+  Start-Process -FilePath "lf" -ArgumentList "-last-dir-path", $tempFile.FullName -Wait
+  Set-Location -Path $(Get-Content -Path $tempFile)
+  Remove-Item -Path $tempFile
+  [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 }
 
 Set-PSReadLineOption -Colors @{
@@ -84,7 +91,8 @@ function prompt {
   $prompt = Write-Prompt $path -ForegroundColor $([ConsoleColor]::DarkCyan)
   $prompt += Write-VcsStatus
   $prompt += Write-Prompt $([System.Environment]::NewLine)
-  $prompt += Write-Prompt "●•" -ForegroundColor $promptColor
+  $prompt += Write-Prompt "●" -ForegroundColor $promptColor
+  #$prompt += Write-Prompt "●•" -ForegroundColor $promptColor
   $prompt += Write-Prompt " "
   $LASTEXITCODE = $exitCode
   $prompt
