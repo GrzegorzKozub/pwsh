@@ -7,9 +7,10 @@ $OutputEncoding = [Console]::OutputEncoding = [Console]::InputEncoding = [System
 
 chcp 65001 | Out-Null # support utf-8 in iex
 
-$env:MY_THEME="gruvbox-dark" # vim and nvim theme
+$env:MY_THEME="gruvbox-dark" # set vim and nvim theme
+$env:TERM="xterm-256color" # fix nvim clear screen on exit
 
-# Set-Alias -Name vim -Value nvim
+Set-Alias -Name vim -Value nvim
 
 Set-PSReadlineOption -BellStyle None
 Set-PSReadLineOption -EditMode Vi
