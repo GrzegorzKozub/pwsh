@@ -40,7 +40,7 @@ Set-PSReadLineOption -Colors @{
   "Comment" = [ConsoleColor]::DarkGray
   "ContinuationPrompt" = [ConsoleColor]::DarkBlue
   "Default" = [ConsoleColor]::White
-  "Emphasis" = [ConsoleColor]::Red
+  "Emphasis" = [ConsoleColor]::DarkYellow
   "Error" = [ConsoleColor]::DarkRed
   "InlinePrediction" = [ConsoleColor]::Black
   "Keyword" = [ConsoleColor]::DarkYellow
@@ -49,9 +49,9 @@ Set-PSReadLineOption -Colors @{
   "Operator" = [ConsoleColor]::White
   "Parameter" = [ConsoleColor]::DarkBlue
   "Selection" = [ConsoleColor]::White
-  "String" = [ConsoleColor]::Magenta
+  "String" = [ConsoleColor]::DarkMagenta
   "Type" = [ConsoleColor]::DarkGreen
-  "Variable" = [ConsoleColor]::Red
+  "Variable" = [ConsoleColor]::DarkRed
 }
 
 $Host.PrivateData.DebugForegroundColor = [ConsoleColor]::DarkGray
@@ -65,7 +65,7 @@ $GitPromptSettings.AfterStatus = ""
 $GitPromptSettings.BeforeStatus = ""
 $GitPromptSettings.BranchAheadStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkGreen)
 $GitPromptSettings.BranchBehindAndAheadStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
-$GitPromptSettings.BranchBehindStatusSymbol.ForegroundColor = $([ConsoleColor]::Red)
+$GitPromptSettings.BranchBehindStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
 $GitPromptSettings.BranchColor.ForegroundColor = $([ConsoleColor]::DarkBlue)
 $GitPromptSettings.BranchGoneStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
 $GitPromptSettings.BranchIdenticalStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkBlue)
@@ -74,7 +74,7 @@ $GitPromptSettings.DelimStatus.Text = ""
 $GitPromptSettings.IndexColor.ForegroundColor = $([ConsoleColor]::DarkGreen)
 $GitPromptSettings.LocalStagedStatusSymbol.Text = ""
 $GitPromptSettings.LocalWorkingStatusSymbol.Text = ""
-$GitPromptSettings.WorkingColor.ForegroundColor = $([ConsoleColor]::Red)
+$GitPromptSettings.WorkingColor.ForegroundColor = $([ConsoleColor]::DarkRed)
 
 function RunningAsAdmin {
   return ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
