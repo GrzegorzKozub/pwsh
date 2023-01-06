@@ -45,7 +45,7 @@ Set-PSReadLineOption -Colors @{
   "InlinePrediction" = [ConsoleColor]::Black
   "Keyword" = [ConsoleColor]::DarkYellow
   "Member" = [ConsoleColor]::DarkYellow
-  "Number" = [ConsoleColor]::DarkMagenta
+  "Number" = [ConsoleColor]::White
   "Operator" = [ConsoleColor]::White
   "Parameter" = [ConsoleColor]::DarkBlue
   "Selection" = [ConsoleColor]::White
