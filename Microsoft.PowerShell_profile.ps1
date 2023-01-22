@@ -30,7 +30,7 @@ Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Inse
 
 Set-PSReadLineKeyHandler -Chord "escape,l" -ViMode Command -ScriptBlock {
   $tempFile = New-TemporaryFile
-  lf -last-dir-path="$tempFile"
+  Start-Process -FilePath "lf" -ArgumentList "-last-dir-path", $tempFile.FullName -Wait
   if (Test-Path -PathType Leaf $tempFile) {
     $dir = Get-Content -Path $tempFile
     Remove-Item -Path $tempFile
