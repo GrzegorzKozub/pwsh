@@ -1,5 +1,6 @@
 ﻿Import-Module posh-git
 
+. _lf.ps1
 . _rg.ps1
 
 # https://github.com/PowerShell/PSReadLine/issues/2866
