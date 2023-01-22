@@ -29,9 +29,14 @@ Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Inse
 
 Set-PSReadLineKeyHandler -Chord "escape,l" -ViMode Command -ScriptBlock {
   $tempFile = New-TemporaryFile
-  Start-Process -FilePath "lf" -ArgumentList "-last-dir-path", $tempFile.FullName -Wait
-  Set-Location -Path $(Get-Content -Path $tempFile)
-  Remove-Item -Path $tempFile
+  lf -last-dir-path="$tempFile"
+  if (Test-Path -PathType Leaf $tempFile) {
+    $dir = Get-Content -Path $tempFile
+    Remove-Item -Path $tempFile
+    if ((Test-Path -PathType Container "$dir") -and "$dir" -ne "$pwd") {
+      Set-Location -Path "$dir"
+    }
+  }
   [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 }
 
