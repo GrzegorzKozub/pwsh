@@ -1,4 +1,6 @@
 param (
+  [string[]] $Drives = @(),
+  [Switch] $Fix,
   [ValidateNotNullOrEmpty()] [string[]] $Tools = @("chkdsk", "defrag")
 )
 
@@ -13,8 +15,10 @@ foreach (
   $drive in Get-PSDrive -PSProvider FileSystem |
     Where-Object -Property Name -NE Temp
 ) {
+  if (($Drives.Length -ne 0) -and !($Drives -contains "${drive}:")) { continue }
+
   if ($Tools -contains "chkdsk") { 
-    chkdsk "${drive}:"
+    if ($Fix) { chkdsk /F "${drive}:" } else { chkdsk "${drive}:" }
     if (!$?) { $exit = 1 }
   }
   if ($Tools -contains "defrag") {
@@ -23,12 +27,16 @@ foreach (
 }
 
 if ($Tools -contains "dism") {
-  DISM.exe /Online /Cleanup-Image /ScanHealth
+  if ($Fix) { 
+    DISM.exe /Online /Cleanup-Image /ScanHealth
+  } else {
+    DISM.exe /Online /Cleanup-Image /RestoreHealth
+  }
   if (!$?) { $exit = 1 }
 }
 
 if ($Tools -contains "sfc") {
-  sfc /VERIFYONLY
+  if ($Fix) { sfc /SCANNOW } else { sfc /VERIFYONLY }
   if (!$?) { $exit = 1 }
 }
 
