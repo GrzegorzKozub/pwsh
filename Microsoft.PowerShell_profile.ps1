@@ -107,3 +107,6 @@ function prompt {
   $prompt
 }
 
+# https://github.com/PowerShell/PowerShell/issues/18778
+$PSStyle.FileInfo.Directory = "`e[34m"
+
