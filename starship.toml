@@ -1,0 +1,66 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+$directory\
+$git_branch\
+$git_commit\
+$git_status\
+$git_state\
+$fill\
+$cmd_duration\
+$status\
+$line_break\
+$character"""
+
+[character]
+success_symbol = '[●•](blue)'
+error_symbol = '[●•](blue)'
+
+[cmd_duration]
+min_time = 5_000
+format = '[$duration]($style) '
+style = 'purple'
+
+[directory]
+format = '[$path]($style) '
+style = 'cyan'
+
+[status]
+format = '[$status]($style) '
+style = 'black'
+disabled = false
+
+[fill]
+symbol = ' '
+
+
+[git_branch]
+format = '[$branch(:$remote_branch)]($style) '
+style = 'blue'
+
+[git_commit]
+format = '[$hash](yellow)[$tag](purple) '
+tag_disabled = false
+tag_symbol = ' '
+
+[git_status]
+format = '$ahead_behind$stashed$conflicted$staged$deleted$renamed$modified$untracked'
+behind = '[↓${count}](yellow) '
+ahead = '[↑${count}](green) '
+diverged = '[↓${behind_count}](yellow) [↑${ahead_count}](green) '
+conflicted = '[?${conflicted}](red) '
+untracked = '[*${count}](red) '
+staged = '[+${count}](green) '
+stashed = '[↙${count}](purple) '
+modified = '[~${count}](yellow) '
+renamed = '[→${count}](yellow) '
+deleted = '[-${count}](yellow) '
+
+[git_state]
+format = '[$state]($style) '
+style = 'white'
+rebase = 'rebase'
+merge = 'merge'
+revert = 'revert'
+cherry_pick = 'cherry-pick'
+bisect = 'bisect'

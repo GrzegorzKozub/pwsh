@@ -88,10 +88,10 @@ function RunningAsAdmin {
 
 $promptColor = if (RunningAsAdmin) { [ConsoleColor]::DarkRed } else { [ConsoleColor]::DarkBlue }
 
-function prompt {
+function prompt1 {
   $exitCode = $LASTEXITCODE
   $path = $(Get-Location).Path
-  if ($path -eq $Home) {
+  if ($path -eq $HOME) {
     $path = "~"
   } elseif ($path.Length -ge 64) {
     $path = $path.Substring($path.LastIndexOf("\") + 1, $path.Length - $path.LastIndexOf("\") - 1)
@@ -108,4 +108,14 @@ function prompt {
 
 # https://github.com/PowerShell/PowerShell/issues/18778
 $PSStyle.FileInfo.Directory = "`e[34m"
+
+
+function Invoke-Starship-TransientFunction {
+  &starship module character
+}
+
+$env:STARSHIP_CONFIG = "$HOME\Documents\PowerShell\starship.toml"
+$env:STARSHIP_CACHE = "$HOME\AppData\Local\Temp"
+Invoke-Expression (&starship init powershell)
+Enable-TransientPrompt
 
