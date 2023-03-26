@@ -100,8 +100,7 @@ function prompt {
   $prompt = Write-Prompt $path -ForegroundColor $([ConsoleColor]::DarkCyan)
   $prompt += Write-VcsStatus
   $prompt += Write-Prompt $([System.Environment]::NewLine)
-  $prompt += Write-Prompt "●" -ForegroundColor $promptColor
-  #$prompt += Write-Prompt "●•" -ForegroundColor $promptColor
+  $prompt += Write-Prompt "●•" -ForegroundColor $promptColor
   $prompt += Write-Prompt " "
   $LASTEXITCODE = $exitCode
   $prompt
