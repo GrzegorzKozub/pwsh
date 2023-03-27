@@ -72,7 +72,7 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
   $env:STARSHIP_CONFIG = "$env:USERPROFILE\Documents\PowerShell\starship.toml"
   $env:STARSHIP_CACHE = $env:TEMP
 
-  function Invoke-Starship-TransientFunction { &starship module character }
+  function Invoke-Starship-TransientFunction { &starship module username }
   Invoke-Expression ( &starship init powershell )
   Enable-TransientPrompt
 

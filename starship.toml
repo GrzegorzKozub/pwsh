@@ -10,33 +10,14 @@ $fill\
 $cmd_duration\
 $status\
 $line_break\
-$character"""
-
-[character]
-success_symbol = '[●•](blue)'
-error_symbol = '[●•](blue)'
-
-[cmd_duration]
-min_time = 5_000
-format = '[$duration]($style) '
-style = 'purple'
+$username\
+"""
 
 [directory]
-format = '[$path]($style) '
-style = 'cyan'
-
-[status]
-format = '[$status]($style) '
-style = 'black'
-disabled = false
-
-[fill]
-symbol = ' '
-
+format = '[$path](cyan) '
 
 [git_branch]
-format = '[$branch(:$remote_branch)]($style) '
-style = 'blue'
+format = '[$branch(:$remote_branch)](blue) '
 
 [git_commit]
 format = '[$hash](yellow)[$tag](purple) '
@@ -45,22 +26,44 @@ tag_symbol = ' '
 
 [git_status]
 format = '$ahead_behind$stashed$conflicted$staged$deleted$renamed$modified$untracked'
-behind = '[↓${count}](yellow) '
 ahead = '[↑${count}](green) '
+behind = '[↓${count}](yellow) '
 diverged = '[↓${behind_count}](yellow) [↑${ahead_count}](green) '
-conflicted = '[?${conflicted}](red) '
-untracked = '[*${count}](red) '
-staged = '[+${count}](green) '
 stashed = '[↙${count}](purple) '
-modified = '[~${count}](yellow) '
-renamed = '[→${count}](yellow) '
+conflicted = '[?${count}](red) '
+staged = '[+${count}](green) '
 deleted = '[-${count}](yellow) '
+renamed = '[→${count}](yellow) '
+modified = '[~${count}](yellow) '
+untracked = '[*${count}](red) '
 
 [git_state]
-format = '[$state]($style) '
-style = 'white'
-rebase = 'rebase'
+format = '[$state( $progress_current/$progress_total)](white) '
 merge = 'merge'
+rebase = 'rebase'
 revert = 'revert'
 cherry_pick = 'cherry-pick'
 bisect = 'bisect'
+
+[fill]
+symbol = ' '
+
+[cmd_duration]
+format = '[$duration](purple) '
+min_time = 5_000
+
+[status]
+format = '[$status](black) '
+disabled = false
+
+[character]
+format = '$symbol '
+success_symbol = '[●•](blue)'
+error_symbol = '[●•](red)'
+
+[username]
+format = '[●•]($style) '
+style_user = 'blue'
+style_root = 'red'
+show_always = true
+
