@@ -8,7 +8,7 @@ $OutputEncoding = [Console]::OutputEncoding = [Console]::InputEncoding = [System
 
 chcp 65001 | Out-Null # support utf-8 in iex
 
-$env:MY_THEME="gruvbox-dark" # neovim theme
+$env:MY_THEME="gruvbox-dark" # set neovim theme
 $env:TERM="xterm-256color" # fix neovim clear screen on exit
 
 Set-Alias -Name vim -Value nvim
@@ -76,9 +76,5 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
   Invoke-Expression ( &starship init powershell )
   Enable-TransientPrompt
 
-}
-
-function RunningAsAdmin {
-  return ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 }
 

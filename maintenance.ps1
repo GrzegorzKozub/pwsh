@@ -4,7 +4,7 @@ param (
   [ValidateNotNullOrEmpty()] [string[]] $Tools = @("chkdsk", "defrag")
 )
 
-if (!(RunningAsAdmin)) {
+if (!(admin.ps1)) {
   Write-Error "Must run as admin"
   break
 }
