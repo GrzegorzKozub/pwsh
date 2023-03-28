@@ -1,5 +1,16 @@
 ﻿try { . _fd.ps1; . _lf.ps1; . _rg.ps1 } catch { }
 
+function Load-Module ($name) {
+  if (!(Get-Module -ListAvailable -Name $name)) {
+    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+    Install-Module -Name $name -Scope CurrentUser
+  }
+  Import-Module -Name $name
+}
+
+Load-Module "posh-git"
+Load-Module "PSFzf"
+
 # https://github.com/PowerShell/PowerShell/issues/18778
 $PSStyle.FileInfo.Directory = "`e[34m"
 
@@ -47,8 +58,11 @@ Set-PSReadLineOption -Colors @{
   "Variable" = [ConsoleColor]::DarkRed
 }
 
-Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Command
-Set-PSReadlineKeyHandler -Key ctrl+r -Function ReverseSearchHistory -ViMode Insert
+# Set-PSReadlineKeyHandler -Key "ctrl+r" -Function ReverseSearchHistory -ViMode Command
+# Set-PSReadlineKeyHandler -Key "ctrl+r" -Function ReverseSearchHistory -ViMode Insert
+
+Set-PsFzfOption -PSReadlineChordReverseHistory "ctrl+r"
+Set-PsFzfOption -PSReadlineChordSetLocation "ctrl+p"
 
 if (Get-Command lf -ErrorAction SilentlyContinue) {
 
@@ -73,7 +87,7 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
   $env:STARSHIP_CACHE = $env:TEMP
 
   function Invoke-Starship-TransientFunction { &starship module username }
-  Invoke-Expression ( &starship init powershell )
+  Invoke-Expression (&starship init powershell)
   Enable-TransientPrompt
 
 }
