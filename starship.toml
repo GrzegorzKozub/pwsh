@@ -1,6 +1,9 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+command_timeout = 1_000
+continuation_prompt = ' • '
 format = """
+$username\
 $directory\
 $git_branch\
 $git_commit\
@@ -10,8 +13,11 @@ $fill\
 $cmd_duration\
 $status\
 $line_break\
-$username\
+$character\
 """
+
+[username]
+format = '[⛊](yellow) '
 
 [directory]
 format = '[$path](cyan) '
@@ -60,10 +66,4 @@ disabled = false
 format = '$symbol '
 success_symbol = '[●•](blue)'
 error_symbol = '[●•](red)'
-
-[username]
-format = '[●•]($style) '
-style_user = 'blue'
-style_root = 'red'
-show_always = true
 

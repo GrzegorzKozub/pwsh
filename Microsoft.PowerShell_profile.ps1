@@ -86,7 +86,17 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
   $env:STARSHIP_CONFIG = "$env:USERPROFILE\Documents\PowerShell\starship.toml"
   $env:STARSHIP_CACHE = $env:TEMP
 
-  function Invoke-Starship-TransientFunction { &starship module username }
+  function Invoke-Starship-PreCommand {
+    $path = $(Get-Location).Path.Replace($env:USERPROFILE, "~")
+    if ($path.Split("\").GetUpperBound(0) -ge 3) {
+      $lastBackslash = $path.LastIndexOf("\")
+      $path = $path.Substring($lastSlash + 1, $path.Length - $lastSlash - 1)
+    }
+    $Host.UI.RawUI.WindowTitle = $path
+  }
+
+  function Invoke-Starship-TransientFunction { &starship module character }
+
   Invoke-Expression (&starship init powershell)
   Enable-TransientPrompt
 
