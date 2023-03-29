@@ -1,15 +1,5 @@
-﻿try { . _fd.ps1; . _lf.ps1; . _rg.ps1 } catch { }
-
-function Load-Module ($name) {
-  if (!(Get-Module -ListAvailable -Name $name)) {
-    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-    Install-Module -Name $name -Scope CurrentUser
-  }
-  Import-Module -Name $name
-}
-
-Load-Module "posh-git"
-Load-Module "PSFzf"
+﻿Import-Module -Name "posh-git"
+Import-Module -Name "PSFzf"
 
 # https://github.com/PowerShell/PowerShell/issues/18778
 $PSStyle.FileInfo.Directory = "`e[34m"
@@ -17,7 +7,7 @@ $PSStyle.FileInfo.Directory = "`e[34m"
 # https://github.com/PowerShell/PSReadLine/issues/2866
 $OutputEncoding = [Console]::OutputEncoding = [Console]::InputEncoding = [System.Text.UTF8Encoding]::new()
 
-chcp 65001 | Out-Null # support utf-8 in iex
+# chcp 65001 | Out-Null # support utf-8 in iex
 
 $env:MY_THEME="gruvbox-dark" # set neovim theme
 $env:TERM="xterm-256color" # fix neovim clear screen on exit
@@ -61,8 +51,7 @@ Set-PSReadLineOption -Colors @{
 # Set-PSReadlineKeyHandler -Key "ctrl+r" -Function ReverseSearchHistory -ViMode Command
 # Set-PSReadlineKeyHandler -Key "ctrl+r" -Function ReverseSearchHistory -ViMode Insert
 
-Set-PsFzfOption -PSReadlineChordReverseHistory "ctrl+r"
-Set-PsFzfOption -PSReadlineChordSetLocation "ctrl+p"
+Set-PsFzfOption -PSReadlineChordReverseHistory "ctrl+r" -PSReadlineChordSetLocation "ctrl+p"
 
 if (Get-Command lf -ErrorAction SilentlyContinue) {
 
@@ -97,8 +86,14 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
 
   function Invoke-Starship-TransientFunction { &starship module character }
 
-  Invoke-Expression (&starship init powershell)
+  # Invoke-Expression (&starship init powershell) # slower
+  &starship init powershell --print-full-init | Out-String | Invoke-Expression # faster
+
   Enable-TransientPrompt
 
 }
+
+try { . _fd.ps1 } catch { }
+try { . _lf.ps1 } catch { }
+try { . _rg.ps1 } catch { }
 
