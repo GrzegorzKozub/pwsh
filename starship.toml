@@ -30,15 +30,15 @@ tag_disabled = false
 tag_symbol = ' '
 
 [git_status]
-format = '$ahead_behind$stashed$conflicted$staged$deleted$renamed$modified$untracked'
+format = '$ahead_behind$stashed$conflicted$staged$renamed$deleted$modified$untracked'
 ahead = '[↑${count}](green) '
 behind = '[↓${count}](yellow) '
 diverged = '[↓${behind_count}](yellow) [↑${ahead_count}](green) '
 stashed = '[←${count}](purple) '
 conflicted = '[?${count}](red) '
 staged = '[+${count}](green) '
-deleted = '[-${count}](yellow) '
-renamed = '[→${count}](yellow) '
+renamed = '[→${count}](green) '
+deleted = '[-${count}](red) ' # https://github.com/starship/starship/issues/3048
 modified = '[~${count}](yellow) '
 untracked = '[*${count}](red) '
 
