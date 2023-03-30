@@ -53,23 +53,6 @@ Set-PSReadLineOption -Colors @{
 
 Set-PsFzfOption -PSReadlineChordReverseHistory "ctrl+r" -PSReadlineChordSetLocation "ctrl+p"
 
-if (Get-Command lf -ErrorAction SilentlyContinue) {
-
-  Set-PSReadLineKeyHandler -Chord "escape,l" -ViMode Command -ScriptBlock {
-    $tempFile = New-TemporaryFile
-    &lf -last-dir-path $tempFile.FullName
-    if (Test-Path -PathType Leaf $tempFile) {
-      $dir = Get-Content -Path $tempFile
-      Remove-Item -Path $tempFile
-      if ((Test-Path -PathType Container "$dir") -and "$dir" -ne "$pwd") {
-        Set-Location -Path "$dir"
-      }
-    }
-    [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
-  }
-
-}
-
 if (Get-Command starship -ErrorAction SilentlyContinue) {
 
   $env:STARSHIP_CONFIG = "$env:USERPROFILE\Documents\PowerShell\starship.toml"
