@@ -7,7 +7,7 @@ $PSStyle.FileInfo.Directory = "`e[34m"
 # https://github.com/PowerShell/PSReadLine/issues/2866
 $OutputEncoding = [Console]::OutputEncoding = [Console]::InputEncoding = [System.Text.UTF8Encoding]::new()
 
-# chcp 65001 | Out-Null # support utf-8 in iex
+# chcp 65001 | Out-Null # support utf-8 in iex (slow)
 
 $env:MY_THEME="gruvbox-dark" # set neovim theme
 $env:TERM="xterm-256color" # fix neovim clear screen on exit
@@ -86,14 +86,10 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
 
   function Invoke-Starship-TransientFunction { &starship module character }
 
-  # Invoke-Expression (&starship init powershell) # slower
-  &starship init powershell --print-full-init | Out-String | Invoke-Expression # faster
+  # Invoke-Expression (&starship init powershell) # https://github.com/starship/starship/issues/2637
+  &starship init powershell --print-full-init | Out-String | Invoke-Expression
 
   Enable-TransientPrompt
 
 }
-
-try { . _fd.ps1 } catch { }
-try { . _lf.ps1 } catch { }
-try { . _rg.ps1 } catch { }
 
