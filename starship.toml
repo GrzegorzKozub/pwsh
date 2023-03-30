@@ -8,7 +8,6 @@ $directory\
 $git_branch\
 $git_commit\
 $git_status\
-$git_state\
 $fill\
 $cmd_duration\
 $status\
@@ -35,21 +34,13 @@ format = '$ahead_behind$stashed$conflicted$staged$deleted$renamed$modified$untra
 ahead = '[↑${count}](green) '
 behind = '[↓${count}](yellow) '
 diverged = '[↓${behind_count}](yellow) [↑${ahead_count}](green) '
-stashed = '[↙${count}](purple) '
+stashed = '[←${count}](purple) '
 conflicted = '[?${count}](red) '
 staged = '[+${count}](green) '
 deleted = '[-${count}](yellow) '
 renamed = '[→${count}](yellow) '
 modified = '[~${count}](yellow) '
 untracked = '[*${count}](red) '
-
-[git_state]
-format = '[$state( $progress_current/$progress_total)](white) '
-merge = 'merge'
-rebase = 'rebase'
-revert = 'revert'
-cherry_pick = 'cherry-pick'
-bisect = 'bisect'
 
 [fill]
 symbol = ' '
