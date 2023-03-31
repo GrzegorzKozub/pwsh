@@ -46,6 +46,16 @@ Set-PSReadLineOption -Colors @{
   "Variable" = [ConsoleColor]::DarkRed
 }
 
+$null = New-Module s {
+function goz ($where) {
+ Set-Location -Path "$where"
+[Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
+}
+Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ScriptBlock {
+  goz "d:" }
+}
+
+
 # Set-PSReadlineKeyHandler -Key "ctrl+r" -Function ReverseSearchHistory -ViMode Command
 # Set-PSReadlineKeyHandler -Key "ctrl+r" -Function ReverseSearchHistory -ViMode Insert
 
