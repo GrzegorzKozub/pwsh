@@ -80,8 +80,6 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
 
   $GitPromptSettings.AfterStatus = ""
   $GitPromptSettings.BeforeStatus = ""
-  $GitPromptSettings.BeforeStash = ""
-  $GitPromptSettings.AfterStash = ""
   $GitPromptSettings.FileConflictedText = "?"
   $GitPromptSettings.BranchAheadStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkGreen)
   $GitPromptSettings.BranchBehindAndAheadStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
@@ -95,10 +93,13 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
   $GitPromptSettings.LocalStagedStatusSymbol.Text = ""
   $GitPromptSettings.LocalWorkingStatusSymbol.Text = ""
   $GitPromptSettings.WorkingColor.ForegroundColor = $([ConsoleColor]::DarkYellow)
-  $GitPromptSettings.StashColor.ForegroundColor = $([ConsoleColor]::DarkMagenta)
   $GitPromptSettings.ErrorColor.ForegroundColor = $([ConsoleColor]::DarkRed)
+ $GitPromptSettings.ShowStatusWhenZero = $False
+$GitPromptSettings.TruncatedBranchSuffix = "…"
+$GitPromptSettings.BranchNameLimit = 32
 
-  function prompt  {
+
+ function prompt  {
     $exitCode = $LASTEXITCODE
     $path = $(Get-Location).Path
     if ($path -eq $Home) {
