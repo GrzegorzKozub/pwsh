@@ -1,5 +1,6 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+add_newline = false
 command_timeout = 1_000
 continuation_prompt = ' • '
 format = """

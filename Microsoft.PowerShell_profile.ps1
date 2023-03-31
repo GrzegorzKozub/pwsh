@@ -7,8 +7,6 @@ $PSStyle.FileInfo.Directory = "`e[34m"
 # https://github.com/PowerShell/PSReadLine/issues/2866
 $OutputEncoding = [Console]::OutputEncoding = [Console]::InputEncoding = [System.Text.UTF8Encoding]::new()
 
-# chcp 65001 | Out-Null # support utf-8 in iex (slow)
-
 $env:MY_THEME="gruvbox-dark" # set neovim theme
 $env:TERM="xterm-256color" # fix neovim clear screen on exit
 
@@ -80,7 +78,6 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
 
   $GitPromptSettings.AfterStatus = ""
   $GitPromptSettings.BeforeStatus = ""
-  $GitPromptSettings.FileConflictedText = "?"
   $GitPromptSettings.BranchAheadStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkGreen)
   $GitPromptSettings.BranchBehindAndAheadStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
   $GitPromptSettings.BranchBehindStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
@@ -88,15 +85,16 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
   $GitPromptSettings.BranchGoneStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
   $GitPromptSettings.BranchIdenticalStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkBlue)
   $GitPromptSettings.BranchIdenticalStatusSymbol.Text = ""
+  $GitPromptSettings.BranchNameLimit = 32
   $GitPromptSettings.DelimStatus.Text = ""
+  $GitPromptSettings.ErrorColor.ForegroundColor = $([ConsoleColor]::DarkRed)
+  $GitPromptSettings.FileConflictedText = "?"
   $GitPromptSettings.IndexColor.ForegroundColor = $([ConsoleColor]::DarkGreen)
   $GitPromptSettings.LocalStagedStatusSymbol.Text = ""
   $GitPromptSettings.LocalWorkingStatusSymbol.Text = ""
+  $GitPromptSettings.ShowStatusWhenZero = $False
+  $GitPromptSettings.TruncatedBranchSuffix = "…"
   $GitPromptSettings.WorkingColor.ForegroundColor = $([ConsoleColor]::DarkYellow)
-  $GitPromptSettings.ErrorColor.ForegroundColor = $([ConsoleColor]::DarkRed)
- $GitPromptSettings.ShowStatusWhenZero = $False
-$GitPromptSettings.TruncatedBranchSuffix = "…"
-$GitPromptSettings.BranchNameLimit = 32
 
 
  function prompt  {
