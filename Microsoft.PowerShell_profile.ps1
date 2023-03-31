@@ -74,5 +74,42 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
 
   Enable-TransientPrompt
 
+} else {
+
+  # update based on https://github.com/starship/starship/blob/ee94c6ceac7b2ce6559af7074df9938f9bf96a58/src/init/starship.ps1
+
+  $GitPromptSettings.AfterStatus = ""
+  $GitPromptSettings.BeforeStatus = ""
+  $GitPromptSettings.BranchAheadStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkGreen)
+  $GitPromptSettings.BranchBehindAndAheadStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
+  $GitPromptSettings.BranchBehindStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
+  $GitPromptSettings.BranchColor.ForegroundColor = $([ConsoleColor]::DarkBlue)
+  $GitPromptSettings.BranchGoneStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkRed)
+  $GitPromptSettings.BranchIdenticalStatusSymbol.ForegroundColor = $([ConsoleColor]::DarkBlue)
+  $GitPromptSettings.BranchIdenticalStatusSymbol.Text = ""
+  $GitPromptSettings.DelimStatus.Text = ""
+  $GitPromptSettings.IndexColor.ForegroundColor = $([ConsoleColor]::DarkGreen)
+  $GitPromptSettings.LocalStagedStatusSymbol.Text = ""
+  $GitPromptSettings.LocalWorkingStatusSymbol.Text = ""
+  $GitPromptSettings.WorkingColor.ForegroundColor = $([ConsoleColor]::DarkRed)
+
+  function prompt {
+    $exitCode = $LASTEXITCODE
+    $path = $(Get-Location).Path
+    if ($path -eq $Home) {
+      $path = "~"
+    } elseif ($path.Length -ge 64) {
+      $path = $path.Substring($path.LastIndexOf("\") + 1, $path.Length - $path.LastIndexOf("\") - 1)
+    }
+    $Host.UI.RawUI.WindowTitle = "$path"
+    $prompt = Write-Prompt $path -ForegroundColor $([ConsoleColor]::DarkCyan)
+    $prompt += Write-VcsStatus
+    $prompt += Write-Prompt $([System.Environment]::NewLine)
+    $prompt += Write-Prompt "●•" -ForegroundColor $([ConsoleColor]::DarkBlue)
+    $prompt += Write-Prompt " "
+    $LASTEXITCODE = $exitCode
+    $prompt
+  }
+
 }
 
