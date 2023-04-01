@@ -76,7 +76,11 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
   $env:STARSHIP_CACHE = $env:TEMP
 
   function Invoke-Starship-PreCommand {
-    $path = $(Get-Location).Path.Replace($env:USERPROFILE, "~")
+    $location = $executionContext.SessionState.Path.CurrentLocation
+    if ($location.Provider.Name -eq "FileSystem") {
+      $host.ui.Write("$([char]27)]9;9;`"$($location.ProviderPath)`"$([char]27)\")
+    }
+    $path = $location.ProviderPath.Replace($env:USERPROFILE, "~")
     if ($path -ne "~" -and !$path.EndsWith("\")) {
       $lastSlash = $path.LastIndexOf("\")
       $path = $path.Substring($lastSlash + 1, $path.Length - $lastSlash - 1)
@@ -146,7 +150,8 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
         $script:transientPrompt = $false
         $char
       } else {
-        $path = $(Get-Location).Path.Replace($env:USERPROFILE, "~")
+        $location = $executionContext.SessionState.Path.CurrentLocation
+        $path = $location.ProviderPath.Replace($env:USERPROFILE, "~")
         if ($path -ne "~" -and !$path.EndsWith("\")) {
           $lastSlash = $path.LastIndexOf("\")
           $path = $path.Substring($lastSlash + 1, $path.Length - $lastSlash - 1)
@@ -179,6 +184,10 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
           }
         }
         $prompt += "`n$char"
+        if ($location.Provider.Name -eq "FileSystem") {
+          # https://learn.microsoft.com/en-us/windows/terminal/tutorials/new-tab-same-directory
+          $prompt = "$([char]27)]9;9;`"$($location.ProviderPath)`"$([char]27)\" + $prompt
+        }
         Set-PSReadLineOption -ExtraPromptLineCount ($prompt.Split("`n").Length - 1)
         $prompt
       }
