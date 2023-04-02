@@ -1,23 +1,53 @@
-﻿Import-Module -Name "posh-git"
-Import-Module -Name "PSFzf"
+﻿ Import-Module -Name "posh-git"
+ Import-Module -Name "PSFzf"
 
-# https://github.com/PowerShell/PowerShell/issues/18778
-$PSStyle.FileInfo.Directory = "`e[34m"
+
+$PSStyle.FileInfo.Directory = $PSStyle.Foreground.Blue # https://github.com/PowerShell/PowerShell/issues/18778
+$PSStyle.FileInfo.SymbolicLink = $PSStyle.Foreground.Cyan
+$PSStyle.FileInfo.Executable = $PSStyle.Foreground.Green
+
+
+$PSStyle.Formatting.ErrorAccent = "`e[31;1m"
+$PSStyle.Formatting.Error = $PSStyle.Foreground.Red
+$PSStyle.Formatting.ErrorAccent = $PSStyle.Foreground.Red
+$PSStyle.Formatting.Warning = $PSStyle.Foreground.Yellow
+$PSStyle.Formatting.Debug = $PSStyle.Foreground.White
+$PSStyle.Formatting.Verbose = $PSStyle.Foreground.BrightBlack
+$PSStyle.Formatting.FormatAccent = $PSStyle.Foreground.White
+$PSStyle.Formatting.TableHeader = $PSStyle.Foreground.White
+$PSStyle.Formatting.CustomTableHeaderLabel = $PSStyle.Foreground.White
+
+$PSStyle.Formatting.FeedbackName = $PSStyle.Foreground.BrightBlack
+$PSStyle.Formatting.FeedbackText = $PSStyle.Foreground.White
+
+$PSStyle.Progress.UseOSCIndicator = $true
+
+$PSStyle.Progress.Style = $PSStyle.Foreground.White
+
+
+$PSStyle.FileInfo.Extension.Clear()
+".7z", ".gz", ".rar", ".tar", ".zip" |
+  foreach { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Yellow) }
+".cow", ".fsa", ".iso", ".wim" |
+  foreach { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
+".dockerignore", ".editorconfig", ".gitattributes", ".gitignore", ".gitmodules" |
+  foreach { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.White) }
+".backup", ".bak", ".log", ".old", ".orig", ".original", ".part", ".swp", ".tmp" |
+  foreach { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.BrightBlack) }
+
 
 # https://github.com/PowerShell/PSReadLine/issues/2866
-$OutputEncoding = [Console]::OutputEncoding = [Console]::InputEncoding = [Text.Encoding]::UTF8
+[Console]::OutputEncoding = [Console]::InputEncoding = [Text.Encoding]::UTF8
+
+$ErrorActionPreference = "Stop"
 
 $env:MY_THEME="gruvbox-dark" # set neovim theme
 $env:TERM="xterm-256color" # fix neovim clear screen on exit
 
-$Host.PrivateData.DebugForegroundColor = [ConsoleColor]::DarkGray
-$Host.PrivateData.ErrorForegroundColor = [ConsoleColor]::DarkRed
-$Host.PrivateData.ProgressBackgroundColor = [ConsoleColor]::Gray
-$Host.PrivateData.ProgressForegroundColor = [ConsoleColor]::Black
-$Host.PrivateData.VerboseForegroundColor = [ConsoleColor]::Black
-$Host.PrivateData.WarningForegroundColor = [ConsoleColor]::DarkYellow
+# $Host.PrivateData.WarningForegroundColor = [ConsoleColor]::DarkYellow
 
 Set-Alias -Name vim -Value nvim
+Set-Alias -Name la -Value ls
 
 Set-PSReadlineOption -BellStyle None
 Set-PSReadLineOption -EditMode Vi
@@ -46,8 +76,6 @@ Set-PSReadLineOption -Colors @{
   "Variable" = [ConsoleColor]::DarkRed
 }
 
-# Set-PSReadlineKeyHandler -Key "ctrl+r" -Function ReverseSearchHistory -ViMode Command
-# Set-PSReadlineKeyHandler -Key "ctrl+r" -Function ReverseSearchHistory -ViMode Insert
 Set-PsFzfOption -PSReadlineChordReverseHistory "ctrl+r" -PSReadlineChordSetLocation "ctrl+p"
 
 $null = New-Module Go {
@@ -55,24 +83,26 @@ $null = New-Module Go {
     Set-Location -Path $where
     [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
   }
+  
+  foreach ($mode in "Command", "Insert") {
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ViMode $mode -ScriptBlock { Go "~\Documents" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,l" -ViMode $mode -ScriptBlock { Go "~\Downloads" }
 
-  Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ScriptBlock { Go "~\Documents" }
-  Set-PSReadLineKeyHandler -Chord "ctrl+g,l" -ScriptBlock { Go "~\Downloads" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,a" -ViMode $mode -ScriptBlock { Go "D:\Apps" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,u" -ViMode $mode -ScriptBlock { Go "D:\Users" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,w" -ViMode $mode -ScriptBlock { Go "D:\Win" }
 
-  Set-PSReadLineKeyHandler -Chord "ctrl+g,a" -ScriptBlock { Go "D:\Apps" }
-  Set-PSReadLineKeyHandler -Chord "ctrl+g,u" -ScriptBlock { Go "D:\Users" }
-  Set-PSReadLineKeyHandler -Chord "ctrl+g,w" -ScriptBlock { Go "D:\Win" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,c" -ViMode $mode -ScriptBlock { Go "D:\Code" }
 
-  Set-PSReadLineKeyHandler -Chord "ctrl+g,c" -ScriptBlock { Go "D:\Code" }
-
-  Set-PSReadLineKeyHandler -Chord "ctrl+g,g" -ScriptBlock { Go "E:\Games" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,g" -ViMode $mode -ScriptBlock { Go "E:\Games" }
+  }
 }
 
 $script:useStarship = $false
 
 if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue)) {
 
-  $env:STARSHIP_CONFIG = "$env:USERPROFILE\Documents\PowerShell\starship.toml"
+  $env:STARSHIP_CONFIG = "$HOME\Documents\PowerShell\starship.toml"
   $env:STARSHIP_CACHE = $env:TEMP
 
   function Invoke-Starship-PreCommand {
@@ -80,7 +110,7 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
     if ($location.Provider.Name -eq "FileSystem") {
       $host.ui.Write("$([char]27)]9;9;`"$($location.ProviderPath)`"$([char]27)\")
     }
-    $path = $location.ProviderPath.Replace($env:USERPROFILE, "~")
+    $path = $location.ProviderPath.Replace($HOME, "~")
     if ($path -ne "~" -and !$path.EndsWith("\")) {
       $lastSlash = $path.LastIndexOf("\")
       $path = $path.Substring($lastSlash + 1, $path.Length - $lastSlash - 1)
@@ -151,7 +181,7 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
         $char
       } else {
         $location = $executionContext.SessionState.Path.CurrentLocation
-        $path = $location.ProviderPath.Replace($env:USERPROFILE, "~")
+        $path = $location.ProviderPath.Replace($HOME, "~")
         if ($path -ne "~" -and !$path.EndsWith("\")) {
           $lastSlash = $path.LastIndexOf("\")
           $path = $path.Substring($lastSlash + 1, $path.Length - $lastSlash - 1)
