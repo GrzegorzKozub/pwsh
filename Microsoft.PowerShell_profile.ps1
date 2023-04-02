@@ -44,18 +44,18 @@ $ErrorActionPreference = "Stop"
 $env:MY_THEME="gruvbox-dark" # set neovim theme
 $env:TERM="xterm-256color" # fix neovim clear screen on exit
 
-# $Host.PrivateData.WarningForegroundColor = [ConsoleColor]::DarkYellow
+$env:EDITOR = $env:VISUAL = "nvim"
 
 Set-Alias -Name vim -Value nvim
 Set-Alias -Name la -Value ls
 
 Set-PSReadlineOption -BellStyle None
-Set-PSReadLineOption -EditMode Vi
 Set-PSReadLineOption -PredictionSource History
 
-Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
+Set-PSReadLineOption  -EditMode Vi -ViModeIndicator Script -ViModeChangeHandler {
   Write-Host -NoNewLine "`e[$(if ($args[0] -eq 'Command') { '1' } else { '0' }) q"
 }
+
 
 Set-PSReadLineOption -Colors @{
   "Command" = [ConsoleColor]::DarkGreen
