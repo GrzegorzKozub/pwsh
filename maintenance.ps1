@@ -4,11 +4,7 @@ param (
   [ValidateNotNullOrEmpty()] [string[]] $Tools = @("chkdsk", "defrag")
 )
 
-function Admin {
-  return [Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544"
-}
-
-if (!(Admin)) {
+if (!([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544")) {
   Write-Error "Must run as admin"
   break
 }

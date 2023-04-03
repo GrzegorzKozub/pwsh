@@ -172,8 +172,9 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
     $GitPromptSettings.TruncatedBranchSuffix = "…"
     $GitPromptSettings.WorkingColor.ForegroundColor = [ConsoleColor]::DarkYellow
 
-    function Admin { return [Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544" }
-    if (Admin) { $script:admin = "$([char]0x1B)[33m⛊$([char]0x1B)[0m " }
+    if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544") {
+      $script:admin = "$([char]0x1B)[33m⛊$([char]0x1B)[0m "
+    }
 
     if ($script:useTransientPrompt) {
       Set-PSReadLineKeyHandler -Key "enter" -ScriptBlock {
