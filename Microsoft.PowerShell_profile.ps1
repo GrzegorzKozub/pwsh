@@ -1,5 +1,26 @@
-﻿ Import-Module -Name "posh-git"
- Import-Module -Name "PSFzf"
+﻿# modules
+
+Import-Module -Name "posh-git"
+Import-Module -Name "PSFzf"
+
+
+
+# aliases
+
+Set-Alias -Name la -Value ls
+Set-Alias -Name vim -Value nvim
+
+
+
+
+
+
+
+
+
+
+
+#####
 
 
 $PSStyle.FileInfo.Directory = $PSStyle.Foreground.Blue # https://github.com/PowerShell/PowerShell/issues/18778
@@ -45,9 +66,6 @@ $env:MY_THEME="gruvbox-dark" # set neovim theme
 $env:TERM="xterm-256color" # fix neovim clear screen on exit
 
 $env:EDITOR = $env:VISUAL = "nvim"
-
-Set-Alias -Name vim -Value nvim
-Set-Alias -Name la -Value ls
 
 Set-PSReadlineOption -BellStyle None
 Set-PSReadLineOption -PredictionSource History
