@@ -18,7 +18,7 @@
   [System.ConsoleColor]::White
 )
 
-for ($i=0; $i -lt $colors.Length; $i++) {
+for ($i = 0; $i -lt $colors.Length; $i++) {
   Write-Host ■ -ForegroundColor $colors[$i] -NoNewline
   Write-Host " " -NoNewline
   Write-Host $i.ToString().PadLeft(2, "0") -ForegroundColor $colors[$i] -NoNewline
