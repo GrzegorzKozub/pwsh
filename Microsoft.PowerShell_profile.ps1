@@ -10,6 +10,27 @@ Import-Module -Name "PSFzf"
 Set-Alias -Name la -Value ls
 Set-Alias -Name vim -Value nvim
 
+# dir shortcuts
+
+$null = New-Module Go {
+  function Go ($where) {
+    Set-Location -Path $where
+    [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
+  }
+  
+  foreach ($mode in "Command", "Insert") {
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ViMode $mode -ScriptBlock { Go "~\Documents" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,l" -ViMode $mode -ScriptBlock { Go "~\Downloads" }
+
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,a" -ViMode $mode -ScriptBlock { Go "D:\Apps" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,u" -ViMode $mode -ScriptBlock { Go "D:\Users" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,w" -ViMode $mode -ScriptBlock { Go "D:\Win" }
+
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,c" -ViMode $mode -ScriptBlock { Go "D:\Code" }
+
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,g" -ViMode $mode -ScriptBlock { Go "E:\Games" }
+  }
+}
 
 
 
@@ -95,26 +116,6 @@ Set-PSReadLineOption -Colors @{
 }
 
 Set-PsFzfOption -PSReadlineChordReverseHistory "ctrl+r" -PSReadlineChordSetLocation "ctrl+p"
-
-$null = New-Module Go {
-  function Go ($where) {
-    Set-Location -Path $where
-    [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
-  }
-  
-  foreach ($mode in "Command", "Insert") {
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ViMode $mode -ScriptBlock { Go "~\Documents" }
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,l" -ViMode $mode -ScriptBlock { Go "~\Downloads" }
-
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,a" -ViMode $mode -ScriptBlock { Go "D:\Apps" }
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,u" -ViMode $mode -ScriptBlock { Go "D:\Users" }
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,w" -ViMode $mode -ScriptBlock { Go "D:\Win" }
-
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,c" -ViMode $mode -ScriptBlock { Go "D:\Code" }
-
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,g" -ViMode $mode -ScriptBlock { Go "E:\Games" }
-  }
-}
 
 $script:useStarship = $false
 
