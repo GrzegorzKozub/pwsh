@@ -35,31 +35,25 @@ Set-PSReadLineOption -EditMode Vi -ViModeIndicator Script -ViModeChangeHandler {
 
 # fzf
 
-Set-PsFzfOption -PSReadlineChordSetLocation "ctrl+f" -PSReadlineChordReverseHistory "ctrl+r"
+$env:FZF_DEFAULT_OPTS="
+   --color dark,bg+:-1,fg:8,fg+:-1,hl:3,hl+:3
+   --color spinner:-1,info:-1,prompt:5,pointer:7,marker:7
+   --ellipsis '…'
+   --layout reverse-list
+   --margin 0,0,0,0
+   --marker '• '
+   --no-bold
+   --no-info
+   --no-scrollbar
+   --pointer '●'
+   --prompt '●• '
+   --tabstop 2
+"
 
-# $FZF_DEFAULT_OPTS = '--color bg:-1,bg+:-1,border:8,fg:8,fg+:7,header:2,hl:3,hl+:3,info:-1,marker:7,pointer:7,prompt:12'
-#
-#   if s:windows #     let s:fzf_marker = '>' #     let s:fzf_pointer = '>' #     let s:fzf_prompt = ' > '
-#   else #     let s:fzf_marker = '•' #     let s:fzf_pointer = '●' #     let s:fzf_prompt = ' ●• '
-
-# https://github.com/junegunn/fzf/blob/master/ADVANCED.md
-# https://github.com/junegunn/fzf/wiki/Color-schemes
-# https://github.com/junegunn/fzf/wiki/Windows
-
-
-
-# export FZF_DEFAULT_OPTS="
-#   --color dark,bg+:-1,fg:$MY_FZF_COLOR_FG,fg+:-1,hl:$MY_FZF_COLOR_HL,hl+:$MY_FZF_COLOR_HL
-#   --color spinner:-1,info:-1,prompt:$MY_FZF_COLOR_PROMPT,pointer:$MY_FZF_COLOR_POINTER,marker:$MY_FZF_COLOR_MARKER
-#   --layout reverse-list
-#   --margin 0,0,0,0
-#   --marker '$MY_FZF_CHAR_MARKER'
-#   --no-bold
-#   --no-info
-#   --pointer '$MY_FZF_CHAR_POINTER'
-#   --prompt '$MY_FZF_CHAR_PROMPT'
-#   --tabstop 2
-# "
+Set-PsFzfOption `
+  -PSReadlineChordReverseHistory "ctrl+r" `
+  -PSReadlineChordProvider "ctrl+t" `
+  -PSReadlineChordSetLocation "alt+c"
 
 # dir shortcuts
 
@@ -198,7 +192,7 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
         $errors = $null
         [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$null, [ref]$null, [ref]$errors, [ref]$null)
         if ($errors.Count -eq 0) {
-          $script:transient = $true
+          $script:transientPrompt = $true
           [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
         }
       } finally {
