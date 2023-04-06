@@ -14,8 +14,8 @@ $script:showCmdDurationAndErrCode = $true # does not affect starship
 $ErrorActionPreference = "Stop"
 
 $env:EDITOR = $env:VISUAL = "nvim"
-$env:MY_THEME="gruvbox-dark" # set neovim theme
-$env:TERM="xterm-256color" # fix neovim clear screen on exit
+$env:MY_THEME = "gruvbox-dark" # set neovim theme
+$env:TERM = "xterm-256color" # fix neovim clear screen on exit
 
 Set-PSReadlineOption -BellStyle None
 Set-PSReadLineOption -PredictionSource History
@@ -54,6 +54,13 @@ Set-PsFzfOption `
   -PSReadlineChordReverseHistory "ctrl+r" `
   -PSReadlineChordProvider "ctrl+t" `
   -PSReadlineChordSetLocation "alt+c"
+
+# less
+
+# $env:LESS = "+Gg -R -s --use-color -DPw -DSkY -Ddy -Dsm -Dub"
+$env:LESS = "--use-color"
+$env:LESSHISTFILE = "-"
+$env:PAGER = "less"
 
 # dir shortcuts
 
