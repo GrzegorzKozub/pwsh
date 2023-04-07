@@ -62,6 +62,42 @@ $env:LESS = "--use-color"
 $env:LESSHISTFILE = "-"
 $env:PAGER = "less"
 
+# node
+
+# export NODE_REPL_HISTORY=''
+#
+# export NPM_CONFIG_CACHE=${XDG_CACHE_HOME:-~/.cache}/npm
+# export NPM_CONFIG_PREFIX=${XDG_DATA_HOME:-~/.local/share}/npm
+# export NPM_CONFIG_USERCONFIG=${XDG_CONFIG_HOME:-~/.config}/npm/npmrc
+#
+# export NVM_DIR=${XDG_DATA_HOME:-~/.local/share}/nvm
+# zsh-defer source $NVM_DIR/nvm.sh --no-use
+#
+# export NG_CLI_ANALYTICS=ci
+
+# ripgrep
+
+# export RIPGREP_CONFIG_PATH=${XDG_CONFIG_HOME:-~/.config}/ripgrep/ripgreprc
+
+# --colors=line:fg:8
+# --colors=match:fg:3
+# --colors=path:fg:6
+#
+# --context=3
+# --context-separator=''
+#
+# --glob=!.git/*
+# --glob=!node_modules/*
+#
+# --hidden
+#
+# --smart-case
+
+
+# wget
+
+# alias wget="wget --hsts-file=${XDG_CACHE_HOME:-~/.cache}/wget-hsts"
+
 # dir shortcuts
 
 $null = New-Module Go {
