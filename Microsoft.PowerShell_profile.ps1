@@ -13,10 +13,6 @@ $script:showCmdDurationAndErrCode = $true # does not affect starship
 
 $ErrorActionPreference = "Stop"
 
-$env:EDITOR = $env:VISUAL = "nvim"
-$env:MY_THEME = "gruvbox-dark" # set neovim theme
-$env:TERM = "xterm-256color" # fix neovim clear screen on exit
-
 Set-PSReadlineOption -BellStyle None
 Set-PSReadLineOption -PredictionSource History
 
@@ -25,7 +21,6 @@ Set-PSReadLineOption -PredictionSource History
 # aliases
 
 Set-Alias -Name la -Value ls
-Set-Alias -Name vim -Value nvim
 
 # vi mode
 
@@ -36,18 +31,18 @@ Set-PSReadLineOption -EditMode Vi -ViModeIndicator Script -ViModeChangeHandler {
 # fzf
 
 $env:FZF_DEFAULT_OPTS="
-   --color dark,bg+:-1,fg:8,fg+:-1,hl:3,hl+:3
-   --color spinner:-1,info:-1,prompt:5,pointer:7,marker:7
-   --ellipsis '…'
-   --layout reverse-list
-   --margin 0,0,0,0
-   --marker '• '
-   --no-bold
-   --no-info
-   --no-scrollbar
-   --pointer '●'
-   --prompt '●• '
-   --tabstop 2
+  --color dark,bg+:-1,fg:8,fg+:-1,hl:3,hl+:3
+  --color spinner:-1,info:-1,prompt:5,pointer:7,marker:7
+  --ellipsis '…'
+  --layout reverse-list
+  --margin 0,0,0,0
+  --marker '• '
+  --no-bold
+  --no-info
+  --no-scrollbar
+  --pointer '●'
+  --prompt '●• '
+  --tabstop 2
 "
 
 Set-PsFzfOption `
@@ -62,41 +57,13 @@ $env:LESS = "--use-color"
 $env:LESSHISTFILE = "-"
 $env:PAGER = "less"
 
-# node
+# neovim
 
-# export NODE_REPL_HISTORY=''
-#
-# export NPM_CONFIG_CACHE=${XDG_CACHE_HOME:-~/.cache}/npm
-# export NPM_CONFIG_PREFIX=${XDG_DATA_HOME:-~/.local/share}/npm
-# export NPM_CONFIG_USERCONFIG=${XDG_CONFIG_HOME:-~/.config}/npm/npmrc
-#
-# export NVM_DIR=${XDG_DATA_HOME:-~/.local/share}/nvm
-# zsh-defer source $NVM_DIR/nvm.sh --no-use
-#
-# export NG_CLI_ANALYTICS=ci
+$env:EDITOR = $env:VISUAL = "nvim"
+$env:MY_THEME = "gruvbox-dark"
+$env:TERM = "xterm-256color" # clear screen when neovim exits
 
-# ripgrep
-
-# export RIPGREP_CONFIG_PATH=${XDG_CONFIG_HOME:-~/.config}/ripgrep/ripgreprc
-
-# --colors=line:fg:8
-# --colors=match:fg:3
-# --colors=path:fg:6
-#
-# --context=3
-# --context-separator=''
-#
-# --glob=!.git/*
-# --glob=!node_modules/*
-#
-# --hidden
-#
-# --smart-case
-
-
-# wget
-
-# alias wget="wget --hsts-file=${XDG_CACHE_HOME:-~/.cache}/wget-hsts"
+Set-Alias -Name vim -Value nvim
 
 # dir shortcuts
 
