@@ -60,7 +60,7 @@ $env:PAGER = "less"
 
 $env:EDITOR = $env:VISUAL = "nvim"
 $env:MY_THEME = "gruvbox-dark"
-$env:TERM = "xterm-256color" # clear screen when neovim exits
+# $env:TERM = "xterm-256color" # clear screen when neovim exits
 
 Set-Alias -Name vim -Value nvim
 
@@ -210,7 +210,7 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
     }
   }
 
-  function global:prompt {
+  function prompt {
     $question = $global:?
     $exitCode = $global:LASTEXITCODE
     $char = "$([char]0x1B)[34m●•$([char]0x1B)[0m "
