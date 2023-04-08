@@ -52,8 +52,7 @@ Set-PsFzfOption `
 
 # less
 
-# $env:LESS = "+Gg -R -s --use-color -DPw -DSkY -Ddy -Dsm -Dub"
-$env:LESS = "--use-color"
+# $env:LESS = "-R -s --use-color -DPw -DSkY -Ddy -Dsm -Dub"
 $env:LESSHISTFILE = "-"
 $env:PAGER = "less"
 
