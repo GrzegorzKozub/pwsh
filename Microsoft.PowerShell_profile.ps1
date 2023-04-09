@@ -84,6 +84,8 @@ $null = New-Module Go {
 
     Set-PSReadLineKeyHandler -Chord "ctrl+g,g" -ViMode $mode -ScriptBlock { Go "E:\Games" }
   }
+
+  Export-ModuleMember
 }
 
 # syntax highlighting
