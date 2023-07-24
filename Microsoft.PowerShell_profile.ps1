@@ -52,9 +52,9 @@ Set-PsFzfOption `
 
 # less
 
-# $env:LESS = "-R -s --use-color -DPw -DSkY -Ddy -Dsm -Dub"
+$env:LESS = "--quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-lines --use-color -DPw" # -DSkY -Ddy -Dsm -Dub
 $env:LESSHISTFILE = "-"
-$env:PAGER = "less"
+$env:PAGER = "less --quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-lines --use-color -DPw" # -DSkY -Ddy -Dsm -Dub
 
 # neovim
 
