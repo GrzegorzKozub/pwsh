@@ -24,8 +24,12 @@ Set-Alias -Name la -Value ls
 
 # vi mode
 
+# https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
+
+if ($env:WT_SESSION) { Write-Host -NoNewLine "`e[6 q" }
+
 Set-PSReadLineOption -EditMode Vi -ViModeIndicator Script -ViModeChangeHandler {
-  Write-Host -NoNewLine "`e[$(if ($args[0] -eq 'Command') { '1' } else { '0' }) q"
+  Write-Host -NoNewLine "`e[$(if ($args[0] -eq 'Command') { '2' } else { '6' }) q"
 }
 
 # fzf
