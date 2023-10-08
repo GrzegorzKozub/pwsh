@@ -144,6 +144,18 @@ $PSStyle.FileInfo.Extension.Clear()
 
 # prompt
 
+function Osc7 {
+  if ($env:WT_SESSION) {
+    # https://learn.microsoft.com/en-us/windows/terminal/tutorials/new-tab-same-directory
+    return "$([char]27)]9;9;`"$($location.ProviderPath)`"$([char]27)\"
+  } elseif ($env:TERM_PROGRAM -eq "WezTerm") {
+    # https://wezfurlong.org/wezterm/shell-integration.html?h=shell
+    return "$([char]27)]7;file://${env:COMPUTERNAME}/$($location.ProviderPath -Replace "\\", "/")$([char]27)\"
+  } else {
+    return ""
+  }
+}
+
 if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue)) {
 
   $env:STARSHIP_CONFIG = "$HOME\Documents\PowerShell\starship.toml"
@@ -152,7 +164,7 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
   function Invoke-Starship-PreCommand {
     $location = $executionContext.SessionState.Path.CurrentLocation
     if ($location.Provider.Name -eq "FileSystem") {
-      $host.ui.Write("$([char]27)]9;9;`"$($location.ProviderPath)`"$([char]27)\")
+      $Host.UI.Write($(Osc7))
     }
     $path = $location.ProviderPath.Replace($HOME, "~")
     if ($path -ne "~" -and !$path.EndsWith("\")) {
@@ -255,7 +267,7 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
       }
       $prompt += "`n$char"
       if ($location.Provider.Name -eq "FileSystem") {
-        $prompt = "$([char]27)]9;9;`"$($location.ProviderPath)`"$([char]27)\" + $prompt # https://learn.microsoft.com/en-us/windows/terminal/tutorials/new-tab-same-directory
+        $prompt = $(Osc7) + $prompt
       }
       Set-PSReadLineOption -ExtraPromptLineCount ($prompt.Split("`n").Length - 1)
       $prompt
