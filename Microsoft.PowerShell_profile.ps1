@@ -63,7 +63,6 @@ $env:PAGER = "less --quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-line
 # neovim
 
 $env:EDITOR = $env:VISUAL = "nvim"
-$env:MY_THEME = "gruvbox-dark"
 # $env:TERM = "xterm-256color" # clear screen when neovim exits
 
 Set-Alias -Name vim -Value nvim
