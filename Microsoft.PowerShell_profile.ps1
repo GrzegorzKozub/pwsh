@@ -38,6 +38,7 @@ $env:FZF_DEFAULT_OPTS="
   --color dark,bg+:-1,fg:8,fg+:-1,hl:3,hl+:3
   --color spinner:-1,info:-1,prompt:5,pointer:7,marker:7
   --ellipsis '…'
+  --height 50%
   --layout reverse-list
   --margin 0,0,0,0
   --marker '• '
