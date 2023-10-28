@@ -61,6 +61,22 @@ $env:LESS = "--quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-lines --us
 $env:LESSHISTFILE = "-"
 $env:PAGER = "less --quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-lines --use-color -DPw" # -DSkY -Ddy -Dsm -Dub
 
+# lf
+
+Set-PSReadLineKeyHandler -Chord "escape,l" -ViMode Command -ScriptBlock {
+  $tempFile = New-TemporaryFile
+  &lf -last-dir-path $tempFile.FullName
+  if (Test-Path -PathType Leaf $tempFile) {
+    $dir = Get-Content -Path $tempFile
+    Remove-Item -Path $tempFile
+    if ((Test-Path -PathType Container "$dir") -and "$dir" -ne "$pwd") {
+      Set-Location -Path "$dir"
+    }
+  }
+  [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
+  Write-Host -NoNewLine "`e[2 q"
+}
+
 # neovim
 
 $env:EDITOR = $env:VISUAL = "nvim"
