@@ -9,11 +9,14 @@ $script:useStarship = $false
 $script:useTransientPrompt = $true
 $script:showCmdDurationAndErrCode = $true # does not affect starship
 
-# pwsh options
+# stop on errors
 
 $ErrorActionPreference = "Stop"
 
+# psreadline
+
 Set-PSReadlineOption -BellStyle None
+Set-PSReadLineOption -MaximumHistoryCount 10000
 Set-PSReadLineOption -PredictionSource History
 
 [Console]::OutputEncoding = [Console]::InputEncoding = [Text.Encoding]::UTF8 # https://github.com/PowerShell/PSReadLine/issues/2866
