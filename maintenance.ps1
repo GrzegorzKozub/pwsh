@@ -29,8 +29,10 @@ foreach (
 if ($Tools -contains "dism") {
   if ($Fix) { 
     DISM.exe /Online /Cleanup-Image /RestoreHealth
+    DISM.exe /Online /Cleanup-Image /StartComponentCleanup # /ResetBase
   } else {
     DISM.exe /Online /Cleanup-Image /ScanHealth
+    DISM.exe /Online /Cleanup-Image /AnalyzeComponentStore
   }
   if (!$?) { $exit = 1 }
 }
