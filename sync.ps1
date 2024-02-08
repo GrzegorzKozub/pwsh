@@ -10,7 +10,8 @@ $dirs =
   "D:\Code\keys",
   "D:\Code\notes",
   "D:\Code\passwords",
-  "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadline"
+  "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadline",
+  "$env:USERPROFILE\Pictures\Wallpapers"
 
 foreach ($dir in $dirs) { Sync $dir }
 
