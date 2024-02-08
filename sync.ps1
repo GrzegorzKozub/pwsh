@@ -10,8 +10,6 @@ $dirs =
   "D:\Code\keys",
   "D:\Code\notes",
   "D:\Code\passwords",
-  "D:\Reflect",
-  "D:\Win",
   "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadline"
 
 foreach ($dir in $dirs) { Sync $dir }
