@@ -151,13 +151,13 @@ $PSStyle.FileInfo.SymbolicLink = $PSStyle.Foreground.Cyan
 $PSStyle.FileInfo.Extension.Clear()
 
 ".7z", ".gz", ".rar", ".tar", ".zip" |
-  foreach { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Yellow) }
+  ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Yellow) }
 ".cow", ".fsa", ".iso", ".wim" |
-  foreach { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
+  ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
 ".dockerignore", ".editorconfig", ".gitattributes", ".gitignore", ".gitmodules" |
-  foreach { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.White) }
+  ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.White) }
 ".backup", ".bak", ".log", ".old", ".orig", ".original", ".part", ".swp", ".tmp" |
-  foreach { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.BrightBlack) }
+  ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.BrightBlack) }
 
 # prompt
 
