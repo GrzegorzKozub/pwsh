@@ -295,3 +295,9 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
 
 }
 
+# zoxide
+
+$env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
+
+Invoke-Expression -Command (& { (zoxide init --cmd cd powershell | Out-String) } )
+
