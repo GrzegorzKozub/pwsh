@@ -1,5 +1,5 @@
 param (
-  [ValidateNotNullOrEmpty()] [string[]] $Sources = @("D:\Images", "D:\Software", "D:\Win"),
+  [ValidateNotNullOrEmpty()] [string[]] $Sources = @("D:\Images", "D:\Reflect", "D:\Software", "D:\Win"),
   [ValidateNotNullOrEmpty()] [string] $Target = "Backup"
 )
 
