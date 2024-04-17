@@ -50,6 +50,7 @@ $env:FZF_DEFAULT_OPTS="
   --no-bold
   --no-info
   --no-scrollbar
+  --no-separator
   --pointer '●'
   --prompt '●• '
   --tabstop 2
