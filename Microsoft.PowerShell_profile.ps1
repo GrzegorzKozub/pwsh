@@ -37,6 +37,10 @@ Set-PSReadLineOption -EditMode Vi -ViModeIndicator Script -ViModeChangeHandler {
 
 Set-PSReadLineKeyHandler -ViMode Command -Chord "v,v" -Function ViEditVisually # was v by default
 
+# fd
+
+Set-Alias -Name fd -Value fd --exclude .git --hidden
+
 # fzf
 
 $env:FZF_DEFAULT_OPTS="
