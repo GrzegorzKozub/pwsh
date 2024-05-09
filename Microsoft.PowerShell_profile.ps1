@@ -39,7 +39,7 @@ Set-PSReadLineKeyHandler -ViMode Command -Chord "v,v" -Function ViEditVisually #
 
 # fd
 
-Set-Alias -Name fd -Value fd --exclude .git --hidden
+function fd { fd.exe --exclude .git --hidden $args }
 
 # fzf
 
@@ -73,8 +73,20 @@ $env:PAGER = "less --quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-line
 
 # lf
 
+function lf {
+  $tempFile = New-TemporaryFile
+  lf.exe -single -last-dir-path $tempFile.FullName
+  if (Test-Path -PathType Leaf $tempFile) {
+    $dir = Get-Content -Path $tempFile
+    Remove-Item -Path $tempFile
+    if ((Test-Path -PathType Container "$dir") -and "$dir" -ne "$pwd") {
+      Set-Location -Path "$dir"
+    }
+  }
+}
+
 Set-PSReadLineKeyHandler -Chord "escape,l" -ViMode Command -ScriptBlock {
-  l.ps1
+  lf
   [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
   Write-Host -NoNewLine "`e[2 q"
 }
@@ -85,6 +97,12 @@ $env:EDITOR = $env:VISUAL = "nvim"
 # $env:TERM = "xterm-256color" # clear screen when neovim exits
 
 Set-Alias -Name vim -Value nvim
+
+# shutdown
+
+function shutdn { shutdown /t 0 /s }
+function reboot { shutdown /t 0 /r }
+function reflect { shutdown /t 0 /r /o }
 
 # dir shortcuts
 
