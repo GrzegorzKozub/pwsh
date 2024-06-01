@@ -21,10 +21,6 @@ Set-PSReadLineOption -PredictionSource History
 
 [Console]::OutputEncoding = [Console]::InputEncoding = [Text.Encoding]::UTF8 # https://github.com/PowerShell/PSReadLine/issues/2866
 
-# aliases
-
-Set-Alias -Name la -Value ls
-
 # vi mode
 
 # https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences
@@ -36,6 +32,22 @@ Set-PSReadLineOption -EditMode Vi -ViModeIndicator Script -ViModeChangeHandler {
 }
 
 Set-PSReadLineKeyHandler -ViMode Command -Chord "v,v" -Function ViEditVisually # was v by default
+
+# dir colors (eza, lf)
+
+$env:LS_COLORS = "rs=0:di=36:ln=34:pi=33:so=35:do=35:bd=33:cd=33:or=31:mi=0:tw=36:ow=36:st=36:ex=32:*.7z=33:*.gz=33:*.rar=33:*.tar=33:*.zip=33:*.cow=35:*.fsa=35:*.mrimg=35:*.iso=35:*.wim=35:*.jpeg=35:*.jpg=35:*.png=35:*.svg=35:*.mp3=35:*.ogg=35:*.opus=35:*.mkv=35:*.mp4=35:*.webm=35:*.dockerignore=37:*.editorconfig=37:*.eslintrc=37:*.git=37:*.gitattributes=37:*.gitignore=37:*.gitmodules=37:*.pylintrc=37:*.backup=90:*.bak=90:*.log=90:*.off=90:*.old=90:*.orig=90:*.original=90:*.part=90:*.swp=90:*.tmp=90"
+$env:LS_COLORS = $env:LS_COLORS + ":*.bat=32:*.cmd=32:*.exe=32:*.ps1=32"
+
+# eza
+
+$env:EZA_COLORS = "oc=37:ur=37:uw=37:ux=37:ue=37:gr=37:gw=37:gx=37:tr=37:tw=37:tx=37:su=37:sf=37:xa=37:nb=90:nk=37:nm=33:ng=31:nt=91:uu=90:uR=31:un=37:gu=90:gR=31:gn=37:ga=32:gm=33:gd=31:gv=33:gt=33:gi=90:gc=91:Gm=34:Go=34:Gc=30:Gd=33:da=37:bO=31:mp=34;4:cr=33:do=0:tm=90:bu=0:sc=0:ff=37"
+$env:EZA_ICONS_AUTO = 1
+$env:EZA_WINDOWS_ATTRIBUTES="short"
+
+function ls { eza.exe --all --group-directories-first --no-permissions --no-quotes $args }
+function la { eza.exe --all --group-directories-first --no-permissions --no-quotes --long $args }
+
+Remove-Alias -Name ls
 
 # fd
 
