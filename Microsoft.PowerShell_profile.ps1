@@ -77,6 +77,11 @@ Set-PsFzfOption `
   -PSReadlineChordProvider "ctrl+t" `
   -PSReadlineChordSetLocation "alt+c"
 
+# gsudo
+
+Import-Module -FullyQualifiedName "D:\Apps\gsudo\gsudoModule" -ErrorAction SilentlyContinue
+Set-Alias -Name sudo -Value gsudo
+
 # less
 
 $env:LESS = "--quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-lines --use-color -DPw" # -DSkY -Ddy -Dsm -Dub
