@@ -79,7 +79,6 @@ Set-PsFzfOption `
 
 # gsudo
 
-Import-Module -FullyQualifiedName "D:\Apps\gsudo\gsudoModule" -ErrorAction SilentlyContinue
 Set-Alias -Name sudo -Value gsudo
 
 # less
