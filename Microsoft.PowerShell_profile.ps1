@@ -56,19 +56,29 @@ function fd { fd.exe --exclude .git --hidden $args }
 # fzf
 
 $env:FZF_DEFAULT_OPTS="
-  --color dark,bg+:-1,fg:8,fg+:-1,hl:3,hl+:3
-  --color spinner:-1,info:-1,prompt:5,pointer:7,marker:7
+  --bind=ctrl-d:page-down,ctrl-u:page-up
+  --border none
+  --color dark
+  --color fg:bright-black,selected-fg:white,preview-fg:-1
+  --color hl:yellow,selected-hl:yellow
+  --color current-fg:-1,current-bg:-1,gutter:-1,current-hl:yellow
+  --color info:bright-black
+  --color border:bright-black
+  --color prompt:magenta
+  --color pointer:white,marker:white
   --ellipsis '…'
   --height 50%
   --layout reverse-list
-  --margin 0,0,0,0
+  --margin 0
   --marker '• '
   --no-bold
   --no-info
   --no-scrollbar
   --no-separator
+  --padding 0
   --pointer '●'
   --prompt '●• '
+  --scroll-off 3
   --tabstop 2
 "
 
