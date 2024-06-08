@@ -57,6 +57,8 @@ function fd { fd.exe --exclude .git --hidden $args }
 
 $env:FZF_DEFAULT_OPTS="
   --bind=ctrl-d:page-down,ctrl-u:page-up
+  --bind=alt-d:preview-page-down,alt-u:preview-page-up
+  --bind=alt-down:preview-page-down,alt-up:preview-page-up
   --border none
   --color dark
   --color fg:bright-black,selected-fg:white,preview-fg:-1
