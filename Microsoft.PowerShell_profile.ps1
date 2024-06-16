@@ -106,11 +106,12 @@ $env:LESS = "--quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-lines --us
 $env:LESSHISTFILE = "-"
 $env:PAGER = "less --quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-lines --use-color -DPw" # -DSkY -Ddy -Dsm -Dub
 
-# lf
-
-function lf {
+# lf & yazi
+  
+function ChangeWorkingDir {
+  param ([scriptblock]$Cmd)
   $tempFile = New-TemporaryFile
-  lf.exe -single -last-dir-path $tempFile.FullName
+  & $Cmd $tempFile.FullName
   if (Test-Path -PathType Leaf $tempFile) {
     $dir = Get-Content -Path $tempFile
     Remove-Item -Path $tempFile
@@ -120,11 +121,8 @@ function lf {
   }
 }
 
-Set-PSReadLineKeyHandler -Chord "escape,l" -ViMode Command -ScriptBlock {
-  lf
-  [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
-  Write-Host -NoNewLine "`e[2 q"
-}
+function lf { ChangeWorkingDir -Cmd { lf.exe -single -last-dir-path $args[0] } }
+function yazi { ChangeWorkingDir -Cmd { yazi.exe --cwd-file $args[0] } }
 
 # neovim
 
