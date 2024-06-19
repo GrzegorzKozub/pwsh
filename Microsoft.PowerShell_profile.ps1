@@ -42,8 +42,8 @@ Set-PSReadLineKeyHandler -ViMode Command -Chord "v,v" -Function ViEditVisually #
 
 # dir colors (eza, lf)
 
-$env:LS_COLORS = "rs=0:di=36:ln=34:pi=33:so=35:do=35:bd=33:cd=33:or=31:mi=0:tw=36:ow=36:st=36:ex=32:*.7z=33:*.gz=33:*.rar=33:*.tar=33:*.zip=33:*.cow=35:*.fsa=35:*.mrimg=35:*.iso=35:*.wim=35:*.jpeg=35:*.jpg=35:*.png=35:*.svg=35:*.mp3=35:*.ogg=35:*.opus=35:*.mkv=35:*.mp4=35:*.webm=35:*.dockerignore=37:*.editorconfig=37:*.eslintrc=37:*.git=37:*.gitattributes=37:*.gitignore=37:*.gitmodules=37:*.pylintrc=37:*.backup=90:*.bak=90:*.log=90:*.off=90:*.old=90:*.orig=90:*.original=90:*.part=90:*.swp=90:*.tmp=90"
-$env:LS_COLORS = $env:LS_COLORS + ":*.bat=32:*.cmd=32:*.exe=32:*.ps1=32"
+$env:LS_COLORS = "rs=0:di=36:ln=34:pi=33:so=35:do=35:bd=33:cd=33:or=31:mi=0:tw=36:ow=36:st=36:ex=32:*.7z=33:*.gz=33:*.rar=33:*.tar=33:*.zip=33:*.cow=35:*.fsa=35:*.mrimg=35:*.wim=35:*.iso=35:*.jpeg=35:*.jpg=35:*.png=35:*.svg=35:*.mp3=35:*.ogg=35:*.opus=35:*.mkv=35:*.mp4=35:*.webm=35:*.dockerignore=37:*.editorconfig=37:*.eslintrc=37:*.eslintrc.js=37:*.git=37:*.gitattributes=37:*.gitignore=37:*.gitmodules=37:*.luacheckrc=37:*.luarc.json=37:*.npmrc=37:*.pylintrc=37:*.stylua.toml=37:*.taplo.toml=37:*.backup=90:*.bak=90:*.log=90:*.off=90:*.old=90:*.orig=90:*.original=90:*.part=90:*.swp=90:*.tmp=90"
+$env:LS_COLORS = $env:LS_COLORS + ":*.sh=32:*.zsh=32:*.bat=32:*.cmd=32:*.exe=32:*.ps1=32"
 
 # eza
 
