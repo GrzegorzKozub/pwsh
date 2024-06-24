@@ -1,4 +1,4 @@
-﻿# modules
+# modules
 
 Import-Module -Name "posh-git"
 Import-Module -Name "PSFzf"
@@ -108,7 +108,7 @@ $env:LESSHISTFILE = "-"
 $env:PAGER = "less --quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-lines --use-color -DPw" # -DSkY -Ddy -Dsm -Dub
 
 # lf & yazi
-  
+
 function ChangeWorkingDir {
   param ([scriptblock]$Cmd)
   $tempFile = New-TemporaryFile
@@ -144,7 +144,7 @@ $null = New-Module Go {
     Set-Location -Path $where
     [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
   }
-  
+
   foreach ($mode in "Command", "Insert") {
     Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ViMode $mode -ScriptBlock { Go "~\Documents" }
     Set-PSReadLineKeyHandler -Chord "ctrl+g,l" -ViMode $mode -ScriptBlock { Go "~\Downloads" }
@@ -330,7 +330,7 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
             if ($time.Minutes -gt 0) { $prompt += "$($time.Minutes)m " }
             $prompt += "$($time.Seconds)s$([char]0x1B)[0m"
           }
-          if ($err) { 
+          if ($err) {
             $prompt += " $([char]0x1B)[30m$err$([char]0x1B)[0m"
           }
           $len = [RegEx]::Replace($prompt, "\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])", "").Length
@@ -351,9 +351,12 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
 
 }
 
+# oh-my-posh
+
+# oh-my-posh init pwsh --config="$(Join-Path (Split-Path -Parent $PROFILE) oh-my-posh.toml)" | iex
+
 # zoxide
 
 $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
 
 Invoke-Expression -Command (& { (zoxide init --cmd cd powershell | Out-String) } )
-
