@@ -1,13 +1,13 @@
 # modules
 
-Import-Module -Name "posh-git"
+# Import-Module -Name "posh-git"
 Import-Module -Name "PSFzf"
 
 # profile options
 
+$script:useOhMyPosh = $false
 $script:useStarship = $false
 $script:useTransientPrompt = $true
-$script:showCmdDurationAndErrCode = $true # does not affect starship
 
 # stop on errors
 
@@ -42,7 +42,7 @@ Set-PSReadLineKeyHandler -ViMode Command -Chord "v,v" -Function ViEditVisually #
 
 # dir colors (eza, lf)
 
-$env:LS_COLORS = "rs=0:di=36:ln=34:pi=33:so=35:do=35:bd=33:cd=33:or=31:mi=0:tw=36:ow=36:st=36:ex=32:*.7z=33:*.gz=33:*.rar=33:*.tar=33:*.zip=33:*.cow=35:*.fsa=35:*.mrimg=35:*.wim=35:*.iso=35:*.ico=35:*.jpeg=35:*.jpg=35:*.png=35:*.svg=35:*.mp3=35:*.ogg=35:*.opus=35:*.mkv=35:*.mp4=35:*.webm=35:*.dockerignore=37:*.editorconfig=37:*.env=37:*.eslintrc=37:*.eslintrc.js=37:*.git=37:*.gitattributes=37:*.gitignore=37:*.gitkeep=37:*.gitmodules=37:*.luacheckrc=37:*.luarc.json=37:*.npmrc=37:*.nvmrc=37:*.prettierignore=37:*.prettierrc=37:*.pylintrc=37:*.stylua.toml=37:*.taplo.toml=37:*.backup=90:*.bak=90:*.log=90:*.off=90:*.old=90:*.orig=90:*.original=90:*.part=90:*.swp=90:*.tmp=90"
+$env:LS_COLORS = "rs=0:di=36:ln=34:pi=33:so=35:do=35:bd=33:cd=33:or=31:mi=0:tw=36:ow=36:st=36:ex=32:*.7z=33:*.gz=33:*.rar=33:*.tar=33:*.zip=33:*.cow=35:*.fsa=35:*.mrimg=35:*.wim=35:*.iso=35:*.ico=35:*.jpeg=35:*.jpg=35:*.png=35:*.svg=35:*.mp3=35:*.ogg=35:*.opus=35:*.mkv=35:*.mp4=35:*.webm=35:*.dockerignore=37:*.editorconfig=37:*.env=37:*.eslintrc=37:*.eslintrc.js=37:*.eslintrc.json=37:*.git=37:*.gitattributes=37:*.gitignore=37:*.gitkeep=37:*.gitmodules=37:*.lock=37:*.luacheckrc=37:*.luarc.json=37:*.npmrc=37:*.nvmrc=37:*.prettierignore=37:*.prettierrc=37:*.pylintrc=37:*.stylua.toml=37:*.taplo.toml=37:*.backup=90:*.bak=90:*.log=90:*.off=90:*.old=90:*.orig=90:*.original=90:*.part=90:*.swp=90:*.tmp=90"
 $env:LS_COLORS = $env:LS_COLORS + ":*.sh=32:*.zsh=32:*.bat=32:*.cmd=32:*.exe=32:*.ps1=32"
 
 # eza
@@ -146,14 +146,13 @@ $null = New-Module Go {
   }
 
   foreach ($mode in "Command", "Insert") {
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ViMode $mode -ScriptBlock { Go "~\Documents" }
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,l" -ViMode $mode -ScriptBlock { Go "~\Downloads" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ViMode $mode -ScriptBlock { Go "~\Downloads" }
+
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,c" -ViMode $mode -ScriptBlock { Go "D:\Code" }
 
     Set-PSReadLineKeyHandler -Chord "ctrl+g,a" -ViMode $mode -ScriptBlock { Go "D:\Apps" }
     Set-PSReadLineKeyHandler -Chord "ctrl+g,u" -ViMode $mode -ScriptBlock { Go "D:\Users" }
     Set-PSReadLineKeyHandler -Chord "ctrl+g,w" -ViMode $mode -ScriptBlock { Go "D:\Win" }
-
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,c" -ViMode $mode -ScriptBlock { Go "D:\Code" }
 
     Set-PSReadLineKeyHandler -Chord "ctrl+g,g" -ViMode $mode -ScriptBlock { Go "E:\Games" }
   }
@@ -206,13 +205,23 @@ $PSStyle.FileInfo.SymbolicLink = $PSStyle.Foreground.Cyan
 
 $PSStyle.FileInfo.Extension.Clear()
 
+".ps1" |
+  ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Green) }
 ".7z", ".gz", ".rar", ".tar", ".zip" |
   ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Yellow) }
-".cow", ".fsa", ".iso", ".wim" |
+".cow", ".fsa", ".mrimg", ".wim" |
   ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
-".dockerignore", ".editorconfig", ".gitattributes", ".gitignore", ".gitmodules" |
+".iso" |
+  ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
+".ico", ".jpeg", ".jpg", ".png", ".svg" |
+  ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
+".mp3", ".ogg", ".opus" |
+  ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
+".mkv", ".mp4", ".webm" |
+  ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
+".dockerignore", ".editorconfig", ".env", ".eslintrc", ".git", ".gitattributes", ".gitignore", ".gitkeep", ".gitmodules", ".lock", ".luacheckrc", ".npmrc", ".nvmrc", ".prettierignore", ".prettierrc", ".pylintrc" |
   ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.White) }
-".backup", ".bak", ".log", ".old", ".orig", ".original", ".part", ".swp", ".tmp" |
+".backup", ".bak", ".log", ".off", ".old", ".orig", ".original", ".part", ".swp", ".tmp" |
   ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.BrightBlack) }
 
 # prompt
@@ -229,9 +238,13 @@ function Osc7 {
   }
 }
 
-if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue)) {
+if ($script:useOhMyPosh -and (Get-Command "oh-my-posh" -ErrorAction SilentlyContinue)) {
 
-  $env:STARSHIP_CONFIG = "$HOME\Documents\PowerShell\starship.toml"
+  oh-my-posh init pwsh --config="$(Join-Path -Path (Split-Path -Parent $PROFILE) -ChildPath oh-my-posh.toml)" | Invoke-Expression
+
+} elseif ($script:useStarship -and (Get-Command "starship" -ErrorAction SilentlyContinue)) {
+
+  $env:STARSHIP_CONFIG = Join-Path -Path (Split-Path -Parent $PROFILE) -ChildPath starship.toml
   $env:STARSHIP_CACHE = $env:TEMP
 
   function Invoke-Starship-PreCommand {
@@ -249,8 +262,8 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
 
   function Invoke-Starship-TransientFunction { &starship module character }
 
-  # Invoke-Expression (&starship init powershell) # https://github.com/starship/starship/issues/2637
-  &starship init powershell --print-full-init | Out-String | Invoke-Expression
+  # Invoke-Expression (starship init powershell) # https://github.com/starship/starship/issues/2637
+  starship init powershell --print-full-init | Out-String | Invoke-Expression
 
   if ($script:useTransientPrompt) { Enable-TransientPrompt }
 
@@ -258,25 +271,25 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
 
   Set-PSReadLineOption -ContinuationPrompt " • "
 
-  $GitPromptSettings.AfterStatus = ""
-  $GitPromptSettings.BeforeStatus = ""
-  $GitPromptSettings.BranchAheadStatusSymbol.ForegroundColor = [ConsoleColor]::DarkGreen
-  $GitPromptSettings.BranchBehindAndAheadStatusSymbol.ForegroundColor = [ConsoleColor]::DarkRed
-  $GitPromptSettings.BranchBehindStatusSymbol.ForegroundColor = [ConsoleColor]::DarkRed
-  $GitPromptSettings.BranchColor.ForegroundColor = [ConsoleColor]::DarkBlue
-  $GitPromptSettings.BranchGoneStatusSymbol.ForegroundColor = [ConsoleColor]::DarkRed
-  $GitPromptSettings.BranchIdenticalStatusSymbol.ForegroundColor = [ConsoleColor]::DarkBlue
-  $GitPromptSettings.BranchIdenticalStatusSymbol.Text = ""
-  $GitPromptSettings.BranchNameLimit = 32
-  $GitPromptSettings.DelimStatus.Text = ""
-  $GitPromptSettings.ErrorColor.ForegroundColor = [ConsoleColor]::DarkRed
-  $GitPromptSettings.FileConflictedText = "?"
-  $GitPromptSettings.IndexColor.ForegroundColor = [ConsoleColor]::DarkGreen
-  $GitPromptSettings.LocalStagedStatusSymbol.Text = ""
-  $GitPromptSettings.LocalWorkingStatusSymbol.Text = ""
-  $GitPromptSettings.ShowStatusWhenZero = $false
-  $GitPromptSettings.TruncatedBranchSuffix = "…"
-  $GitPromptSettings.WorkingColor.ForegroundColor = [ConsoleColor]::DarkYellow
+  # $GitPromptSettings.AfterStatus = ""
+  # $GitPromptSettings.BeforeStatus = ""
+  # $GitPromptSettings.BranchAheadStatusSymbol.ForegroundColor = [ConsoleColor]::DarkGreen
+  # $GitPromptSettings.BranchBehindAndAheadStatusSymbol.ForegroundColor = [ConsoleColor]::DarkRed
+  # $GitPromptSettings.BranchBehindStatusSymbol.ForegroundColor = [ConsoleColor]::DarkRed
+  # $GitPromptSettings.BranchColor.ForegroundColor = [ConsoleColor]::DarkBlue
+  # $GitPromptSettings.BranchGoneStatusSymbol.ForegroundColor = [ConsoleColor]::DarkRed
+  # $GitPromptSettings.BranchIdenticalStatusSymbol.ForegroundColor = [ConsoleColor]::DarkBlue
+  # $GitPromptSettings.BranchIdenticalStatusSymbol.Text = ""
+  # $GitPromptSettings.BranchNameLimit = 32
+  # $GitPromptSettings.DelimStatus.Text = ""
+  # $GitPromptSettings.ErrorColor.ForegroundColor = [ConsoleColor]::DarkRed
+  # $GitPromptSettings.FileConflictedText = "?"
+  # $GitPromptSettings.IndexColor.ForegroundColor = [ConsoleColor]::DarkGreen
+  # $GitPromptSettings.LocalStagedStatusSymbol.Text = ""
+  # $GitPromptSettings.LocalWorkingStatusSymbol.Text = ""
+  # $GitPromptSettings.ShowStatusWhenZero = $false
+  # $GitPromptSettings.TruncatedBranchSuffix = "…"
+  # $GitPromptSettings.WorkingColor.ForegroundColor = [ConsoleColor]::DarkYellow
 
   if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544") {
     $script:admin = "$([char]0x1B)[33m⛊$([char]0x1B)[0m "
@@ -313,7 +326,8 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
       }
       $Host.UI.RawUI.WindowTitle = $path
       $path = "$([char]0x1B)[36m$path$([char]0x1B)[0m"
-      $prompt = "$script:admin$path$(Write-VcsStatus)"
+      # $prompt = "$script:admin$path$(Write-VcsStatus)"
+      $prompt = "$script:admin$path"
       if ($cmd = Get-History -Count 1) {
         $time = [math]::Round(($cmd.EndExecutionTime - $cmd.StartExecutionTime).TotalMilliseconds)
         if (!$question) {
@@ -321,7 +335,7 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
           $err = if ($null -ne $cmdletErr -and $cmd.CommandLine -eq $cmdletErr.Line) { 1 } else { $exitCode }
           $char = $char.Replace("[34m", "[31m")
         }
-        if ($script:showCmdDurationAndErrCode -and ($time -gt 5000 -or $err)) {
+        if ($time -gt 5000 -or $err) {
           $prompt += "#"
           if ($time -gt 5000) {
             $time = [TimeSpan]::FromMilliseconds($time)
@@ -350,10 +364,6 @@ if ($script:useStarship -and (Get-Command starship -ErrorAction SilentlyContinue
   }
 
 }
-
-# oh-my-posh
-
-# oh-my-posh init pwsh --config="$(Join-Path (Split-Path -Parent $PROFILE) oh-my-posh.toml)" | iex
 
 # zoxide
 

@@ -1,6 +1,12 @@
 "$schema" = "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json"
+
 final_space = true
 version = 2
+pwd = "osc51"
+shell_integration = true
+patch_pwsh_bleed = true
+disable_notice = true
+auto_upgrade = false
 
 [[blocks]]
 type = "prompt"
@@ -8,10 +14,21 @@ alignment = "left"
 
 [[blocks.segments]]
 type = "path"
-style = "powerline"
-powerline_symbol = ""
-foreground = "#ffffff"
-background = "#61AFEF"
+style = "plain"
+foreground = "cyan"
+template = "{{.Path}}"
 
 [blocks.segments.properties]
 style = "folder"
+
+[[blocks]]
+newline = true
+type = "prompt"
+alignment = "left"
+
+[[blocks.segments]]
+type = "text"
+style = "plain"
+foreground = "magenta"
+template = ">"
+
