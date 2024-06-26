@@ -1,34 +1,71 @@
 "$schema" = "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json"
 
+auto_upgrade = false
+console_title_template = '{{ .Folder }}'
+disable_notice = true
 final_space = true
-version = 2
+patch_pwsh_bleed = true
 pwd = "osc51"
 shell_integration = true
-patch_pwsh_bleed = true
-disable_notice = true
-auto_upgrade = false
+version = 2
 
 [[blocks]]
 type = "prompt"
 alignment = "left"
 
-[[blocks.segments]]
-type = "path"
-style = "plain"
-foreground = "cyan"
-template = "{{.Path}}"
+  [[blocks.segments]]
+  type = "path"
+  style = "plain"
+  foreground = "cyan"
+  template = "{{ .Path }}"
 
-[blocks.segments.properties]
-style = "folder"
+    [blocks.segments.properties]
+    style = "folder"
+
+  [[blocks.segments]]
+  type = 'git'
+  style = 'plain'
+  foreground = 'p:grey'
+  background = 'transparent'
+  template = ' {{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }} <cyan>{{ if gt .Behind 0 }}⇣{{ end }}{{ if gt .Ahead 0 }}⇡{{ end }}</>'
+
+    [blocks.segments.properties]
+    branch_icon = ''
+    commit_icon = '@'
+    fetch_status = true
+
+[[blocks]]
+type = 'rprompt'
+overflow = 'hidden'
+
+  [[blocks.segments]]
+  type = 'executiontime'
+  style = 'plain'
+  foreground = 'yellow'
+  background = 'transparent'
+  template = '{{ .FormattedMs }}'
+
+    [blocks.segments.properties]
+    threshold = 5000
 
 [[blocks]]
 newline = true
 type = "prompt"
 alignment = "left"
 
-[[blocks.segments]]
-type = "text"
-style = "plain"
-foreground = "magenta"
-template = ">"
+  [[blocks.segments]]
+  type = "text"
+  foreground_templates = ["{{if gt .Code 0}}red{{end}}", "{{if eq .Code 0}}magenta{{end}}"]
+  style = "plain"
+  foreground = "magenta"
+  template = ">"
 
+[transient_prompt]
+foreground_templates = ["{{if gt .Code 0}}red{{end}}", "{{if eq .Code 0}}magenta{{end}}"]
+background = 'transparent'
+template = '❯ '
+
+[secondary_prompt]
+foreground = 'magenta'
+background = 'transparent'
+template = '❯❯ '
