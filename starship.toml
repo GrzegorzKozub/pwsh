@@ -42,6 +42,7 @@ renamed = '[→${count}](green) '
 deleted = '[-${count}](red) ' # https://github.com/starship/starship/issues/3048
 modified = '[~${count}](yellow) '
 untracked = '[*${count}](red) '
+ignore_submodules = true
 
 [fill]
 symbol = ' '
