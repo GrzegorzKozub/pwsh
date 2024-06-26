@@ -1,7 +1,6 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 add_newline = false
-command_timeout = 1_000
 continuation_prompt = ' • '
 format = """
 $username\
@@ -20,6 +19,7 @@ $character\
 format = '[⛊](yellow) '
 
 [directory]
+truncation_length = 1
 format = '[$path](cyan) '
 
 [git_branch]
@@ -47,15 +47,15 @@ untracked = '[*${count}](red) '
 symbol = ' '
 
 [cmd_duration]
-format = '[$duration](purple) '
+format = ' [$duration](purple)'
 min_time = 5_000
 
 [status]
-format = '[$status](black) '
+format = ' [$status](black)'
 disabled = false
 
 [character]
 format = '$symbol '
 success_symbol = '[●•](blue)'
 error_symbol = '[●•](red)'
-
+vimcmd_symbol = '[●•](white)'

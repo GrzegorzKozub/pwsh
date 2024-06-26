@@ -6,7 +6,7 @@ Import-Module -Name "PSFzf"
 # profile options
 
 $script:useOhMyPosh = $false
-$script:useStarship = $false
+$script:useStarship = $true
 $script:useTransientPrompt = $true
 
 # stop on errors
