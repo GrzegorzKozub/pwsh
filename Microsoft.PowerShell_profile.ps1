@@ -1,12 +1,11 @@
 # modules
 
-# Import-Module -Name "posh-git"
 Import-Module -Name "PSFzf"
 
 # profile options
 
-$script:useOhMyPosh = $false
-$script:useStarship = $true
+$script:useOhMyPosh = $true
+$script:useStarship = $false
 $script:useTransientPrompt = $true
 
 # stop on errors
@@ -34,10 +33,7 @@ if ($env:WT_SESSION) { # https://github.com/microsoft/terminal/issues/11057
 
 if ($env:WT_SESSION) { Write-Host -NoNewLine "`e[6 q" }
 
-Set-PSReadLineOption -EditMode Vi -ViModeIndicator Script -ViModeChangeHandler {
-  Write-Host -NoNewLine "`e[$(if ($args[0] -eq 'Command') { '2' } else { '6' }) q"
-}
-
+Set-PSReadLineOption -EditMode Vi
 Set-PSReadLineKeyHandler -ViMode Command -Chord "v,v" -Function ViEditVisually # was v by default
 
 # dir colors (eza, lf)
@@ -262,34 +258,14 @@ if ($script:useOhMyPosh -and (Get-Command "oh-my-posh" -ErrorAction SilentlyCont
 
   function Invoke-Starship-TransientFunction { &starship module character }
 
-  # Invoke-Expression (starship init powershell) # https://github.com/starship/starship/issues/2637
-  starship init powershell --print-full-init | Out-String | Invoke-Expression
+  Invoke-Expression (starship init powershell) # https://github.com/starship/starship/issues/2637
+  # starship init powershell --print-full-init | Out-String | Invoke-Expression
 
   if ($script:useTransientPrompt) { Enable-TransientPrompt }
 
 } else {
 
   Set-PSReadLineOption -ContinuationPrompt " • "
-
-  # $GitPromptSettings.AfterStatus = ""
-  # $GitPromptSettings.BeforeStatus = ""
-  # $GitPromptSettings.BranchAheadStatusSymbol.ForegroundColor = [ConsoleColor]::DarkGreen
-  # $GitPromptSettings.BranchBehindAndAheadStatusSymbol.ForegroundColor = [ConsoleColor]::DarkRed
-  # $GitPromptSettings.BranchBehindStatusSymbol.ForegroundColor = [ConsoleColor]::DarkRed
-  # $GitPromptSettings.BranchColor.ForegroundColor = [ConsoleColor]::DarkBlue
-  # $GitPromptSettings.BranchGoneStatusSymbol.ForegroundColor = [ConsoleColor]::DarkRed
-  # $GitPromptSettings.BranchIdenticalStatusSymbol.ForegroundColor = [ConsoleColor]::DarkBlue
-  # $GitPromptSettings.BranchIdenticalStatusSymbol.Text = ""
-  # $GitPromptSettings.BranchNameLimit = 32
-  # $GitPromptSettings.DelimStatus.Text = ""
-  # $GitPromptSettings.ErrorColor.ForegroundColor = [ConsoleColor]::DarkRed
-  # $GitPromptSettings.FileConflictedText = "?"
-  # $GitPromptSettings.IndexColor.ForegroundColor = [ConsoleColor]::DarkGreen
-  # $GitPromptSettings.LocalStagedStatusSymbol.Text = ""
-  # $GitPromptSettings.LocalWorkingStatusSymbol.Text = ""
-  # $GitPromptSettings.ShowStatusWhenZero = $false
-  # $GitPromptSettings.TruncatedBranchSuffix = "…"
-  # $GitPromptSettings.WorkingColor.ForegroundColor = [ConsoleColor]::DarkYellow
 
   if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544") {
     $script:admin = "$([char]0x1B)[33m⛊$([char]0x1B)[0m "
@@ -326,7 +302,6 @@ if ($script:useOhMyPosh -and (Get-Command "oh-my-posh" -ErrorAction SilentlyCont
       }
       $Host.UI.RawUI.WindowTitle = $path
       $path = "$([char]0x1B)[36m$path$([char]0x1B)[0m"
-      # $prompt = "$script:admin$path$(Write-VcsStatus)"
       $prompt = "$script:admin$path"
       if ($cmd = Get-History -Count 1) {
         $time = [math]::Round(($cmd.EndExecutionTime - $cmd.StartExecutionTime).TotalMilliseconds)
@@ -363,6 +338,12 @@ if ($script:useOhMyPosh -and (Get-Command "oh-my-posh" -ErrorAction SilentlyCont
     if ($global:? -ne $question) { if ($question) { 1 + 1 } else { Write-Error "" -ErrorAction Ignore } }
   }
 
+}
+
+# vi mode indicator
+
+Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
+  Write-Host -NoNewLine "`e[$(if ($args[0] -eq 'Command') { '2' } else { '6' }) q"
 }
 
 # zoxide

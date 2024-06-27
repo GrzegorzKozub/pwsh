@@ -1,7 +1,5 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-add_newline = false
-continuation_prompt = ' • '
 format = """
 $username\
 $directory\
@@ -14,13 +12,15 @@ $status\
 $line_break\
 $character\
 """
+add_newline = false
+continuation_prompt = ' • '
 
 [username]
 format = '[⛊](yellow) '
 
 [directory]
-truncation_length = 1
 format = '[$path](cyan) '
+truncation_length = 1
 
 [git_branch]
 format = '[$branch(:$remote_branch)](blue) '
