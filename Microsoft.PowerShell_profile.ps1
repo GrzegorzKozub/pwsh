@@ -4,8 +4,8 @@ Import-Module -Name "PSFzf"
 
 # profile options
 
-$script:useOhMyPosh = $false
-$script:useStarship = $true
+$script:useOhMyPosh = $true
+$script:useStarship = $false
 $script:useTransientPrompt = $true
 
 # stop on errors
