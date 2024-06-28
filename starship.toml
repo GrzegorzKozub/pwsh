@@ -1,8 +1,9 @@
-"$schema" = 'https://starship.rs/config-schema.json'
+'$schema' = 'https://starship.rs/config-schema.json'
 
 format = """
 $username\
 $directory\
+$git_state\
 $git_branch\
 $git_commit\
 $git_status\
@@ -22,6 +23,10 @@ format = '[⛊](yellow) '
 format = '[$path](cyan) '
 truncation_length = 1
 
+[git_state]
+format = '[$state $progress_current/$progress_total](red) '
+rebase = 'rebase'
+
 [git_branch]
 format = '[$branch(:$remote_branch)](blue) '
 
@@ -31,7 +36,7 @@ tag_disabled = false
 tag_symbol = ' '
 
 [git_status]
-format = '$ahead_behind$stashed$conflicted$staged$renamed$deleted$modified$untracked'
+format = '$ahead_behind$stashed$conflicted$staged$renamed$modified$deleted$untracked'
 ahead = '[↑${count}](green) '
 behind = '[↓${count}](yellow) '
 diverged = '[↓${behind_count}](yellow) [↑${ahead_count}](green) '
@@ -39,8 +44,8 @@ stashed = '[←${count}](purple) '
 conflicted = '[?${count}](red) '
 staged = '[+${count}](green) '
 renamed = '[→${count}](green) '
-deleted = '[-${count}](red) ' # https://github.com/starship/starship/issues/3048
 modified = '[~${count}](yellow) '
+deleted = '[-${count}](red) ' # https://github.com/starship/starship/issues/3048
 untracked = '[*${count}](red) '
 ignore_submodules = true
 
@@ -49,7 +54,7 @@ symbol = ' '
 
 [cmd_duration]
 format = ' [$duration](purple)'
-min_time = 5_000
+min_time = 5000
 
 [status]
 format = ' [$status](black)'

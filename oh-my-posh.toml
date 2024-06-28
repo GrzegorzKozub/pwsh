@@ -1,38 +1,57 @@
-"$schema" = "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json"
+'$schema' = 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json'
 
-auto_upgrade = false
-console_title_template = '{{ .Folder }}'
-disable_notice = true
-final_space = true
-patch_pwsh_bleed = true
-pwd = "osc51"
-shell_integration = true
 version = 2
+final_space = true
+pwd = 'osc51'
+shell_integration = true
+patch_pwsh_bleed = true
+disable_notice = true
+auto_upgrade = false
+console_title_template = '{{if eq "~" .PWD}}~{{else}}{{.Folder}}{{end}}'
+
+[secondary_prompt]
+foreground = 'blue'
+template = ' • '
+
+[transient_prompt]
+foreground = 'blue'
+foreground_templates = ['{{if gt .Code 0}}red{{else}}blue{{end}}']
+template = '●• '
 
 [[blocks]]
-type = "prompt"
-alignment = "left"
+type = 'prompt'
+alignment = 'left'
 
   [[blocks.segments]]
-  type = "path"
-  style = "plain"
-  foreground = "cyan"
-  template = "{{ .Path }}"
+  type = 'path'
+  style = 'plain'
+  foreground = 'cyan'
+  template = '{{.Path}}'
 
     [blocks.segments.properties]
-    style = "folder"
+    style = 'folder'
 
   [[blocks.segments]]
   type = 'git'
   style = 'plain'
-  foreground = 'p:grey'
-  background = 'transparent'
-  template = ' {{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }} <cyan>{{ if gt .Behind 0 }}⇣{{ end }}{{ if gt .Ahead 0 }}⇡{{ end }}</>'
+  foreground = 'blue'
+  template = """
+{{if .Detached}}{{if .Rebase}} <red>{{else}} <yellow>{{end}}{{else}} <blue>{{end}}{{.HEAD}}</>\
+{{if gt .Behind 0}} <yellow>↓{{.Behind}}{{end}}</>\
+{{if gt .Ahead 0}} <green>↑{{.Ahead}}{{end}}</>\
+{{if gt .StashCount 0}} <magenta>←{{.StashCount}}{{end}}</>\
+{{if gt .Working.Unmerged 0}} <red>?{{.Working.Unmerged}}{{end}}</>\
+{{if .Staging.Changed}} <green>+{{add (.Staging.Added) (.Staging.Deleted) (.Staging.Modified)}}{{end}}</>\
+{{if or (.Working.Added) (.Working.Deleted) (.Working.Modified)}} <yellow>~{{add (.Working.Added) (.Working.Deleted) (.Working.Modified)}}{{end}}</>\
+{{if gt .Working.Untracked 0}} <red>*{{.Working.Untracked}}{{end}}</>\
+"""
 
     [blocks.segments.properties]
-    branch_icon = ''
-    commit_icon = '@'
     fetch_status = true
+    branch_icon = ''
+    commit_icon = ''
+    rebase_icon = 'rebase '
+    tag_icon = ''
 
 [[blocks]]
 type = 'rprompt'
@@ -41,31 +60,20 @@ overflow = 'hidden'
   [[blocks.segments]]
   type = 'executiontime'
   style = 'plain'
-  foreground = 'yellow'
-  background = 'transparent'
-  template = '{{ .FormattedMs }}'
+  foreground = 'magenta'
+  template = '{{.FormattedMs}}'
 
     [blocks.segments.properties]
     threshold = 5000
 
 [[blocks]]
+type = 'prompt'
 newline = true
-type = "prompt"
-alignment = "left"
+alignment = 'left'
 
   [[blocks.segments]]
-  type = "text"
-  foreground_templates = ["{{if gt .Code 0}}red{{end}}", "{{if eq .Code 0}}magenta{{end}}"]
-  style = "plain"
-  foreground = "magenta"
-  template = ">"
-
-[transient_prompt]
-foreground_templates = ["{{if gt .Code 0}}red{{end}}", "{{if eq .Code 0}}magenta{{end}}"]
-background = 'transparent'
-template = '❯ '
-
-[secondary_prompt]
-foreground = 'magenta'
-background = 'transparent'
-template = '❯❯ '
+  type = 'text'
+  style = 'plain'
+  foreground = 'blue'
+  foreground_templates = ['{{if gt .Code 0}}red{{else}}blue{{end}}']
+  template = '●•'
