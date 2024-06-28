@@ -23,6 +23,12 @@ type = 'prompt'
 alignment = 'left'
 
   [[blocks.segments]]
+  type = 'root'
+  style = 'plain'
+  foreground = 'yellow'
+  template = '⛊ '
+
+  [[blocks.segments]]
   type = 'path'
   style = 'plain'
   foreground = 'cyan'
