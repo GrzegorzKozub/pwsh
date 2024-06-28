@@ -196,9 +196,9 @@ $PSStyle.Formatting.FeedbackText = $PSStyle.Foreground.White
 $PSStyle.Progress.Style = $PSStyle.Foreground.White
 $PSStyle.Progress.UseOSCIndicator = $true
 
-$PSStyle.FileInfo.Directory = $PSStyle.Foreground.Blue # https://github.com/PowerShell/PowerShell/issues/18778
+$PSStyle.FileInfo.Directory = $PSStyle.Foreground.Cyan
 $PSStyle.FileInfo.Executable = $PSStyle.Foreground.Green
-$PSStyle.FileInfo.SymbolicLink = $PSStyle.Foreground.Cyan
+$PSStyle.FileInfo.SymbolicLink = $PSStyle.Foreground.Blue
 
 $PSStyle.FileInfo.Extension.Clear()
 

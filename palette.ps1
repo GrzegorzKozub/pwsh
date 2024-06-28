@@ -1,4 +1,4 @@
-﻿$colors = @(
+$colors = @(
   [System.ConsoleColor]::Black,
   [System.ConsoleColor]::DarkRed,
   [System.ConsoleColor]::DarkGreen,
@@ -7,7 +7,7 @@
   [System.ConsoleColor]::DarkMagenta,
   [System.ConsoleColor]::DarkCyan,
   [System.ConsoleColor]::Gray,
- 
+
   [System.ConsoleColor]::DarkGray,
   [System.ConsoleColor]::Red,
   [System.ConsoleColor]::Green,
@@ -26,3 +26,4 @@ for ($i = 0; $i -lt $colors.Length; $i++) {
   Write-Host $colors[$i] -ForegroundColor $colors[$i]
 }
 
+$PSStyle.Foreground
