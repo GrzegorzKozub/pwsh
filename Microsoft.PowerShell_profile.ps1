@@ -1,7 +1,3 @@
-# modules
-
-Import-Module -Name "PSFzf"
-
 # profile options
 
 $script:useOhMyPosh = $true
@@ -88,10 +84,17 @@ $env:FZF_DEFAULT_OPTS="
   --tabstop 2
 "
 
-Set-PsFzfOption `
-  -PSReadlineChordReverseHistory "ctrl+r" `
-  -PSReadlineChordProvider "ctrl+t" `
-  -PSReadlineChordSetLocation "alt+c"
+# psfzf
+
+function LoadPsFzf {
+  if ($script:psFzfLoaded) { return }
+  Import-Module -Name "PSFzf"
+  Set-PsFzfOption `
+    -PSReadlineChordReverseHistory "ctrl+r" `
+    -PSReadlineChordProvider "ctrl+t" `
+    -PSReadlineChordSetLocation "alt+c"
+  $script:psFzfLoaded = $true
+}
 
 # gsudo
 
@@ -152,8 +155,6 @@ $null = New-Module Go {
 
     Set-PSReadLineKeyHandler -Chord "ctrl+g,g" -ViMode $mode -ScriptBlock { Go "E:\Games" }
   }
-
-  Export-ModuleMember
 }
 
 # syntax highlighting
@@ -236,7 +237,9 @@ function Osc7 {
 
 if ($script:useOhMyPosh -and (Get-Command "oh-my-posh" -ErrorAction SilentlyContinue)) {
 
-  oh-my-posh init pwsh --config="$(Join-Path -Path (Split-Path -Parent $PROFILE) -ChildPath oh-my-posh.toml)" | Invoke-Expression
+  $env:POSH_THEME = Join-Path -Path (Split-Path -Parent $PROFILE) -ChildPath oh-my-posh.toml
+  oh-my-posh init pwsh | Invoke-Expression
+  LoadPsFzf
 
 } elseif ($script:useStarship -and (Get-Command "starship" -ErrorAction SilentlyContinue)) {
 
@@ -254,6 +257,7 @@ if ($script:useOhMyPosh -and (Get-Command "oh-my-posh" -ErrorAction SilentlyCont
       $path = $path.Substring($lastSlash + 1, $path.Length - $lastSlash - 1)
     }
     $Host.UI.RawUI.WindowTitle = $path
+    LoadPsFzf
   }
 
   function Invoke-Starship-TransientFunction { &starship module character }
@@ -336,6 +340,7 @@ if ($script:useOhMyPosh -and (Get-Command "oh-my-posh" -ErrorAction SilentlyCont
     }
     $global:LASTEXITCODE = $exitCode
     if ($global:? -ne $question) { if ($question) { 1 + 1 } else { Write-Error "" -ErrorAction Ignore } }
+    LoadPsFzf
   }
 
 }
