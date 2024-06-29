@@ -1,6 +1,6 @@
 # profile options
 
-$script:useOhMyPosh = $true
+$script:useOhMyPosh = $false
 $script:useStarship = $false
 $script:useTransientPrompt = $true
 
@@ -306,7 +306,7 @@ if ($script:useOhMyPosh -and (Get-Command "oh-my-posh" -ErrorAction SilentlyCont
       }
       $Host.UI.RawUI.WindowTitle = $path
       $path = "$([char]0x1B)[36m$path$([char]0x1B)[0m"
-      $prompt = "$script:admin$path"
+      $prompt = "$script:admin$path$(gs)"
       if ($cmd = Get-History -Count 1) {
         $time = [math]::Round(($cmd.EndExecutionTime - $cmd.StartExecutionTime).TotalMilliseconds)
         if (!$question) {
