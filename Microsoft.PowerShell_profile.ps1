@@ -227,6 +227,17 @@ function _defer {
   $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
   Invoke-Expression -Command (& { (zoxide init --cmd cd powershell | Out-String) } )
 
+  # completion
+
+  try {
+    . _bat.ps1
+    . _fd.ps1
+    . _hyperfine.ps1
+    . _rg.ps1
+    . _yazi.ps1
+    . _zoxide.ps1
+  } catch {}
+
 } # _defer ends
 
 # prompt
