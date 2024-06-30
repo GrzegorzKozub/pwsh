@@ -146,13 +146,10 @@ $null = New-Module Go {
 
   foreach ($mode in "Command", "Insert") {
     Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ViMode $mode -ScriptBlock { Go "~\Downloads" }
-
     Set-PSReadLineKeyHandler -Chord "ctrl+g,c" -ViMode $mode -ScriptBlock { Go "D:\Code" }
-
     Set-PSReadLineKeyHandler -Chord "ctrl+g,a" -ViMode $mode -ScriptBlock { Go "D:\Apps" }
     Set-PSReadLineKeyHandler -Chord "ctrl+g,u" -ViMode $mode -ScriptBlock { Go "D:\Users" }
     Set-PSReadLineKeyHandler -Chord "ctrl+g,w" -ViMode $mode -ScriptBlock { Go "D:\Win" }
-
     Set-PSReadLineKeyHandler -Chord "ctrl+g,g" -ViMode $mode -ScriptBlock { Go "E:\Games" }
   }
 }
@@ -290,6 +287,43 @@ if ($script:useOhMyPosh -and (Get-Command "oh-my-posh" -ErrorAction SilentlyCont
     }
   }
 
+  if (Get-Command "git" -ErrorAction SilentlyContinue) {
+    function GitStatus {
+      if (!(Test-Path -Path ".git")) { return "" }
+      # https://git-scm.com/docs/git-status#_porcelain_format_version_2
+      $status = git status --porcelain=2 --branch --show-stash # --ignore-submodule
+      foreach ($line in $status) {
+        if ($line -match "# branch.oid (.*)") { $commit = $Matches[1] }
+        if ($line -match "# branch.head (.*)") { $branch = $Matches[1] }
+        if ($line -match "# branch.ab \+(.*) \-(.*)") {
+          if ($Matches[1] -gt 0) { $ahead = $Matches[1] }
+          if ($Matches[2] -gt 0) { $behind = $Matches[2] }
+        }
+        if ($line -match "# stash (.*)") { $stash = $Matches[1] }
+        if ($line -match "[12] ([\.AMD])([\.AMD])") {
+          if ($Matches[1] -ne ".") { $staged++ }
+          if ($Matches[2] -ne ".") { $unstaged++ }
+        }
+        if ($line -match "u .*") { $unmerged++ }
+        if ($line -match "\? .*") { $untracked++ }
+      }
+      if ($branch -match "(detached)") {
+        $branchOrCommit = "`e[33m$(-join $commit[0..6])`e[0m "
+      } else {
+        if ($branch.Length -gt 32) { $branch = "$(-join $branch[0..3])…" }
+        $branchOrCommit = "`e[34m$branch`e[0m "
+      }
+      $behind = if ($behind) { "`e[33m↓$behind`e[0m " } else { "" }
+      $ahead = if ($ahead) { "`e[32m↑$ahead`e[0m " } else { "" }
+      $stash = if ($stash) { "`e[35m←$stash`e[0m " } else { "" }
+      $unmerged = if ($unmerged) { "`e[31m?$unmerged`e[0m " } else { "" }
+      $staged = if ($staged) { "`e[32m+$staged`e[0m " } else { "" }
+      $unstaged = if ($unstaged) { "`e[33m~$unstaged`e[0m " } else { "" }
+      $untracked = if ($untracked) { "`e[31m*$untracked`e[0m " } else { "" }
+      return " $branchOrCommit$behind$ahead$stash$unmerged$staged$unstaged$untracked"
+    }
+  } else { function GitStatus { return "" } }
+
   function prompt {
     $question = $global:?
     $exitCode = $global:LASTEXITCODE
@@ -306,7 +340,7 @@ if ($script:useOhMyPosh -and (Get-Command "oh-my-posh" -ErrorAction SilentlyCont
       }
       $Host.UI.RawUI.WindowTitle = $path
       $path = "$([char]0x1B)[36m$path$([char]0x1B)[0m"
-      $prompt = "$script:admin$path$(gs)"
+      $prompt = "$script:admin$path$(GitStatus)"
       if ($cmd = Get-History -Count 1) {
         $time = [math]::Round(($cmd.EndExecutionTime - $cmd.StartExecutionTime).TotalMilliseconds)
         if (!$question) {
@@ -354,5 +388,4 @@ Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
 # zoxide
 
 $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
-
 Invoke-Expression -Command (& { (zoxide init --cmd cd powershell | Out-String) } )
