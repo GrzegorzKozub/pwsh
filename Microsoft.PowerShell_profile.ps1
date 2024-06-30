@@ -6,7 +6,7 @@ $script:useTransientPrompt = $true
 
 # runs once from the prompt function (functions and aliases must be global)
 
-function Defer {
+function _defer {
 
   # stop on errors
 
@@ -108,7 +108,7 @@ function Defer {
 
   # lf & yazi
 
-  function global:ChangeWorkingDir {
+  function global:_cd {
     param ([scriptblock]$Cmd)
     $tempFile = New-TemporaryFile
     & $Cmd $tempFile.FullName
@@ -121,8 +121,8 @@ function Defer {
     }
   }
 
-  function global:l { ChangeWorkingDir -Cmd { lf.exe -single -last-dir-path $args[0] } }
-  function global:y { ChangeWorkingDir -Cmd { yazi.exe --cwd-file $args[0] } }
+  function global:l { _cd -Cmd { lf.exe -single -last-dir-path $args[0] } }
+  function global:y { _cd -Cmd { yazi.exe --cwd-file $args[0] } }
 
   # neovim
 
@@ -138,20 +138,18 @@ function Defer {
 
   # dir shortcuts
 
-  $null = New-Module Go {
-    function Go ($where) {
-      Set-Location -Path $where
-      [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
-    }
+  function global:_go ($where) {
+    Set-Location -Path $where
+    [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
+  }
 
-    foreach ($mode in "Command", "Insert") {
-      Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ViMode $mode -ScriptBlock { Go "~\Downloads" }
-      Set-PSReadLineKeyHandler -Chord "ctrl+g,c" -ViMode $mode -ScriptBlock { Go "D:\Code" }
-      Set-PSReadLineKeyHandler -Chord "ctrl+g,a" -ViMode $mode -ScriptBlock { Go "D:\Apps" }
-      Set-PSReadLineKeyHandler -Chord "ctrl+g,u" -ViMode $mode -ScriptBlock { Go "D:\Users" }
-      Set-PSReadLineKeyHandler -Chord "ctrl+g,w" -ViMode $mode -ScriptBlock { Go "D:\Win" }
-      Set-PSReadLineKeyHandler -Chord "ctrl+g,g" -ViMode $mode -ScriptBlock { Go "E:\Games" }
-    }
+  foreach ($mode in "Command", "Insert") {
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ViMode $mode -ScriptBlock { _go "~\Downloads" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,c" -ViMode $mode -ScriptBlock { _go "D:\Code" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,a" -ViMode $mode -ScriptBlock { _go "D:\Apps" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,u" -ViMode $mode -ScriptBlock { _go "D:\Users" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,w" -ViMode $mode -ScriptBlock { _go "D:\Win" }
+    Set-PSReadLineKeyHandler -Chord "ctrl+g,g" -ViMode $mode -ScriptBlock { _go "E:\Games" }
   }
 
   # syntax highlighting
@@ -229,11 +227,11 @@ function Defer {
   $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
   Invoke-Expression -Command (& { (zoxide init --cmd cd powershell | Out-String) } )
 
-} # Defer ends
+} # _defer ends
 
 # prompt
 
-function Osc7 {
+function _osc7 {
   if ($env:WT_SESSION) {
     # https://learn.microsoft.com/en-us/windows/terminal/tutorials/new-tab-same-directory
     return "$([char]27)]9;9;`"$($location.ProviderPath)`"$([char]27)\"
@@ -259,7 +257,7 @@ function Osc7 {
 #   function Invoke-Starship-PreCommand {
 #     $location = $executionContext.SessionState.Path.CurrentLocation
 #     if ($location.Provider.Name -eq "FileSystem") {
-#       $Host.UI.Write($(Osc7))
+#       $Host.UI.Write($(_osc7))
 #     }
 #     $path = $location.ProviderPath.Replace($HOME, "~")
 #     if ($path -ne "~" -and !$path.EndsWith("\")) {
@@ -301,7 +299,7 @@ function Osc7 {
   }
 
   if (Get-Command "git" -ErrorAction SilentlyContinue) {
-    function GitStatus {
+    function _git {
       if (!(Test-Path -Path ".git")) { return "" }
       # https://git-scm.com/docs/git-status#_porcelain_format_version_2
       $status = git status --porcelain=2 --branch --show-stash # --ignore-submodule
@@ -335,7 +333,7 @@ function Osc7 {
       $untracked = if ($untracked) { "`e[31m*$untracked`e[0m " } else { "" }
       return " $branchOrCommit$behind$ahead$stash$unmerged$staged$unstaged$untracked"
     }
-  } else { function GitStatus { return "" } }
+  } else { function _git { return "" } }
 
   function prompt {
     $question = $global:?
@@ -353,7 +351,7 @@ function Osc7 {
       }
       $Host.UI.RawUI.WindowTitle = $path
       $path = "$([char]0x1B)[36m$path$([char]0x1B)[0m"
-      $prompt = "$script:admin$path$(GitStatus)"
+      $prompt = "$script:admin$path$(_git)"
       if ($cmd = Get-History -Count 1) {
         $time = [math]::Round(($cmd.EndExecutionTime - $cmd.StartExecutionTime).TotalMilliseconds)
         if (!$question) {
@@ -380,14 +378,14 @@ function Osc7 {
       }
       $prompt += "`n$char"
       if ($location.Provider.Name -eq "FileSystem") {
-        $prompt = $(Osc7) + $prompt
+        $prompt = $(_osc7) + $prompt
       }
       Set-PSReadLineOption -ExtraPromptLineCount ($prompt.Split("`n").Length - 1)
       $prompt
     }
     $global:LASTEXITCODE = $exitCode
     if ($global:? -ne $question) { if ($question) { 1 + 1 } else { Write-Error "" -ErrorAction Ignore } }
-    if (!$script:delayedDone) { Defer; $script:delayedDone = $true }
+    if (!$script:delayedDone) { _defer; $script:delayedDone = $true }
   }
 
 # }
