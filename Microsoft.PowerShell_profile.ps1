@@ -1,12 +1,4 @@
-# profile options
-
-# $script:useOhMyPosh = $false
-# $script:useStarship = $false
-$script:useTransientPrompt = $true
-
-# runs once from the prompt function (functions and aliases must be global)
-
-function _defer {
+function _defer { # runs once from the prompt function (functions and aliases must be global)
 
   # stop on errors
 
@@ -242,6 +234,62 @@ function _defer {
 
 # prompt
 
+Set-PSReadLineOption -ContinuationPrompt " • "
+
+if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544") {
+  $script:admin = "$([char]0x1B)[33m⛊$([char]0x1B)[0m "
+}
+
+Set-PSReadLineKeyHandler -Key "enter" -ScriptBlock {
+  try {
+    $errors = $null
+    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$null, [ref]$null, [ref]$errors, [ref]$null)
+    if ($errors.Count -eq 0) {
+      $script:transientPrompt = $true
+      [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
+    }
+  } finally {
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+  }
+}
+
+if (Get-Command "git" -ErrorAction SilentlyContinue) {
+  function _git {
+    if (!(Test-Path -Path ".git")) { return "" }
+    # https://git-scm.com/docs/git-status#_porcelain_format_version_2
+    $status = git status --porcelain=2 --branch --show-stash # --ignore-submodule
+    foreach ($line in $status) {
+      if ($line -match "# branch.oid (.*)") { $commit = $Matches[1] }
+      if ($line -match "# branch.head (.*)") { $branch = $Matches[1] }
+      if ($line -match "# branch.ab \+(.*) \-(.*)") {
+        if ($Matches[1] -gt 0) { $ahead = $Matches[1] }
+        if ($Matches[2] -gt 0) { $behind = $Matches[2] }
+      }
+      if ($line -match "# stash (.*)") { $stash = $Matches[1] }
+      if ($line -match "[12] ([\.AMD])([\.AMD])") {
+        if ($Matches[1] -ne ".") { $staged++ }
+        if ($Matches[2] -ne ".") { $unstaged++ }
+      }
+      if ($line -match "u .*") { $unmerged++ }
+      if ($line -match "\? .*") { $untracked++ }
+    }
+    if ($branch -match "(detached)") {
+      $branchOrCommit = "`e[33m$(-join $commit[0..6])`e[0m "
+    } else {
+      if ($branch.Length -gt 32) { $branch = "$(-join $branch[0..3])…" }
+      $branchOrCommit = "`e[34m$branch`e[0m "
+    }
+    $behind = if ($behind) { "`e[33m↓$behind`e[0m " } else { "" }
+    $ahead = if ($ahead) { "`e[32m↑$ahead`e[0m " } else { "" }
+    $stash = if ($stash) { "`e[35m←$stash`e[0m " } else { "" }
+    $unmerged = if ($unmerged) { "`e[31m?$unmerged`e[0m " } else { "" }
+    $staged = if ($staged) { "`e[32m+$staged`e[0m " } else { "" }
+    $unstaged = if ($unstaged) { "`e[33m~$unstaged`e[0m " } else { "" }
+    $untracked = if ($untracked) { "`e[31m*$untracked`e[0m " } else { "" }
+    return " $branchOrCommit$behind$ahead$stash$unmerged$staged$unstaged$untracked"
+  }
+} else { function _git { return "" } }
+
 function _osc7 {
   if ($env:WT_SESSION) {
     # https://learn.microsoft.com/en-us/windows/terminal/tutorials/new-tab-same-directory
@@ -254,149 +302,55 @@ function _osc7 {
   }
 }
 
-# if ($script:useOhMyPosh -and (Get-Command "oh-my-posh" -ErrorAction SilentlyContinue)) {
-#
-#   $env:POSH_THEME = Join-Path -Path (Split-Path -Parent $PROFILE) -ChildPath oh-my-posh.toml
-#   oh-my-posh init pwsh | Invoke-Expression
-#   LoadPsFzf
-#
-# } elseif ($script:useStarship -and (Get-Command "starship" -ErrorAction SilentlyContinue)) {
-#
-#   $env:STARSHIP_CONFIG = Join-Path -Path (Split-Path -Parent $PROFILE) -ChildPath starship.toml
-#   $env:STARSHIP_CACHE = $env:TEMP
-#
-#   function Invoke-Starship-PreCommand {
-#     $location = $executionContext.SessionState.Path.CurrentLocation
-#     if ($location.Provider.Name -eq "FileSystem") {
-#       $Host.UI.Write($(_osc7))
-#     }
-#     $path = $location.ProviderPath.Replace($HOME, "~")
-#     if ($path -ne "~" -and !$path.EndsWith("\")) {
-#       $lastSlash = $path.LastIndexOf("\")
-#       $path = $path.Substring($lastSlash + 1, $path.Length - $lastSlash - 1)
-#     }
-#     $Host.UI.RawUI.WindowTitle = $path
-#     LoadPsFzf
-#   }
-#
-#   function Invoke-Starship-TransientFunction { &starship module character }
-#
-#   Invoke-Expression (starship init powershell) # https://github.com/starship/starship/issues/2637
-#   # starship init powershell --print-full-init | Out-String | Invoke-Expression
-#
-#   if ($script:useTransientPrompt) { Enable-TransientPrompt }
-#
-# } else {
-
-  Set-PSReadLineOption -ContinuationPrompt " • "
-
-  if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544") {
-    $script:admin = "$([char]0x1B)[33m⛊$([char]0x1B)[0m "
-  }
-
-  if ($script:useTransientPrompt) {
-    Set-PSReadLineKeyHandler -Key "enter" -ScriptBlock {
-      try {
-        $errors = $null
-        [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$null, [ref]$null, [ref]$errors, [ref]$null)
-        if ($errors.Count -eq 0) {
-          $script:transientPrompt = $true
-          [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
+function prompt {
+  $question = $global:?
+  $exitCode = $global:LASTEXITCODE
+  $char = "$([char]0x1B)[34m●•$([char]0x1B)[0m "
+  if ($script:transientPrompt) {
+    $script:transientPrompt = $false
+    $char
+  } else {
+    $location = $executionContext.SessionState.Path.CurrentLocation
+    $path = $location.ProviderPath.Replace($HOME, "~")
+    if ($path -ne "~" -and !$path.EndsWith("\")) {
+      $lastSlash = $path.LastIndexOf("\")
+      $path = $path.Substring($lastSlash + 1, $path.Length - $lastSlash - 1)
+    }
+    $Host.UI.RawUI.WindowTitle = $path
+    $path = "$([char]0x1B)[36m$path$([char]0x1B)[0m"
+    $prompt = "$script:admin$path$(_git)"
+    if ($cmd = Get-History -Count 1) {
+      $time = [math]::Round(($cmd.EndExecutionTime - $cmd.StartExecutionTime).TotalMilliseconds)
+      if (!$question) {
+        $cmdletErr = try { $global:error[0] | Where-Object { $_ -ne $null } | Select-Object -ExpandProperty InvocationInfo } catch { $null }
+        $err = if ($null -ne $cmdletErr -and $cmd.CommandLine -eq $cmdletErr.Line) { 1 } else { $exitCode }
+        $char = $char.Replace("[34m", "[31m")
+      }
+      if ($time -gt 5000 -or $err) {
+        $prompt += "#"
+        if ($time -gt 5000) {
+          $time = [TimeSpan]::FromMilliseconds($time)
+          $prompt += " $([char]0x1B)[35m"
+          if ($time.Hours -gt 0) { $prompt += "$($time.Hours)h " }
+          if ($time.Minutes -gt 0) { $prompt += "$($time.Minutes)m " }
+          $prompt += "$($time.Seconds)s$([char]0x1B)[0m"
         }
-      } finally {
-        [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+        if ($err) {
+          $prompt += " $([char]0x1B)[30m$err$([char]0x1B)[0m"
+        }
+        $len = [RegEx]::Replace($prompt, "\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])", "").Length
+        $pad = [System.String]::new(" ", $Host.UI.RawUI.WindowSize.Width - $len + 1)
+        $prompt = $prompt.Replace("#", $pad)
       }
     }
-  }
-
-  if (Get-Command "git" -ErrorAction SilentlyContinue) {
-    function _git {
-      if (!(Test-Path -Path ".git")) { return "" }
-      # https://git-scm.com/docs/git-status#_porcelain_format_version_2
-      $status = git status --porcelain=2 --branch --show-stash # --ignore-submodule
-      foreach ($line in $status) {
-        if ($line -match "# branch.oid (.*)") { $commit = $Matches[1] }
-        if ($line -match "# branch.head (.*)") { $branch = $Matches[1] }
-        if ($line -match "# branch.ab \+(.*) \-(.*)") {
-          if ($Matches[1] -gt 0) { $ahead = $Matches[1] }
-          if ($Matches[2] -gt 0) { $behind = $Matches[2] }
-        }
-        if ($line -match "# stash (.*)") { $stash = $Matches[1] }
-        if ($line -match "[12] ([\.AMD])([\.AMD])") {
-          if ($Matches[1] -ne ".") { $staged++ }
-          if ($Matches[2] -ne ".") { $unstaged++ }
-        }
-        if ($line -match "u .*") { $unmerged++ }
-        if ($line -match "\? .*") { $untracked++ }
-      }
-      if ($branch -match "(detached)") {
-        $branchOrCommit = "`e[33m$(-join $commit[0..6])`e[0m "
-      } else {
-        if ($branch.Length -gt 32) { $branch = "$(-join $branch[0..3])…" }
-        $branchOrCommit = "`e[34m$branch`e[0m "
-      }
-      $behind = if ($behind) { "`e[33m↓$behind`e[0m " } else { "" }
-      $ahead = if ($ahead) { "`e[32m↑$ahead`e[0m " } else { "" }
-      $stash = if ($stash) { "`e[35m←$stash`e[0m " } else { "" }
-      $unmerged = if ($unmerged) { "`e[31m?$unmerged`e[0m " } else { "" }
-      $staged = if ($staged) { "`e[32m+$staged`e[0m " } else { "" }
-      $unstaged = if ($unstaged) { "`e[33m~$unstaged`e[0m " } else { "" }
-      $untracked = if ($untracked) { "`e[31m*$untracked`e[0m " } else { "" }
-      return " $branchOrCommit$behind$ahead$stash$unmerged$staged$unstaged$untracked"
+    $prompt += "`n$char"
+    if ($location.Provider.Name -eq "FileSystem") {
+      $prompt = $(_osc7) + $prompt
     }
-  } else { function _git { return "" } }
-
-  function prompt {
-    $question = $global:?
-    $exitCode = $global:LASTEXITCODE
-    $char = "$([char]0x1B)[34m●•$([char]0x1B)[0m "
-    if ($script:transientPrompt) {
-      $script:transientPrompt = $false
-      $char
-    } else {
-      $location = $executionContext.SessionState.Path.CurrentLocation
-      $path = $location.ProviderPath.Replace($HOME, "~")
-      if ($path -ne "~" -and !$path.EndsWith("\")) {
-        $lastSlash = $path.LastIndexOf("\")
-        $path = $path.Substring($lastSlash + 1, $path.Length - $lastSlash - 1)
-      }
-      $Host.UI.RawUI.WindowTitle = $path
-      $path = "$([char]0x1B)[36m$path$([char]0x1B)[0m"
-      $prompt = "$script:admin$path$(_git)"
-      if ($cmd = Get-History -Count 1) {
-        $time = [math]::Round(($cmd.EndExecutionTime - $cmd.StartExecutionTime).TotalMilliseconds)
-        if (!$question) {
-          $cmdletErr = try { $global:error[0] | Where-Object { $_ -ne $null } | Select-Object -ExpandProperty InvocationInfo } catch { $null }
-          $err = if ($null -ne $cmdletErr -and $cmd.CommandLine -eq $cmdletErr.Line) { 1 } else { $exitCode }
-          $char = $char.Replace("[34m", "[31m")
-        }
-        if ($time -gt 5000 -or $err) {
-          $prompt += "#"
-          if ($time -gt 5000) {
-            $time = [TimeSpan]::FromMilliseconds($time)
-            $prompt += " $([char]0x1B)[35m"
-            if ($time.Hours -gt 0) { $prompt += "$($time.Hours)h " }
-            if ($time.Minutes -gt 0) { $prompt += "$($time.Minutes)m " }
-            $prompt += "$($time.Seconds)s$([char]0x1B)[0m"
-          }
-          if ($err) {
-            $prompt += " $([char]0x1B)[30m$err$([char]0x1B)[0m"
-          }
-          $len = [RegEx]::Replace($prompt, "\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])", "").Length
-          $pad = [System.String]::new(" ", $Host.UI.RawUI.WindowSize.Width - $len + 1)
-          $prompt = $prompt.Replace("#", $pad)
-        }
-      }
-      $prompt += "`n$char"
-      if ($location.Provider.Name -eq "FileSystem") {
-        $prompt = $(_osc7) + $prompt
-      }
-      Set-PSReadLineOption -ExtraPromptLineCount ($prompt.Split("`n").Length - 1)
-      $prompt
-    }
-    $global:LASTEXITCODE = $exitCode
-    if ($global:? -ne $question) { if ($question) { 1 + 1 } else { Write-Error "" -ErrorAction Ignore } }
-    if (!$script:delayedDone) { _defer; $script:delayedDone = $true }
+    Set-PSReadLineOption -ExtraPromptLineCount ($prompt.Split("`n").Length - 1)
+    $prompt
   }
-
-# }
+  $global:LASTEXITCODE = $exitCode
+  if ($global:? -ne $question) { if ($question) { 1 + 1 } else { Write-Error "" -ErrorAction Ignore } }
+  if (!$script:delayedDone) { _defer; $script:delayedDone = $true }
+}
