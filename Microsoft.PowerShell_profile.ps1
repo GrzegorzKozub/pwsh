@@ -148,12 +148,12 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   Set-PSReadLineOption -Colors @{
     "Command" = [ConsoleColor]::DarkGreen
-    "Comment" = [ConsoleColor]::DarkGray
+    "Comment" = [ConsoleColor]::Black
     "ContinuationPrompt" = [ConsoleColor]::DarkBlue
     "Default" = [ConsoleColor]::White
     "Emphasis" = [ConsoleColor]::DarkYellow
     "Error" = [ConsoleColor]::DarkRed
-    "InlinePrediction" = [ConsoleColor]::Black
+    "InlinePrediction" = [ConsoleColor]::DarkGray
     "Keyword" = [ConsoleColor]::DarkYellow
     "Member" = [ConsoleColor]::DarkYellow
     "Number" = [ConsoleColor]::White
@@ -236,7 +236,6 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
 Set-PSReadLineOption -ContinuationPrompt " • "
 Set-PSReadLineOption -PromptText "`e[34m●• `e[0m", "`e[31m●• `e[0m"
-# Set-PSReadLineOption -PromptText "`e[34m●• `e[0m`e[K`e[0J", "`e[31m●• `e[0m`e[K`e[0J"
 
 if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544") {
   $script:admin = "$([char]0x1B)[33m⛊$([char]0x1B)[0m "
