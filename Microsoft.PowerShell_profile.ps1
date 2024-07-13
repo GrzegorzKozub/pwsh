@@ -80,6 +80,18 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     --tabstop 2
   "
 
+  function global:glo {
+    $pager = git config core.pager
+    git ls --color=always $args |
+      fzf `
+        --ansi `
+        --bind='?:toggle-preview,alt-w:toggle-preview-wrap' `
+        --height=100% `
+        --preview "echo {} | cut -d' ' -f2 | xargs -I% git show --color=always % -- $args | $pager" `
+        --preview-window='border:rounded,right:50%'
+    return
+  }
+
   # psfzf
 
   Import-Module -Name "PSFzf"
