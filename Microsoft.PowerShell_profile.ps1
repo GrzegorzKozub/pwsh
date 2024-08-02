@@ -7,7 +7,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   # psreadline
 
   Set-PSReadlineOption -BellStyle None
-  Set-PSReadLineOption -MaximumHistoryCount 10000
+  Set-PSReadLineOption -MaximumHistoryCount 100000
   Set-PSReadLineOption -PredictionSource History
 
   [Console]::OutputEncoding = [Console]::InputEncoding = [Text.Encoding]::UTF8 # https://github.com/PowerShell/PSReadLine/issues/2866
