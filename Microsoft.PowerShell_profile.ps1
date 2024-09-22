@@ -110,7 +110,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   $env:LESSHISTFILE = "-"
   $env:PAGER = "less --quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-lines --use-color -DPw" # -DSkY -Ddy -Dsm -Dub
 
-  # lf & yazi
+  # yazi
 
   function global:_cd {
     param ([scriptblock]$Cmd)
@@ -125,7 +125,6 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     }
   }
 
-  # function global:l { _cd -Cmd { lf.exe -single -last-dir-path $args[0] } }
   function global:l { _cd -Cmd { yazi.exe --cwd-file $args[0] } }
   function global:y { _cd -Cmd { yazi.exe --cwd-file $args[0] } }
 
