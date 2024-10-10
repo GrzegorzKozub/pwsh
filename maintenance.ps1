@@ -8,8 +8,7 @@ param (
 )
 
 if (!([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544")) {
-  Write-Error "Must run as admin"
-  break
+  throw "Must run as admin"
 }
 
 function Run($checkCmd, $fixCmd) {
@@ -53,4 +52,3 @@ if ($SFC) {
     "sfc /VERIFYONLY" `
     "sfc /SCANNOW"
 }
-
