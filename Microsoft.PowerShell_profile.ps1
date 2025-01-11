@@ -133,6 +133,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   $env:EDITOR = $env:VISUAL = "nvim"
 
   Set-Alias -Name vim -Value nvim -Scope Global
+  Set-Alias -Name v -Value nvim -Scope Global
 
   # shutdown
 
