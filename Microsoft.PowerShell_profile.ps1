@@ -141,22 +141,6 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   function global:reboot { shutdown /t 0 /r }
   function global:reflect { shutdown /t 0 /r /o }
 
-  # dir shortcuts
-
-  function global:_go ($where) {
-    Set-Location -Path $where
-    [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
-  }
-
-  foreach ($mode in "Command", "Insert") {
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,d" -ViMode $mode -ScriptBlock { _go "~\Downloads" }
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,c" -ViMode $mode -ScriptBlock { _go "D:\Code" }
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,a" -ViMode $mode -ScriptBlock { _go "D:\Apps" }
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,u" -ViMode $mode -ScriptBlock { _go "D:\Users" }
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,w" -ViMode $mode -ScriptBlock { _go "D:\Win" }
-    Set-PSReadLineKeyHandler -Chord "ctrl+g,g" -ViMode $mode -ScriptBlock { _go "E:\Games" }
-  }
-
   # syntax highlighting
 
   Set-PSReadLineOption -Colors @{
