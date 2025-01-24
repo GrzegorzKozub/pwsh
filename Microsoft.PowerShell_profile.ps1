@@ -135,6 +135,10 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   Set-Alias -Name vim -Value nvim -Scope Global
   Set-Alias -Name v -Value nvim -Scope Global
 
+  # vscode
+
+  Set-Alias -Name c -Value code -Scope Global
+
   # shutdown
 
   function global:shutdn { shutdown /t 0 /s }
