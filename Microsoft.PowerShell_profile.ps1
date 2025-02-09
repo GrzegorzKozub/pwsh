@@ -128,6 +128,15 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   function global:l { _cd -Cmd { yazi.exe --cwd-file $args[0] } }
   function global:y { _cd -Cmd { yazi.exe --cwd-file $args[0] } }
 
+  $script:yazi = {
+    [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("y")
+    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+  }
+
+  Set-PSReadLineKeyHandler -Chord "Ctrl+l" -ScriptBlock $script:yazi
+  Set-PSReadLineKeyHandler -Chord "Ctrl+y" -ScriptBlock $script:yazi
+
   # neovim
 
   $env:EDITOR = $env:VISUAL = "nvim"
@@ -233,7 +242,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # prompt
 
-  Set-PSReadLineKeyHandler -Key "enter" -ScriptBlock {
+  Set-PSReadLineKeyHandler -Chord "Enter" -ScriptBlock {
     try {
       $errors = $null
       [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$null, [ref]$null, [ref]$errors, [ref]$null)
