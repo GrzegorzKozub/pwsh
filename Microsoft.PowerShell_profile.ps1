@@ -231,6 +231,21 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     . _zoxide.ps1
   } catch {}
 
+  # prompt
+
+  Set-PSReadLineKeyHandler -Key "enter" -ScriptBlock {
+    try {
+      $errors = $null
+      [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$null, [ref]$null, [ref]$errors, [ref]$null)
+      if ($errors.Count -eq 0) {
+        $script:transientPrompt = $true
+        [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
+      }
+    } finally {
+      [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
+    }
+  }
+
 } # _defer ends
 
 # prompt
@@ -240,19 +255,6 @@ Set-PSReadLineOption -PromptText "`e[34m●• `e[0m", "`e[31m●• `e[0m"
 
 if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544") {
   $script:admin = "$([char]0x1B)[33m⛊$([char]0x1B)[0m "
-}
-
-Set-PSReadLineKeyHandler -Key "enter" -ScriptBlock {
-  try {
-    $errors = $null
-    [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$null, [ref]$null, [ref]$errors, [ref]$null)
-    if ($errors.Count -eq 0) {
-      $script:transientPrompt = $true
-      [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
-    }
-  } finally {
-    [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
-  }
 }
 
 if (Get-Command "git" -ErrorAction SilentlyContinue) {
