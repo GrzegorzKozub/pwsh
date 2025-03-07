@@ -52,9 +52,8 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   $env:FZF_DEFAULT_OPTS="
     --bind=ctrl-d:page-down,ctrl-u:page-up
-    --bind=alt-j:preview-down,alt-k:preview-up
-    --bind=alt-down:preview-down,alt-up:preview-up
-    --bind=alt-d:preview-page-down,alt-u:preview-page-up
+    --bind=shift-down:preview-page-down,shift-up:preview-page-up
+    --bind=alt-shift-down:preview-down,alt-shift-up:preview-up
     --border none
     --color dark
     --color fg:bright-black,selected-fg:white,preview-fg:-1
