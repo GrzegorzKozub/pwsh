@@ -298,13 +298,14 @@ if (Get-Command "git" -ErrorAction SilentlyContinue) {
   }
 } else { function _git { return "" } }
 
-function _osc7 {
+function _osc7 ($loc) {
+  if ($loc.Provider.Name -ne "FileSystem") { return "" }
   if ($env:WT_SESSION) {
     # https://learn.microsoft.com/en-us/windows/terminal/tutorials/new-tab-same-directory
-    return "$([char]27)]9;9;`"$($location.ProviderPath)`"$([char]27)\"
+    return "$([char]27)]9;9;`"$($loc.ProviderPath)`"$([char]27)\"
   } elseif ($env:TERM_PROGRAM -eq "WezTerm") {
     # https://wezfurlong.org/wezterm/shell-integration.html?h=shell
-    return "$([char]27)]7;file://${env:COMPUTERNAME}/$($location.ProviderPath -Replace "\\", "/")$([char]27)\"
+    return "$([char]27)]7;file://${env:COMPUTERNAME}/$($loc.ProviderPath -Replace "\\", "/")$([char]27)\"
   } else {
     return ""
   }
@@ -352,9 +353,7 @@ function prompt {
       }
     }
     $prompt += "`n$char"
-    if ($location.Provider.Name -eq "FileSystem") {
-      $prompt = $(_osc7) + $prompt
-    }
+    $prompt = $(_osc7($location)) + $prompt
     Set-PSReadLineOption -ExtraPromptLineCount ($prompt.Split("`n").Length - 1)
     $prompt
   }
