@@ -146,7 +146,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # shutdown
 
-  function global:shutdn { shutdown /t 0 /s }
+  function global:shtdn { shutdown /t 0 /s }
   function global:reboot { shutdown /t 0 /r }
   function global:reflect { shutdown /t 0 /r /o }
 
