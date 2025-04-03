@@ -60,7 +60,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     --color hl:yellow,selected-hl:yellow
     --color current-fg:-1,current-bg:-1,gutter:-1,current-hl:yellow
     --color info:bright-black
-    --color border:bright-black
+    --color border:bright-black,header:bright-black,label:bright-black
     --color prompt:magenta
     --color pointer:white,marker:white
     --ellipsis '…'
