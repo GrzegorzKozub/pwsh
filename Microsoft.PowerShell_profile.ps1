@@ -56,7 +56,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     --bind=alt-shift-down:preview-down,alt-shift-up:preview-up
     --border none
     --color dark
-    --color fg:bright-black,selected-fg:white,preview-fg:-1
+    --color fg:white,selected-fg:-1,preview-fg:-1
     --color hl:yellow,selected-hl:yellow
     --color current-fg:-1,current-bg:-1,gutter:-1,current-hl:yellow
     --color info:bright-black
