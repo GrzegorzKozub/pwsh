@@ -81,14 +81,17 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   function global:glo {
     $pager = git config core.pager
-    git ls --color=always $args |
-      fzf `
-        --ansi `
-        --bind='enter:execute(git show {2})' `
-        --bind='?:toggle-preview,alt-w:toggle-preview-wrap' `
-        --height=100% `
-        --preview "echo {} | cut -d' ' -f2 | xargs -I% git show --color=always % -- $args | $pager" `
-        --preview-window='border:rounded,right:50%'
+    git ls `
+      --color=always `
+      --format='%C(yellow)%h %C(auto)%s %C(cyan)%an %C(brightblack)%ar %C(auto)%D%C(reset)' `
+      $args | `
+    fzf `
+      --ansi `
+      --bind='enter:execute(git show {2})' `
+      --bind='?:toggle-preview,alt-w:toggle-preview-wrap' `
+      --height=100% `
+      --preview "echo {} | cut -d' ' -f2 | xargs -I% git show --color=always % -- $args | $pager" `
+      --preview-window='border:rounded,right:50%'
     return
   }
 
