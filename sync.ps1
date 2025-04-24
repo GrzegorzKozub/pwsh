@@ -9,7 +9,7 @@ function Sync ($path) {
 $dirs =
   "D:\Code\keys",
   "D:\Code\notes",
-  "D:\Code\passwords",
+  "D:\Code\pass",
   "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadline",
   "$env:USERPROFILE\Pictures\Wallpapers"
 
