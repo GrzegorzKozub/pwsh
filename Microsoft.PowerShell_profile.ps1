@@ -234,6 +234,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     . _bat.ps1
     . _fd.ps1
     . _hyperfine.ps1
+    . _pastel.ps1
     . _rg.ps1
     . _yazi.ps1
     . _zoxide.ps1
