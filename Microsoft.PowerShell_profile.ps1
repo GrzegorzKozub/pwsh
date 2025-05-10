@@ -56,7 +56,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     --bind=alt-shift-down:preview-down,alt-shift-up:preview-up
     --border none
     --color dark
-    --color fg:white,selected-fg:-1,preview-fg:-1
+    --color fg:white,selected-fg:white,preview-fg:-1
     --color hl:yellow,selected-hl:yellow
     --color current-fg:-1,current-bg:-1,gutter:-1,current-hl:yellow
     --color info:bright-black
@@ -75,7 +75,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     --padding 0
     --pointer '●'
     --prompt '●• '
-    --scroll-off 3
+    --scroll-off 4
     --tabstop 2
   "
 
@@ -88,7 +88,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     fzf `
       --ansi `
       --bind='enter:execute(git show {2})' `
-      --bind='?:toggle-preview,alt-w:toggle-preview-wrap' `
+      --bind='alt-p:change-preview-window(down|hidden|),alt-w:toggle-preview-wrap' `
       --height=100% `
       --preview "echo {} | cut -d' ' -f2 | xargs -I% git show --color=always % -- $args | $pager" `
       --preview-window='border:rounded,right:50%'
