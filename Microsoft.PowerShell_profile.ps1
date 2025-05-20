@@ -52,6 +52,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   $env:FZF_DEFAULT_OPTS="
     --bind=ctrl-d:page-down,ctrl-u:page-up
+    --bind=ctrl-w:toggle-wrap
     --bind=shift-down:preview-page-down,shift-up:preview-page-up
     --bind=alt-shift-down:preview-down,alt-shift-up:preview-up
     --border none
@@ -62,19 +63,20 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     --color info:bright-black
     --color border:bright-black,label:bright-black
     --color prompt:magenta,pointer:magenta,marker:magenta
-    --color header:bright-black
+    --color spinner:bright-black,header:bright-black
     --ellipsis '…'
     --height 50%
-    --layout reverse-list
+    --info inline-right:''
+    --layout reverse
     --margin 0
-    --marker '• '
+    --marker '▏'
+    --marker-multi-line '▏▏▏'
     --no-bold
-    --no-info
     --no-scrollbar
     --no-separator
     --padding 0
-    --pointer '●'
-    --prompt '●• '
+    --pointer '▎'
+    --prompt ' '
     --scroll-off 4
     --tabstop 2
   "
