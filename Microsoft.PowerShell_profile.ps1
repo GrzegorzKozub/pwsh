@@ -117,6 +117,8 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # yazi
 
+  $env:YAZI_ZOXIDE_OPTS = $env:FZF_DEFAULT_OPTS
+
   function global:_cd {
     param ([scriptblock]$Cmd)
     $tempFile = New-TemporaryFile
