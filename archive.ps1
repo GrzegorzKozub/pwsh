@@ -72,15 +72,16 @@ function Prepare ($map) {
 }
 
 function Mirror ($map) {
-  $robocopy = Start-Process `
-    -FilePath "robocopy.exe" `
-    -ArgumentList """$($map.from)""", """$($map.to)""", "/MIR", "/R:3", "/W:5", "/NOOFFLOAD", "/J", "/NP", "/NDL", "/UNILOG:""$($map.log)""" `
-    -WindowStyle Hidden `
-    -PassThru `
-    -Wait
-  if ($robocopy.ExitCode -gt 3) {
-    throw "Robocopy finished with $($robocopy.ExitCode) so look at $($map.log)"
-  }
+  # $robocopy = Start-Process `
+  #   -FilePath "robocopy.exe" `
+  #   -ArgumentList """$($map.from)""", """$($map.to)""", "/MIR", "/R:3", "/W:5", "/NOOFFLOAD", "/J", "/NP", "/NDL", "/UNILOG:""$($map.log)""" `
+  #   -WindowStyle Hidden `
+  #   -PassThru `
+  #   -Wait
+  # if ($robocopy.ExitCode -gt 3) {
+  #   throw "Robocopy finished with $($robocopy.ExitCode) so look at $($map.log)"
+  # }
+  rclone sync --progress "$($map.from)" "$($map.to)"
 }
 
 $allTime = StartTimer
