@@ -5,14 +5,7 @@ $target = Join-Path -Path "${backup}:" -ChildPath "Windows"
 $dirs = "D:\Images", "D:\Reflect", "D:\Software", "D:\Win"
 
 foreach ($dir in $dirs) {
-   # change to escape sequences and use better names
-
-    $to = Join-Path -Path $target -ChildPath (Split-Path -Path $dir -Leaf)
-    Write-Host -Object "Backup " -NoNewLine -ForegroundColor DarkGray
-    Write-Host -Object $dir -NoNewline -ForegroundColor DarkCyan
-    Write-Host -Object " to " -NoNewLine -ForegroundColor DarkGray
-    Write-Host -Object $to -ForegroundColor DarkCyan
-  rclone sync --progress `
-    $dir `
-    $to
+  $copy = Join-Path -Path $target -ChildPath (Split-Path -Path $dir -Leaf)
+  Write-Host "Backup `e[36m$dir`e[0m to `e[36m$copy`e[0m"
+  rclone sync --progress $dir $copy
 }
