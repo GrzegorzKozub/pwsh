@@ -7,8 +7,8 @@ if (Get-Process -Name brave -ErrorAction SilentlyContinue) { throw "Brave is run
 
 $zip = "D:\Software\Brave.zip"
 $profiles = Join-Path -Path $env:LOCALAPPDATA -ChildPath "BraveSoftware\Brave-Browser"
-$currentProfile = Join-Path -Path $profiles -ChildPath "User Data" 
-$backupProfile = Join-Path -Path $profiles -ChildPath "User Data.backup" 
+$currentProfile = Join-Path -Path $profiles -ChildPath "User Data"
+$backupProfile = Join-Path -Path $profiles -ChildPath "User Data.backup"
 
 function Duplicate ($from, $to) {
   Remove-Item -Path $to -ErrorAction SilentlyContinue -Force -Recurse
@@ -20,6 +20,6 @@ function Zip {
   7z a $zip $currentProfile $backupProfile
 }
 
-if ($Backup) { Duplicate $currentProfile $backupProfile; Zip; archive.ps1 }
+if ($Backup) { Duplicate $currentProfile $backupProfile; Zip; backup.ps1 }
 if ($Restore) { Duplicate $backupProfile $currentProfile }
 
