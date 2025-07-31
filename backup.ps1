@@ -2,7 +2,7 @@ $backup = (Get-Volume | Where-Object { $_.FileSystemLabel -eq "Backup" }).DriveL
 if (!$backup) { throw "Can't find Backup drive" }
 $target = Join-Path -Path "${backup}:" -ChildPath "Windows"
 
-$dirs = "D:\Images", "D:\Reflect", "D:\Software", "D:\Win"
+$dirs = "D:\Images", "D:\Music", "D:\Reflect", "D:\Software", "D:\Win"
 
 foreach ($dir in $dirs) {
   $copy = Join-Path -Path $target -ChildPath (Split-Path -Path $dir -Leaf)
