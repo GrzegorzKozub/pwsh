@@ -140,6 +140,10 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
   }
 
+  # mpv
+
+  function global:music { mpv --no-resume-playback --shuffle "D:\Music" }
+
   # neovim
 
   $env:EDITOR = $env:VISUAL = "nvim"
