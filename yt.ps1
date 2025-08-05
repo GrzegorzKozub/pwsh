@@ -10,12 +10,14 @@ yt-dlp `
   --extract-audio --audio-format flac --audio-quality 0 `
   --parse-metadata "title:%(artist)s - %(title)s" `
   --parse-metadata "%(album|YouTube)s:%(album)s" `
+  --parse-metadata ":(?P<meta_synopsis>)" `
   --embed-metadata `
   --convert-thumbnail png --write-thumbnail `
   --no-write-playlist-metafiles `
   --paths $yt --output "%(artist)s - %(title)s.%(ext)s" --windows-filenames `
   --print-to-file filename $tmp `
   "https://music.youtube.com/browse/VLPLm6VwE4tgUkXEcczHuW9xiwGJwHvq69ri"
+  # "https://music.youtube.com/playlist?list=LM"
 
 (Get-Content -Path $tmp) -replace "$yt\\", "" -replace "\.webm", "" | Set-Content -Path $tmp
 
