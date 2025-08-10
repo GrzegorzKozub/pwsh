@@ -10,16 +10,12 @@ $profiles = Join-Path -Path $env:LOCALAPPDATA -ChildPath "BraveSoftware\Brave-Br
 $currentProfile = Join-Path -Path $profiles -ChildPath "User Data"
 $backupProfile = Join-Path -Path $profiles -ChildPath "User Data.backup"
 
-function Duplicate ($from, $to) {
-  Remove-Item -Path $to -ErrorAction SilentlyContinue -Force -Recurse
-  Copy-Item -Path $from -Destination $to -Recurse
-}
-
-function Zip {
+if ($Backup) {
+  rclone sync $currentProfile $backupProfile
   Remove-Item -Path $zip -ErrorAction SilentlyContinue -Force
   7z a $zip $currentProfile $backupProfile
+  backup.ps1
 }
 
-if ($Backup) { Duplicate $currentProfile $backupProfile; Zip; backup.ps1 }
-if ($Restore) { Duplicate $backupProfile $currentProfile }
+if ($Restore) { rclone sync $backupProfile $currentProfile }
 
