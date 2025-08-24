@@ -1,13 +1,14 @@
-param (
-  [Switch] $Hide
-)
+param ([Switch] $Hide)
 
 $path = "HKLM:\SOFTWARE\NVIDIA Corporation\Global\NGXCore"
-if (!(Test-Path -Path $path)) {New-Item -Path $path -Force | Out-Null }
+$name = "ShowDlssIndicator"
 
-New-ItemProperty `
-  -Path $path `
-  -Name "ShowDlssIndicator" `
-  -PropertyType DWord `
-  -Value 1024 -Force `
-  | Out-Null
+if ($Hide) {
+  Remove-ItemProperty -Path $path -Name $name -ErrorAction SilentlyContinue
+} else {
+  if (!(Test-Path -Path $path)) { New-Item -Path $path | Out-Null }
+  New-ItemProperty -Path $path -Name $name `
+    -PropertyType DWord -Value 1024 `
+    -Force | Out-Null
+}
+
