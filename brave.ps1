@@ -13,7 +13,7 @@ $backupProfile = Join-Path -Path $profiles -ChildPath "User Data.backup"
 if ($Backup) {
   rclone sync $currentProfile $backupProfile
   Remove-Item -Path $zip -ErrorAction SilentlyContinue -Force
-  7z a $zip $currentProfile $backupProfile
+  7z a $zip $currentProfile $backupProfile | Out-Null
   backup.ps1
 }
 
