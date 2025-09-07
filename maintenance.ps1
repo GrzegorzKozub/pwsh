@@ -8,12 +8,13 @@ param (
 )
 
 if (!([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544")) {
-  throw "Must run as admin"
+  Write-Host "`e[31mMust run as admin`e[0m"
+  exit 1
 }
 
 function Run($checkCmd, $fixCmd) {
   if ($Fix -and $fixCmd) { $cmd = $fixCmd } else { $cmd = $checkCmd }
-  Write-Host -Object "$([Environment]::NewLine)$cmd" -ForegroundColor DarkGray
+  Write-Host "`e[37m`n$cmd`e[0m"
   Invoke-Expression -Command $cmd
 }
 

@@ -1,7 +1,10 @@
 $backup = (Get-Volume | Where-Object { $_.FileSystemLabel -eq "Backup" }).DriveLetter
-if (!$backup) { throw "Can't find Backup drive" }
-$target = Join-Path -Path "${backup}:" -ChildPath "Windows"
+if (!$backup) {
+  Write-Host "`e[31mCan't find backup drive`e[0m"
+  exit 1
+}
 
+$target = Join-Path -Path "${backup}:" -ChildPath "Windows"
 $dirs = "D:\Images", "D:\Music", "D:\Reflect", "D:\Software", "D:\Win"
 
 foreach ($dir in $dirs) {
