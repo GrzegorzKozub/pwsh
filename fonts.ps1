@@ -1,3 +1,5 @@
+Write-Host
+
 Write-Host "normal " -NoNewline
 
 Write-Host "`e[1mbold`e[0m " -NoNewline
