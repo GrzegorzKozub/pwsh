@@ -5,15 +5,11 @@ if (!$backup) {
 }
 
 $target = Join-Path -Path "${backup}:" -ChildPath "Windows"
-$dirs =
-  "D:\Apps",
-  "D:\Code",
-  "D:\Images",
-  "D:\Music",
-  "D:\Reflect",
-  "D:\Software",
-  "D:\Users",
-  "D:\Win"
+$dirs = "D:\Images", "D:\Music", "D:\Reflect", "D:\Software", "D:\Win"
+
+if ($env:COMPUTERNAME -eq "player" -or $env:COMPUTERNAME -eq "worker") {
+  $dirs = $dirs + "D:\Apps" + "D:\Code" + "D:\Users"
+}
 
 foreach ($dir in $dirs) {
   $copy = Join-Path -Path $target -ChildPath (Split-Path -Path $dir -Leaf)
