@@ -14,5 +14,10 @@ if ($env:COMPUTERNAME -eq "player" -or $env:COMPUTERNAME -eq "worker") {
 foreach ($dir in $dirs) {
   $copy = Join-Path -Path $target -ChildPath (Split-Path -Path $dir -Leaf)
   Write-Host "Backup `e[36m$dir`e[0m to `e[36m$copy`e[0m"
-  rclone sync --copy-links --progress $dir $copy
+  rclone sync `
+    --copy-links `
+    --exclude '**/.local/share/wezterm/**' `
+    --exclude '**/Local/NVIDIA/**' `
+    --progress `
+    $dir $copy
 }
