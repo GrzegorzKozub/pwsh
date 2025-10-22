@@ -65,6 +65,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     --color prompt:magenta,pointer:magenta,marker:magenta
     --color spinner:bright-black,header:bright-black
     --ellipsis '…'
+    --gutter ' ' --gutter-raw ' '
     --height 50%
     --info inline-right:''
     --layout reverse
