@@ -17,7 +17,7 @@ foreach ($dir in $dirs) {
   rclone sync `
     --copy-links `
     --exclude '**/.local/share/wezterm/**' `
-    --exclude '**/Local/NVIDIA/**' `
+    --exclude '**/AppData/Local/NVIDIA/**' `
     --progress `
     $dir $copy
 }
