@@ -14,7 +14,6 @@ if ($Backup) {
   rclone sync $currentProfile $backupProfile
   Remove-Item -Path $zip -ErrorAction SilentlyContinue -Force
   7z a $zip $currentProfile $backupProfile | Out-Null
-  backup.ps1
 }
 
 if ($Restore) { rclone sync $backupProfile $currentProfile }
