@@ -52,7 +52,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   $env:FZF_DEFAULT_OPTS="
     --bind=ctrl-d:page-down,ctrl-u:page-up
-    --bind=ctrl-w:toggle-wrap
+    --bind=ctrl-r:toggle-raw,ctrl-w:toggle-wrap
     --bind=shift-down:preview-page-down,shift-up:preview-page-up
     --bind=alt-shift-down:preview-down,alt-shift-up:preview-up
     --border none
@@ -64,6 +64,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     --color border:bright-black,label:bright-black
     --color prompt:magenta,pointer:magenta,marker:magenta
     --color spinner:bright-black,header:bright-black
+    --color nomatch:bright-black
     --ellipsis '…'
     --gutter ' ' --gutter-raw ' '
     --height 50%
