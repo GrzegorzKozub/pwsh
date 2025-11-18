@@ -1,4 +1,6 @@
-$image = Join-Path -Path $env:USERPROFILE -ChildPath "Pictures\Wallpapers\gruvbox.jpg"
+$dir = Join-Path -Path $env:USERPROFILE -ChildPath "Pictures\Wallpapers"
+$image = Join-Path -Path $dir `
+  -ChildPath (& (Join-Path -Path $dir -ChildPath "random.ps1"))
 
 # wallpaper
 
@@ -23,15 +25,17 @@ $SPIF_SENDWININICHANGE = 2
 
 sudo {
 
-  $personalization = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP"
+  $key = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP"
 
-  # New-Item -Path $personalization -Force | Out-Null
+  if (-not (Test-Path -Path $key)) { New-Item -Path $key | Out-Null }
 
-  New-ItemProperty -Path $personalization `
-    -Name "LockScreenImagePath" -PropertyType "String" -Value $image -Force | Out-Null
-  New-ItemProperty -Path $personalization `
-    -Name "LockScreenImageStatus" -PropertyType "DWord" -Value 1 -Force | Out-Null
+  New-ItemProperty -Path $key `
+    -Name "LockScreenImagePath" -PropertyType "String" -Value $args `
+    -Force | Out-Null
 
-  # Remove-Item -Path $personalization -ErrorAction SilentlyContinue
+  New-ItemProperty -Path $key `
+    -Name "LockScreenImageStatus" -PropertyType "DWord" -Value 1 `
+    -Force | Out-Null
 
-}
+} -args $image
+
