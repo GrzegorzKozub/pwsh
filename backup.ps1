@@ -11,6 +11,10 @@ if ($env:COMPUTERNAME -eq "player" -or $env:COMPUTERNAME -eq "worker") {
   $dirs = $dirs + "D:\Apps" + "D:\Code" + "D:\Users"
 }
 
+if ($env:COMPUTERNAME -eq "player") {
+  $dirs = $dirs + "D:\Backup"
+}
+
 foreach ($dir in $dirs) {
   $copy = Join-Path -Path $target -ChildPath (Split-Path -Path $dir -Leaf)
   Write-Host "Backup `e[36m$dir`e[0m to `e[36m$copy`e[0m"
