@@ -23,8 +23,8 @@ yt-dlp `
 
 foreach ($title in (Get-Content -Path $tmp)) {
 
-  Move-Item -Path "$title.png" original.png
-  Move-Item -Path "$title.flac" original.flac
+  Move-Item -Path "$title.png" -Destination original.png
+  Move-Item -Path "$title.flac" -Destination original.flac
 
   ffmpeg `
     -i original.png `
