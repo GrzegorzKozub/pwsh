@@ -4,24 +4,30 @@ if (!$backup) {
   exit 1
 }
 
+$source = "D:\"
 $target = Join-Path -Path "${backup}:" -ChildPath "Windows"
-$dirs = "D:\Images", "D:\Music", "D:\Reflect", "D:\Software", "D:\Win"
+Write-Host "Backup `e[36m$source`e[0m to `e[36m$target`e[0m"
 
-if ($env:COMPUTERNAME -eq "player" -or $env:COMPUTERNAME -eq "worker") {
-  $dirs = $dirs + "D:\Apps" + "D:\Code" + "D:\Users"
-}
-
-if ($env:COMPUTERNAME -eq "player") {
-  $dirs = $dirs + "D:\Backup"
-}
-
-foreach ($dir in $dirs) {
-  $copy = Join-Path -Path $target -ChildPath (Split-Path -Path $dir -Leaf)
-  Write-Host "Backup `e[36m$dir`e[0m to `e[36m$copy`e[0m"
+if ($env:COMPUTERNAME -eq "drifter") {
   rclone sync `
     --copy-links `
+    --exclude '$RECYCLE.BIN/**' `
+    --exclude 'Apps/**' `
+    --exclude 'Movies/**' `
+    --exclude 'System Volume Information/**' `
+    --exclude 'Users/**' `
     --exclude '**/.local/share/wezterm/**' `
     --exclude '**/AppData/Local/NVIDIA/**' `
     --progress `
-    $dir $copy
+    $source $target
+} else {
+  rclone sync `
+    --copy-links `
+    --exclude '$RECYCLE.BIN/**' `
+    --exclude 'Movies/**' `
+    --exclude 'System Volume Information/**' `
+    --exclude '**/.local/share/wezterm/**' `
+    --exclude '**/AppData/Local/NVIDIA/**' `
+    --progress `
+    $source $target
 }
