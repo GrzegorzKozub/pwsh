@@ -8,26 +8,20 @@ $source = "D:\"
 $target = Join-Path -Path "${backup}:" -ChildPath "Windows"
 Write-Host "Backup `e[36m$source`e[0m to `e[36m$target`e[0m"
 
+$rcloneArgs = @(
+  "sync",
+  "--copy-links",
+  "--exclude", '$RECYCLE.BIN/**',
+  "--exclude", "Movies/**",
+  "--exclude", "System Volume Information/**",
+  "--exclude", "**/.local/share/wezterm/**",
+  "--exclude", "**/AppData/Local/NVIDIA/**",
+  "--progress"
+)
+
 if ($env:COMPUTERNAME -eq "drifter") {
-  rclone sync `
-    --copy-links `
-    --exclude '$RECYCLE.BIN/**' `
-    --exclude 'Apps/**' `
-    --exclude 'Movies/**' `
-    --exclude 'System Volume Information/**' `
-    --exclude 'Users/**' `
-    --exclude '**/.local/share/wezterm/**' `
-    --exclude '**/AppData/Local/NVIDIA/**' `
-    --progress `
-    $source $target
-} else {
-  rclone sync `
-    --copy-links `
-    --exclude '$RECYCLE.BIN/**' `
-    --exclude 'Movies/**' `
-    --exclude 'System Volume Information/**' `
-    --exclude '**/.local/share/wezterm/**' `
-    --exclude '**/AppData/Local/NVIDIA/**' `
-    --progress `
-    $source $target
+  $rcloneArgs += "--exclude", "Apps/**"
+  $rcloneArgs += "--exclude", "Users/**"
 }
+
+rclone @rcloneArgs $source $target
