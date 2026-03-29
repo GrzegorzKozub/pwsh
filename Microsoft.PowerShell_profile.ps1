@@ -109,6 +109,10 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     -PSReadlineChordProvider "ctrl+t" `
     -PSReadlineChordSetLocation "alt+c"
 
+  # claude
+
+  $env:CLAUDE_CONFIG_DIR="$env:USERPROFILE\.config\claude"
+
   # gsudo
 
   Set-Alias -Name sudo -Value gsudo -Scope Global
