@@ -23,7 +23,7 @@ if ($HideOverlay) {
   } -args @($path, $name)
 }
 
-$driver = "C:\ProgramData\NVIDIA\NGX\models\dlss\versions\20317440\files\160_E658700.bin"
+$driver = "C:\ProgramData\NVIDIA\NGX\models\dlss\versions\20317696\files\160_E658700.bin"
 $dlss = "D:\Software\DLSS\dev\nvngx_dlss.dll"
 
 if ($Dev) {
