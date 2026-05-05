@@ -161,6 +161,18 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # vscode
 
+  function global:code {
+    Start-Process `
+      -WorkingDirectory (Get-Location).Path `
+      -FilePath "D:\Apps\Visual Studio Code\Code.exe" `
+      -ArgumentList (
+        @(
+          "--extensions-dir=$env:LOCALAPPDATA/Code/extensions",
+          "--shared-data-dir=$env:LOCALAPPDATA/Code/shared"
+        ) + $args) `
+      -RedirectStandardOutput NUL
+  }
+
   Set-Alias -Name c -Value code -Scope Global
 
   # shutdown
