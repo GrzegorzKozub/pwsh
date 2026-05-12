@@ -11,6 +11,7 @@ Write-Host "Backup `e[36m$source`e[0m to `e[36m$target`e[0m"
 $rcloneArgs = @(
   "sync",
   "--copy-links",
+  "--create-empty-src-dirs",
   "--exclude", '$RECYCLE.BIN/**',
   "--exclude", "Movies/**",
   "--exclude", "System Volume Information/**",
