@@ -8,7 +8,7 @@ if (Get-Process -Name brave -ErrorAction SilentlyContinue) { throw "Brave is run
 $config = Join-Path -Path $env:LOCALAPPDATA -ChildPath "BraveSoftware"
 $config = Join-Path -Path "D:" -ChildPath $config.TrimStart("C:")
 
-foreach ($brave in "Brave-Browser", "Brave-Origin-Nightly") {
+foreach ($brave in "Brave-Browser", "Brave-Origin") {
   $profile = Join-Path -Path $config -ChildPath $brave
   if (!(Test-Path -Path $profile)) { continue }
   $currentProfile = Join-Path -Path $profile -ChildPath "User Data"
