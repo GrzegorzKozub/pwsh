@@ -24,7 +24,7 @@ if ($HideOverlay) {
 }
 
 $driver = "C:\ProgramData\NVIDIA\NGX\models\dlss\versions\20317696\files\160_E658700.bin"
-$dlss = "D:\Software\DLSS\dev\nvngx_dlss.dll"
+$dlss = "D:\Software\streamline-sdk-v2.12.0\bin\x64\development\nvngx_dlss.dll"
 
 if ($Dev) {
   New-Item -Path $(Split-Path -Path $driver -Parent) -ItemType Directory -Force | Out-Null
