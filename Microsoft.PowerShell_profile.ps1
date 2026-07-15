@@ -148,6 +148,10 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
   }
 
+  # mise
+
+  & mise activate pwsh | Out-String | Invoke-Expression
+
   # mpv
 
   function global:music { mpv --no-resume-playback --shuffle "D:\Music" }
