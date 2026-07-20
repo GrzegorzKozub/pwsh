@@ -5,7 +5,7 @@ if (!$backup) {
 }
 
 $source = "D:\"
-$target = Join-Path -Path "${backup}:" -ChildPath "Windows"
+$target = Join-Path -Path "${backup}:" -ChildPath "Backup\Windows"
 Write-Host "Backup `e[36m$source`e[0m to `e[36m$target`e[0m"
 
 $rcloneArgs = @(
