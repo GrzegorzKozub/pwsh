@@ -119,9 +119,9 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # less
 
-  $env:LESS = "--quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-lines --use-color -DEr -DPw" # -DSkY -Ddy -Dsm -Dub
+  $env:LESS = "--quit-if-one-screen --RAW-CONTROL-CHARS --tilde --use-color -DEr -DPw -DSkY -Dd-d -Du-d -D1rR -D2rR -D3rR -D4rR -D5rR -DBrR -DCrR -DHrR -DMrR -DNrR -DRrR -DWrR -DkrR -DsrR" # not supported on windows: -DTk -DJrR
   $env:LESSHISTFILE = "-"
-  $env:PAGER = "less --quit-if-one-screen --RAW-CONTROL-CHARS --squeeze-blank-lines --use-color -DEr -DPw" # -DSkY -Ddy -Dsm -Dub
+  $env:PAGER = "less"
 
   # yazi
 
