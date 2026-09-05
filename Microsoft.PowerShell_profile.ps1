@@ -32,12 +32,62 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # dir colors (eza, lf)
 
-  $env:LS_COLORS = "rs=0:di=36:ln=34:pi=33:so=35:do=35:bd=33:cd=33:or=31:mi=0:tw=36:ow=36:st=36:ex=32:*.7z=33:*.gz=33:*.rar=33:*.tar=33:*.zip=33:*.cow=35:*.fsa=35:*.mrimg=35:*.mrimgx=35:*.wim=35:*.iso=35:*.ico=35:*.jpeg=35:*.jpg=35:*.png=35:*.svg=35:*.flac=35:*.m4a=35:*.mkv=35:*.mp4=35:*.webm=35:*.bun-version=37:*.bunfig.toml=37:*.cfnlintrc=37:*.classpath=37:*.claude.json=37:*.dockerignore=37:*.editorconfig=37:*.env=37:*.envrc=37:*.eslintignore=37:*.eslintrc=37:*.eslintrc.js=37:*.eslintrc.json=37:*.factorypath=37:*.git=37:*.gitattributes=37:*.gitignore=37:*.gitkeep=37:*.gitmodules=37:*.lock=37:*.luacheckrc=37:*.luarc.json=37:*.markdownlint.json=37:*.npmrc=37:*.nvmrc=37:*.prettierignore=37:*.prettierrc=37:*.project=37:*.pylintrc=37:*.stylua.toml=37:*.taplo.toml=37:*.vscodeignore=37:*.yarnrc=37:*.zprofile=37:*.zshenv=37:*.zshrc=37:*.lmstudio-home-pointer=90:*.backup=90:*.bak=90:*.log=90:*.off=90:*.old=90:*.orig=90:*.original=90:*.part=90:*.swp=90:*.tmp=90"
-  $env:LS_COLORS = $env:LS_COLORS + ":*.AppImage=32:*.nu=32:*.sh=32:*.zsh=32:*.bat=32:*.cmd=32:*.exe=32:*.ps1=32"
+  $lsColors = @(
+    "rs=0", "di=36", "ln=34", "pi=33", "so=35", "do=35", "bd=33", "cd=33", "or=31", "mi=0", "tw=36", "ow=36", "st=36", "ex=32",
+    "*.AppImage=32","*.flatpak=32",
+    "*.nu=32", "*.sh=32", "*.zsh=32", "*.bat=32", "*.cmd=32", "*.exe=32", "*.ps1=32",
+    "*.deb=33", "*.rpm=33",
+    "*.7z=33", "*.gz=33", "*.rar=33", "*.tar=33", "*.zip=33",
+    "*.cow=35", "*.fsa=35", "*.mrimg=35", "*.mrimgx=35", "*.wim=35",
+    "*.iso=35",
+    "*.ico=35", "*.jpeg=35", "*.jpg=35", "*.png=35", "*.svg=35",
+    "*.flac=35", "*.m4a=35",
+    "*.mkv=35", "*.mp4=35", "*.webm=35",
+    "*.SRCINFO=37", "*.bun-version=37", "*.bunfig.toml=37", "*.cfnlintrc=37", "*.classpath=37", "*.claude.json=37", "*.dockerignore=37", "*.editorconfig=37", "*.env=37", "*.envrc=37", "*.eslintignore=37", "*.eslintrc=37", "*.eslintrc.js=37", "*.eslintrc.json=37", "*.factorypath=37", "*.git=37", "*.gitattributes=37", "*.gitignore=37", "*.gitkeep=37", "*.gitmodules=37", "*.lock=37", "*.luacheckrc=37", "*.luarc.json=37", "*.markdownlint.json=37", "*.npmrc=37", "*.nvmrc=37", "*.prettierignore=37", "*.prettierrc=37", "*.project=37", "*.pylintrc=37", "*.stylintrc=37", "*.stylua.toml=37", "*.taplo.toml=37", "*.vscodeignore=37", "*.yarnrc=37", "*.zprofile=37", "*.zshenv=37", "*.zshrc=37",
+    "*.lmstudio-home-pointer=90",
+    "*.backup=90", "*.bak=90", "*.log=90", "*.off=90", "*.old=90", "*.orig=90", "*.original=90", "*.part=90", "*.swp=90", "*.tmp=90"
+  )
+  $env:LS_COLORS = $lsColors -join ":"
 
   # eza
 
-  $env:EZA_COLORS = "oc=37:ur=37:uw=37:ux=37:ue=37:gr=37:gw=37:gx=37:tr=37:tw=37:tx=37:su=37:sf=37:xa=37:nb=90:nk=37:nm=33:ng=31:nt=91:uu=90:uR=31:un=37:gu=90:gR=31:gn=37:ga=32:gm=33:gd=31:gv=33:gt=33:gi=90:gc=91:Gm=34:Go=34:Gc=30:Gd=33:da=37:bO=31:mp=34;4:cr=33:do=0:tm=90:bu=0:sc=0:ff=37"
+  $ezaColors = @(
+    # permissions
+    "oc=37",
+    "ur=37", "uw=37", "ux=37", "ue=37",
+    "gr=37", "gw=37", "gx=37",
+    "tr=37", "tw=37", "tx=37",
+    "su=37", "sf=37", "xa=37",
+    # size
+    "nb=90", "nk=37", "nm=33", "ng=31", "nt=91",
+    # owner & group
+    "uu=90", "uR=31", "un=37", "gu=90", "gR=31", "gn=37",
+    # git
+    "ga=32", "gm=33", "gd=31", "gv=33", "gt=33", "gi=90", "gc=91",
+    "Gm=34", "Go=34", "Gc=30", "Gd=33",
+    # dates
+    "da=37",
+    # symlinks
+    "bO=31",
+    # mount points
+    "mp=34;4",
+    # media
+    "im=35", "vi=35", "mu=35", "lo=35",
+    # cryptography
+    "cr=33",
+    # documents
+    "do=0",
+    # compressed
+    "co=33",
+    # temp
+    "tm=90",
+    # dev
+    "bu=0", "sc=0",
+    # flags
+    "ff=37"
+  )
+  $env:EZA_COLORS = $ezaColors -join ":"
+
   $env:EZA_ICONS_AUTO = 1
   $env:EZA_WINDOWS_ATTRIBUTES="short"
 
@@ -119,9 +169,14 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # less
 
-  $env:LESS = "--quit-if-one-screen --RAW-CONTROL-CHARS --tilde --use-color -DEr -DPw -DSkY -Dd-d -Du-d
-    -D1rR -D2rR -D3rR -D4rR -D5rR -DBrR -DCrR -DHrR -DMrR -DNrR -DRrR -DWrR -DkrR -DsrR"
+  $less = @(
+    "--quit-if-one-screen", "--RAW-CONTROL-CHARS", "--tilde", "--use-color",
+    "-DEr", "-DPw", "-DSkY", "-Dd-d", "-Du-d",
+    # flagged colors
+    "-D1rR", "-D2rR", "-D3rR", "-D4rR", "-D5rR", "-DBrR", "-DCrR", "-DHrR", "-DMrR", "-DNrR", "-DRrR", "-DWrR", "-DkrR", "-DsrR"
     # not supported on windows: -DTk -DJrR
+  )
+  $env:LESS = $less -join " "
 
   $env:LESSHISTFILE = "-"
   $env:PAGER = "less"
