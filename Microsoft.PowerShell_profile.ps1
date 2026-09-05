@@ -28,7 +28,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   if ($env:WT_SESSION) { Write-Host -NoNewLine "`e[6 q" }
 
   Set-PSReadLineOption -EditMode Vi
-  Set-PSReadLineKeyHandler -ViMode Command -Chord "v,v" -Function ViEditVisually # was v by default
+  Set-PSReadLineKeyHandler -ViMode Command -Chord "Ctrl+e" -Function ViEditVisually # was v by default
 
   # dir colors (eza, lf)
 
