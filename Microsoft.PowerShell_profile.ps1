@@ -171,9 +171,9 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   $less = @(
     "--quit-if-one-screen", "--RAW-CONTROL-CHARS", "--tilde", "--use-color",
-    "-DEr", "-DPw", "-DSkY", "-Dd-d", "-Du-d",
+    "-DEr", "-DPw", "-DRk", "-DSkY", "-Dd-d", "-Du-d",
     # flagged colors
-    "-D1rR", "-D2rR", "-D3rR", "-D4rR", "-D5rR", "-DBrR", "-DCrR", "-DHrR", "-DMrR", "-DNrR", "-DRrR", "-DWrR", "-DkrR", "-DsrR"
+    "-D1rR", "-D2rR", "-D3rR", "-D4rR", "-D5rR", "-DBrR", "-DCrR", "-DHrR", "-DMrR", "-DNrR", "-DWrR", "-DkrR", "-DsrR"
     # not supported on windows: -DTk -DJrR
   )
   $env:LESS = $less -join " "
