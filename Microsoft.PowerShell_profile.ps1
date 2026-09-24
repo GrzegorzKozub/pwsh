@@ -231,6 +231,10 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   function global:reboot { shutdown /t 0 /r }
   function global:reflect { shutdown /t 0 /r /o }
 
+  # unblock
+
+  function global:unblock { Get-ChildItem -File -Path . -Recurse | Unblock-File }
+
   # syntax highlighting
 
   Set-PSReadLineOption -Colors @{
