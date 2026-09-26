@@ -217,6 +217,10 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   Set-Alias -Name c -Value code -Scope Global
 
+  # zed
+
+  Set-Alias -Name z -Value zed -Scope Global
+
   # shutdown
 
   function global:shtdn { shutdown /t 0 /s }
