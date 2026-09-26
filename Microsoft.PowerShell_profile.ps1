@@ -347,6 +347,14 @@ if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-3
 
 function _git {
   if (!(Test-Path -Path ".git")) { return "" }
+  $worktree = ""
+  $gitPath = Get-Item -Path ".git" -Force
+  if (!$gitPath.PSIsContainer) {
+    $gitDirLine = Get-Content -Path ".git" -TotalCount 1
+    if ($gitDirLine -match "gitdir: .*[\\/]worktrees[\\/]([^\\/]+)") {
+      $worktree = "`e[94m$($Matches[1])`e[0m "
+    }
+  }
   # https://git-scm.com/docs/git-status#_porcelain_format_version_2
   $status = git status --porcelain=2 --branch --show-stash # --ignore-submodule
   foreach ($line in $status) {
@@ -377,7 +385,7 @@ function _git {
   $staged = if ($staged) { "`e[32m+$staged`e[0m " } else { "" }
   $unstaged = if ($unstaged) { "`e[33m~$unstaged`e[0m " } else { "" }
   $untracked = if ($untracked) { "`e[31m*$untracked`e[0m " } else { "" }
-  return " $branchOrCommit$behind$ahead$stash$unmerged$staged$unstaged$untracked"
+  return " $worktree$branchOrCommit$behind$ahead$stash$unmerged$staged$unstaged$untracked"
 }
 
 function _osc7 ($location) {
