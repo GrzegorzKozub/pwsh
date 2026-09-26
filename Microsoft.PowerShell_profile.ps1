@@ -242,7 +242,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     "Number" = [ConsoleColor]::White
     "Operator" = [ConsoleColor]::White
     "Parameter" = [ConsoleColor]::DarkBlue
-    "Selection" = [ConsoleColor]::White
+    "Selection" = "`e[97;1m" # bold bright white
     "String" = [ConsoleColor]::DarkMagenta
     "Type" = [ConsoleColor]::DarkGreen
     "Variable" = [ConsoleColor]::DarkRed
@@ -328,6 +328,8 @@ function _defer { # runs once from the prompt function (functions and aliases mu
       -PSReadlineChordSetLocation "alt+c"
 
     # completion
+
+    # Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
     try {
       . _bat.ps1
