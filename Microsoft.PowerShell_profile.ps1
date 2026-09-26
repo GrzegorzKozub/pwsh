@@ -319,6 +319,14 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -Action {
 
+    # psfzf
+
+    Import-Module -Name "PSFzf"
+    Set-PsFzfOption `
+      -PSReadlineChordReverseHistory "ctrl+r" `
+      -PSReadlineChordProvider "ctrl+t" `
+      -PSReadlineChordSetLocation "alt+c"
+
     # completion
 
     try {
@@ -331,16 +339,6 @@ function _defer { # runs once from the prompt function (functions and aliases mu
       . _yazi.ps1
       . _zoxide.ps1
     } catch {}
-
-    # psfzf
-
-    Import-Module -Name "PSFzf"
-    Set-PsFzfOption `
-      -PSReadlineChordReverseHistory "ctrl+r" `
-      -PSReadlineChordProvider "ctrl+t" `
-      -PSReadlineChordSetLocation "alt+c" `
-       -TabExpansion
-
 
     Unregister-Event -SourceIdentifier PowerShell.OnIdle -ErrorAction SilentlyContinue
   } | Out-Null
@@ -355,14 +353,11 @@ if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-3
 
 function _git {
   if (!(Test-Path -Path ".git")) { return "" }
-  $worktree = ""
-  $gitPath = Get-Item -Path ".git" -Force
-  if (!$gitPath.PSIsContainer) {
-    $gitDirLine = Get-Content -Path ".git" -TotalCount 1
-    if ($gitDirLine -match "gitdir: .*[\\/]worktrees[\\/]([^\\/]+)") {
+  if (!$(Get-Item -Path ".git" -Force).PSIsContainer) {
+    if ((Get-Content -Path ".git" -TotalCount 1) -match "gitdir: .*[\\/]worktrees[\\/]([^\\/]+)") {
       $worktree = "`e[94m$($Matches[1])`e[0m "
     }
-  }
+  } else { $worktree = "" }
   # https://git-scm.com/docs/git-status#_porcelain_format_version_2
   $status = git status --porcelain=2 --branch --show-stash # --ignore-submodule
   foreach ($line in $status) {
