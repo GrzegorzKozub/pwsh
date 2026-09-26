@@ -324,6 +324,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     try {
       . _bat.ps1
       . _fd.ps1
+      . _git.ps1
       . _hyperfine.ps1
       . _pastel.ps1
       . _rg.ps1
@@ -338,6 +339,8 @@ function _defer { # runs once from the prompt function (functions and aliases mu
       -PSReadlineChordReverseHistory "ctrl+r" `
       -PSReadlineChordProvider "ctrl+t" `
       -PSReadlineChordSetLocation "alt+c" `
+       -TabExpansion
+
 
     Unregister-Event -SourceIdentifier PowerShell.OnIdle -ErrorAction SilentlyContinue
   } | Out-Null
