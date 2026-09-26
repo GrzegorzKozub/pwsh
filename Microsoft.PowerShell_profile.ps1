@@ -151,14 +151,6 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     return
   }
 
-  # psfzf
-
-  Import-Module -Name "PSFzf"
-  Set-PsFzfOption `
-    -PSReadlineChordReverseHistory "ctrl+r" `
-    -PSReadlineChordProvider "ctrl+t" `
-    -PSReadlineChordSetLocation "alt+c"
-
   # claude
 
   $env:CLAUDE_CONFIG_DIR="$env:USERPROFILE\.config\claude"
@@ -310,18 +302,6 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
   Invoke-Expression -Command (& { (zoxide init --cmd cd powershell | Out-String) } )
 
-  # completion
-
-  try {
-    . _bat.ps1
-    . _fd.ps1
-    . _hyperfine.ps1
-    . _pastel.ps1
-    . _rg.ps1
-    . _yazi.ps1
-    . _zoxide.ps1
-  } catch {}
-
   # prompt
 
   Set-PSReadLineKeyHandler -Chord "Enter" -ScriptBlock {
@@ -336,6 +316,31 @@ function _defer { # runs once from the prompt function (functions and aliases mu
       [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
     }
   }
+
+  Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -Action {
+
+    # completion
+
+    try {
+      . _bat.ps1
+      . _fd.ps1
+      . _hyperfine.ps1
+      . _pastel.ps1
+      . _rg.ps1
+      . _yazi.ps1
+      . _zoxide.ps1
+    } catch {}
+
+    # psfzf
+
+    Import-Module -Name "PSFzf"
+    Set-PsFzfOption `
+      -PSReadlineChordReverseHistory "ctrl+r" `
+      -PSReadlineChordProvider "ctrl+t" `
+      -PSReadlineChordSetLocation "alt+c" `
+
+    Unregister-Event -SourceIdentifier PowerShell.OnIdle -ErrorAction SilentlyContinue
+  } | Out-Null
 
 } # _defer ends
 
