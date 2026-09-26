@@ -342,6 +342,11 @@ function _defer { # runs once from the prompt function (functions and aliases mu
       . _zoxide.ps1
     } catch {}
 
+    Invoke-Expression -Command (gh completion -s powershell | Out-String)
+    Invoke-Expression -Command (rclone completion powershell | Out-String)
+    Invoke-Expression -Command (uv generate-shell-completion powershell | Out-String)
+    Invoke-Expression -Command (yq completion powershell | Out-String)
+
     Unregister-Event -SourceIdentifier PowerShell.OnIdle -ErrorAction SilentlyContinue
   } | Out-Null
 
