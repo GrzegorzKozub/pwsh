@@ -36,6 +36,8 @@ if ($Reset) {
 
 }
 
+Stop-Process -Name "explorer"
+
 # param ( [Switch] $Reset)
 # sudo {
 #   Start-Process -FilePath "regedit.exe" -ArgumentList "/s", $args[0] -Wait

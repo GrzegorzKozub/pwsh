@@ -7,3 +7,4 @@ sudo {
     -Force
   "" | CiTool.exe --refresh | Out-Null
 }
+Start-Sleep -Seconds 1
