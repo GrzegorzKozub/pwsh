@@ -7,6 +7,10 @@ function Dword ([Int64] $Value) {
 $accent = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent"
 $dwm = "HKCU:\Software\Microsoft\Windows\DWM"
 
+$current = (Get-ItemProperty -Path $dwm -Name "AccentColor").AccentColor
+$target = [UInt32] ($(if ($Reset) { 0xffd77800L } else { 0xff1050caL }) -band 0xFFFFFFFFL)
+if ($current -eq $target) { return }
+
 if ($Reset) {
 
   Remove-ItemProperty -Path $accent -Name "AccentColorMenu" -ErrorAction SilentlyContinue

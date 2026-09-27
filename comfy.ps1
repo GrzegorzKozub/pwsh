@@ -1,3 +1,1 @@
-& (Join-Path -Path $PSScriptRoot -ChildPath "smart.ps1")
-& (Join-Path -Path $PSScriptRoot -ChildPath "accent.ps1")
-& (Join-Path -Path $PSScriptRoot -ChildPath "wall.ps1")
+smart.ps1 && accent.ps1 && wall.ps1
