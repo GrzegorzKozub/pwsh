@@ -301,11 +301,6 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     Write-Host -NoNewLine "`e[$(if ($args[0] -eq 'Command') { '2' } else { '6' }) q"
   }
 
-  # zoxide
-
-  $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
-  Invoke-Expression -Command (& { (zoxide init --cmd cd powershell | Out-String) } )
-
   # prompt
 
   Set-PSReadLineKeyHandler -Chord "Enter" -ScriptBlock {
@@ -322,14 +317,6 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   }
 
   Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -Action {
-
-    # psfzf
-
-    Import-Module -Name "PSFzf"
-    Set-PsFzfOption `
-      -PSReadlineChordReverseHistory "ctrl+r" `
-      -PSReadlineChordProvider "ctrl+t" `
-      -PSReadlineChordSetLocation "alt+c"
 
     # completion
 
@@ -350,6 +337,19 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     Invoke-Expression -Command (rclone completion powershell | Out-String)
     Invoke-Expression -Command (uv generate-shell-completion powershell | Out-String)
     Invoke-Expression -Command (yq completion powershell | Out-String)
+
+    # psfzf
+
+    Import-Module -Name "PSFzf"
+    Set-PsFzfOption `
+      -PSReadlineChordReverseHistory "ctrl+r" `
+      -PSReadlineChordProvider "ctrl+t" `
+      -PSReadlineChordSetLocation "alt+c"
+
+    # zoxide
+
+    $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
+    Invoke-Expression -Command (& { (zoxide init --cmd cd powershell | Out-String) } )
 
     Unregister-Event -SourceIdentifier PowerShell.OnIdle -ErrorAction SilentlyContinue
   } | Out-Null
