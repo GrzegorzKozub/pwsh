@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent]
+"AccentColorMenu"=-
+"AccentPalette"=-
+"StartColorMenu"=-
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM]
+"AccentColor"=dword:ffd77800
+"ColorizationAfterglow"=dword:c40078d7
+"ColorizationColor"=dword:c40078d7
+
+
+
+
