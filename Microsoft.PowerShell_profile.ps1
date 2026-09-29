@@ -346,10 +346,14 @@ function _defer { # runs once from the prompt function (functions and aliases mu
       -PSReadlineChordProvider "ctrl+t" `
       -PSReadlineChordSetLocation "alt+c"
 
+    # worktrunk
+
+    Invoke-Expression -Command ((& wt config shell init powershell | Out-String) -replace "function wt \{", "function global:wt {")
+
     # zoxide
 
     $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
-    Invoke-Expression -Command (& { (zoxide init --cmd cd powershell | Out-String) } )
+    Invoke-Expression -Command (& zoxide init --cmd cd powershell | Out-String)
 
     Unregister-Event -SourceIdentifier PowerShell.OnIdle -ErrorAction SilentlyContinue
   } | Out-Null
