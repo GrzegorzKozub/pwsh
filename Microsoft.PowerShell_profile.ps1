@@ -323,6 +323,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     # Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
     try {
+
       . _bat.ps1
       . _fd.ps1
       . _git.ps1
@@ -331,12 +332,13 @@ function _defer { # runs once from the prompt function (functions and aliases mu
       . _rg.ps1
       . _yazi.ps1
       . _zoxide.ps1
-    } catch {}
 
-    Invoke-Expression -Command (gh completion -s powershell | Out-String)
-    Invoke-Expression -Command (rclone completion powershell | Out-String)
-    Invoke-Expression -Command (uv generate-shell-completion powershell | Out-String)
-    Invoke-Expression -Command (yq completion powershell | Out-String)
+      Invoke-Expression -Command (gh completion -s powershell | Out-String)
+      Invoke-Expression -Command (rclone completion powershell | Out-String)
+      Invoke-Expression -Command (uv generate-shell-completion powershell | Out-String)
+      Invoke-Expression -Command (yq completion powershell | Out-String)
+
+    } catch {}
 
     # psfzf
 
@@ -348,12 +350,16 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
     # worktrunk
 
-    Invoke-Expression -Command ((& wt config shell init powershell | Out-String) -replace "function wt \{", "function global:wt {")
+    if ((Get-Command -Name wt -ErrorAction SilentlyContinue).Source -like "D:\Apps\Common") {
+      Invoke-Expression -Command ((& wt config shell init powershell | Out-String) -replace "function wt \{", "function global:wt {")
+    }
 
     # zoxide
 
-    $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
-    Invoke-Expression -Command (& zoxide init --cmd cd powershell | Out-String)
+    if (Get-Command -Name zoxide -ErrorAction SilentlyContinue) {
+      $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
+      Invoke-Expression -Command (& zoxide init --cmd cd powershell | Out-String)
+    }
 
     Unregister-Event -SourceIdentifier PowerShell.OnIdle -ErrorAction SilentlyContinue
   } | Out-Null
