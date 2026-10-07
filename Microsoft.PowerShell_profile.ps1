@@ -316,29 +316,37 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     }
   }
 
+  # worktrunk
+
+  if ((Get-Command -Name "wt" -CommandType Application -TotalCount 1 -ErrorAction Ignore).Source -like "D:\Apps\Common\*") {
+    $_wt = Join-Path -Path $PSScriptRoot -ChildPath "_wt.ps1"
+    if (!(Test-Path -Path $_wt)) { & wt config shell init powershell | Out-String | Set-Content -Path $_wt }
+    . $_wt
+  }
+
   Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -Action {
 
     # completion
 
     # Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
-    try {
+    foreach ($cmd in "bat", "fd", "git", "hyperfine", "pastel", "rg", "yazi", "zoxide") {
+      try { . "_$cmd.ps1" } catch {}
+    }
 
-      . _bat.ps1
-      . _fd.ps1
-      . _git.ps1
-      . _hyperfine.ps1
-      . _pastel.ps1
-      . _rg.ps1
-      . _yazi.ps1
-      . _zoxide.ps1
+    $cmpl = @{
+      gh = { gh completion -s powershell }
+      rclone = { rclone completion powershell }
+      uv = { uv generate-shell-completion powershell }
+      yq = { yq completion powershell }
+    }
 
-      Invoke-Expression -Command (gh completion -s powershell | Out-String)
-      Invoke-Expression -Command (rclone completion powershell | Out-String)
-      Invoke-Expression -Command (uv generate-shell-completion powershell | Out-String)
-      Invoke-Expression -Command (yq completion powershell | Out-String)
-
-    } catch {}
+    foreach ($cmd in $cmpl.Keys) {
+      if (!(Get-Command -Name $cmd -CommandType Application -TotalCount 1 -ErrorAction Ignore)) { continue }
+      $file = Join-Path -Path $PSScriptRoot -ChildPath "_$cmd.ps1"
+      if (!(Test-Path -Path $file)) { & $cmpl[$cmd] | Out-String | Set-Content -Path $file }
+      . $file
+    }
 
     # psfzf
 
@@ -348,15 +356,9 @@ function _defer { # runs once from the prompt function (functions and aliases mu
       -PSReadlineChordProvider "ctrl+t" `
       -PSReadlineChordSetLocation "alt+c"
 
-    # worktrunk
-
-    if ((Get-Command -Name wt -ErrorAction SilentlyContinue).Source -like "D:\Apps\Common") {
-      Invoke-Expression -Command ((& wt config shell init powershell | Out-String) -replace "function wt \{", "function global:wt {")
-    }
-
     # zoxide
 
-    if (Get-Command -Name zoxide -ErrorAction SilentlyContinue) {
+    if (Get-Command -Name "zoxide" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue) {
       $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
       Invoke-Expression -Command (& zoxide init --cmd cd powershell | Out-String)
     }
