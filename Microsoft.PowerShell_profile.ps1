@@ -316,37 +316,41 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     }
   }
 
-  # worktrunk
+  # worktrunk (unused)
 
-  if ((Get-Command -Name "wt" -CommandType Application -TotalCount 1 -ErrorAction Ignore).Source -like "D:\Apps\Common\*") {
-    $_wt = Join-Path -Path $PSScriptRoot -ChildPath "_wt.ps1"
-    if (!(Test-Path -Path $_wt)) { & wt config shell init powershell | Out-String | Set-Content -Path $_wt }
-    . $_wt
-  }
+  # if ((Get-Command -Name "wt" -CommandType Application -TotalCount 1 -ErrorAction Ignore).Source -like "D:\Apps\Common\*") {
+  #   $_wt = Join-Path -Path $PSScriptRoot -ChildPath "_wt.ps1"
+  #   if (!(Test-Path -Path $_wt)) { & wt config shell init powershell | Out-String | Set-Content -Path $_wt }
+  #   . $_wt
+  # }
 
   Register-EngineEvent -SourceIdentifier PowerShell.OnIdle -MaxTriggerCount 1 -Action {
 
-    # completion
+    # completion (mostly unused)
+
+    # foreach ($cmd in "bat", "fd", "hyperfine", "pastel", "rg", "yazi", "zoxide") {
+    #   try { . "_$cmd.ps1" } catch {}
+    # }
+
+    foreach ($cmd in "fd", "rg") { try { . "_$cmd.ps1" } catch {} }
+
+    . (Join-Path -Path $PSScriptRoot -ChildPath "_git.ps1")
+
+    # $cmpl = @{
+    #   gh = { gh completion -s powershell }
+    #   rclone = { rclone completion powershell }
+    #   uv = { uv generate-shell-completion powershell }
+    #   yq = { yq completion powershell }
+    # }
+
+    # foreach ($cmd in $cmpl.Keys) {
+    #   if (!(Get-Command -Name $cmd -CommandType Application -TotalCount 1 -ErrorAction Ignore)) { continue }
+    #   $file = Join-Path -Path $PSScriptRoot -ChildPath "_$cmd.ps1"
+    #   if (!(Test-Path -Path $file)) { & $cmpl[$cmd] | Out-String | Set-Content -Path $file }
+    #   . $file
+    # }
 
     # Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
-
-    foreach ($cmd in "bat", "fd", "git", "hyperfine", "pastel", "rg", "yazi", "zoxide") {
-      try { . "_$cmd.ps1" } catch {}
-    }
-
-    $cmpl = @{
-      gh = { gh completion -s powershell }
-      rclone = { rclone completion powershell }
-      uv = { uv generate-shell-completion powershell }
-      yq = { yq completion powershell }
-    }
-
-    foreach ($cmd in $cmpl.Keys) {
-      if (!(Get-Command -Name $cmd -CommandType Application -TotalCount 1 -ErrorAction Ignore)) { continue }
-      $file = Join-Path -Path $PSScriptRoot -ChildPath "_$cmd.ps1"
-      if (!(Test-Path -Path $file)) { & $cmpl[$cmd] | Out-String | Set-Content -Path $file }
-      . $file
-    }
 
     # psfzf
 
@@ -358,9 +362,11 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
     # zoxide
 
-    if (Get-Command -Name "zoxide" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue) {
+    if (Get-Command -Name "zoxide" -CommandType Application -TotalCount 1 -ErrorAction Ignore) {
       $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
-      Invoke-Expression -Command (& zoxide init --cmd cd powershell | Out-String)
+      $_zoxide = Join-Path -Path $PSScriptRoot -ChildPath "_zoxide.ps1"
+      if (!(Test-Path -Path $_zoxide)) { & zoxide init --cmd cd powershell | Out-String | Set-Content -Path $_zoxide }
+      . $_zoxide
     }
 
     Unregister-Event -SourceIdentifier PowerShell.OnIdle -ErrorAction SilentlyContinue
