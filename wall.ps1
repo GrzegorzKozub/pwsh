@@ -1,4 +1,4 @@
-$dir = Join-Path -Path $env:USERPROFILE -ChildPath "Pictures\Wallpapers"
+$dir = Join-Path -Path $env:USERPROFILE -ChildPath "Pictures\Walls"
 $image = Join-Path -Path $dir `
   -ChildPath (& (Join-Path -Path $dir -ChildPath "random.ps1"))
 
