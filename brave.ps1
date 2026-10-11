@@ -19,7 +19,7 @@ foreach ($brave in "Brave-Browser", "Brave-Origin") {
 
 if ($Backup) {
   $zip = "D:\Software\Brave.zip"
-  Remove-Item -Path $zip -ErrorAction SilentlyContinue -Force
+  Remove-Item -Path $zip -Force -ErrorAction SilentlyContinue
   7z a $zip $config | Out-Null
 }
 
