@@ -4,13 +4,15 @@ $image = Join-Path -Path $dir `
 
 # wallpaper
 
-Add-Type -TypeDefinition @"
+if (-not ("Wall" -as [type])) {
+  Add-Type -TypeDefinition @"
 using System.Runtime.InteropServices;
 public class Wall {
   [DllImport("user32.dll", SetLastError = true)]
-  public static extern bool SystemParametersInfo(long uAction, long uiParam, string pvParam, long fWinIni);
+  public static extern bool SystemParametersInfo(uint uAction, uint uiParam, string pvParam, uint fWinIni);
 }
 "@
+}
 
 $SPI_SETDESKWALLPAPER = 20
 $SPIF_UPDATEINIFILE = 1
