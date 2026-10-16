@@ -23,16 +23,30 @@ if ($HideOverlay) {
   } -args @($path, $name)
 }
 
-$driver = "C:\ProgramData\NVIDIA\NGX\models\dlss\versions\20317696\files\160_E658700.bin"
-$dlss = "D:\Software\streamline-sdk-v2.12.0\bin\x64\development\nvngx_dlss.dll"
+if ($Dev -or $Prod) {
+  $model = Get-ChildItem "C:\ProgramData\NVIDIA\NGX\models\dlss\versions" -Directory |
+    Sort-Object { [long] $_.Name } -Descending | Select-Object -First 1
+  $files = Join-Path $model.FullName "files"
+  $driver = @(Get-ChildItem $files -File)
+  if ($driver.Count -ne 1) { throw "Expected exactly one file in $files, found $($driver.Count)" }
+  $backup = Join-Path $model.FullName "$($driver[0].Name).default"
+  $driver = $driver[0].FullName
+}
 
 if ($Dev) {
-  New-Item -Path $(Split-Path -Path $driver -Parent) -ItemType Directory -Force | Out-Null
-  Copy-Item -Path $dlss -Destination $driver
+  $temp = Join-Path $env:TEMP "streamline"
+  $zip = Join-Path $temp "streamline-sdk.zip"
+  New-Item -Path $temp -ItemType Directory -Force | Out-Null
+  if (!(Test-Path $zip)) {
+    $url = lastversion NVIDIA-RTX/Streamline --assets --filter 'streamline-sdk-v[\d.]+\.zip$'
+    curl.exe -sSL -o $zip $url
+  }
+  7z e $zip "-o$temp" bin/x64/development/nvngx_dlss.dll -y | Out-Null
+  if (!(Test-Path $backup)) { Copy-Item -Path $driver -Destination $backup }
+  Copy-Item -Path "$temp\nvngx_dlss.dll" -Destination $driver
 }
 
 if ($Prod) {
-  Remove-Item -Path $driver -ErrorAction SilentlyContinue
+  if (Test-Path $backup) { Move-Item -Path $backup -Destination $driver -Force }
   Write-Host "`e[33mEffective on the following game start`e[0m"
 }
-
