@@ -3,7 +3,7 @@ $dirs =
   "D:\Code\notes",
   "D:\Code\pass",
   "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadline",
-  "$env:USERPROFILE\Pictures\Wallpapers"
+  "$env:USERPROFILE\Pictures\Walls"
 
 foreach ($dir in $dirs) {
   if (Test-Path -Path $dir) {
