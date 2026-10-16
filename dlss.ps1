@@ -24,29 +24,28 @@ if ($HideOverlay) {
 }
 
 if ($Dev -or $Prod) {
-  $model = Get-ChildItem "C:\ProgramData\NVIDIA\NGX\models\dlss\versions" -Directory |
+  $version = Get-ChildItem -Path "$env:ALLUSERSPROFILE\NVIDIA\NGX\models\dlss\versions" -Directory |
     Sort-Object { [long] $_.Name } -Descending | Select-Object -First 1
-  $files = Join-Path $model.FullName "files"
-  $driver = @(Get-ChildItem $files -File)
-  if ($driver.Count -ne 1) { throw "Expected exactly one file in $files, found $($driver.Count)" }
-  $backup = Join-Path $model.FullName "$($driver[0].Name).default"
-  $driver = $driver[0].FullName
+  $files = Join-Path -Path $version.FullName -ChildPath "files"
+  $model = @(Get-ChildItem $files -File)
+  if ($model.Count -ne 1) { throw "Expected exactly one file in $files, found $($model.Count)" }
+  $backup = Join-Path -Path $version.FullName -ChildPath "$($model[0].Name).default"
+  $model = $model[0].FullName
 }
 
 if ($Dev) {
-  $temp = Join-Path $env:TEMP "streamline"
-  $zip = Join-Path $temp "streamline-sdk.zip"
+  $temp = Join-Path -Path $env:TEMP -ChildPath "streamline"
+  $zip = Join-Path -Path $temp -ChildPath "streamline.zip"
   New-Item -Path $temp -ItemType Directory -Force | Out-Null
-  if (!(Test-Path $zip)) {
-    $url = lastversion NVIDIA-RTX/Streamline --assets --filter 'streamline-sdk-v[\d.]+\.zip$'
+  if (!(Test-Path -Path $zip)) {
+    $url = lastversion "NVIDIA-RTX/Streamline" --assets --filter 'streamline-sdk-v[\d.]+\.zip$'
     curl.exe -sSL -o $zip $url
   }
-  7z e $zip "-o$temp" bin/x64/development/nvngx_dlss.dll -y | Out-Null
-  if (!(Test-Path $backup)) { Copy-Item -Path $driver -Destination $backup }
-  Copy-Item -Path "$temp\nvngx_dlss.dll" -Destination $driver
+  7z e $zip "-o$temp" "bin/x64/development/nvngx_dlss.dll" -y | Out-Null
+  if (!(Test-Path -Path $backup)) { Copy-Item -Path $model -Destination $backup }
+  Copy-Item -Path "$temp\nvngx_dlss.dll" -Destination $model
 }
 
 if ($Prod) {
-  if (Test-Path $backup) { Move-Item -Path $backup -Destination $driver -Force }
-  Write-Host "`e[33mEffective on the following game start`e[0m"
+  if (Test-Path -Path $backup) { Move-Item -Path $backup -Destination $model -Force }
 }
