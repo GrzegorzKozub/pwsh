@@ -67,3 +67,5 @@ Papirus "WezTerm" "apps" "utilities-terminal"
 Papirus "WezTerm (Admin)" "apps" "utilities-terminal_su"
 
 Papirus "Zed" "apps" "zed"
+
+Papirus "TIDAL" "apps" "tidal-hifi"
