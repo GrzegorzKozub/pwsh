@@ -1,16 +1,34 @@
+# https://github.com/GNOME/adwaita-icon-theme
+# https://github.com/numixproject/numix-icon-theme-circle
+# https://github.com/numixproject/numix-icon-theme-square
+# https://github.com/vinceliuice/Colloid-icon-theme
+# https://github.com/vinceliuice/Qogir-icon-theme
+# https://github.com/vinceliuice/Tela-circle-icon-theme
+# https://github.com/vinceliuice/Tela-icon-theme
+
 $lib = "mingw-w64-ucrt-x86_64-librsvg"
-pacman -Qq $lib | Out-Null
+pacman -Qq $lib 2>&1 | Out-Null
 if ($LASTEXITCODE -ne 0) { pacman -S --noconfirm $lib }
+
+# stop on any failure (e.g. curl giving up) instead of building broken icons
+$ErrorActionPreference = "Stop"
+$PSNativeCommandUseErrorActionPreference = $true
 
 function Png($svg, $png, $size) {
   if ($size) {
-    &rsvg-convert --width $size --height $size "$svg.svg" > "$png.png"
+    &rsvg-convert --width $size --height $size "$svg.svg" -o "$png.png"
   } else {
-    &rsvg-convert "$svg.svg" > "$png.png"
+    &rsvg-convert "$svg.svg" -o "$png.png"
   }
 }
 
-function Ico($ico) { &magick *.png "$ico.ico" }
+function Ico($ico) {
+  &magick 256.png 128.png 64.png 48.png 32.png 24.png 16.png "$ico.ico"
+}
+
+function Download($url, $file) {
+  &curl.exe -fsL --retry 32 --retry-all-errors --retry-delay 2 $url -o $file
+}
 
 function Cleanup() {
   foreach ($size in 256, 128, 64, 48, 32, 24, 16) {
@@ -18,10 +36,10 @@ function Cleanup() {
   }
 }
 
-function Papirus($app, $cat, $icon) {
+function Papirus($app, $cat, $icon) { # https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
   $url = "https://raw.githubusercontent.com/PapirusDevelopmentTeam/papirus-icon-theme/refs/heads/master/Papirus"
   foreach ($size in 64, 48, 32, 24, 16) {
-    Invoke-WebRequest "$url/$($size)x$($size)/$cat/$icon.svg" -OutFile "$size.svg"
+    Download "$url/$($size)x$($size)/$cat/$icon.svg" "$size.svg"
     Png $size $size
   }
   foreach ($size in 256, 128) { Png 64 $size $size }
@@ -29,11 +47,20 @@ function Papirus($app, $cat, $icon) {
   Cleanup
 }
 
-function Gnome($app, $path, $icon) {
-  # https://download.gnome.org/sources/gnome-icon-theme/2.20/gnome-icon-theme-2.20.0.tar.bz2
-  $url = "https://upload.wikimedia.org/wikipedia/commons"
-  Invoke-WebRequest "$url/$path/$icon.svg" -OutFile "256.svg"
+function Gnome2($app, $cat, $icon) { # https://github.com/Distrotech/gnome-icon-theme
+  $url = "https://raw.githubusercontent.com/Distrotech/gnome-icon-theme/refs/heads/gnome-2-20/scalable"
+  Download "$url/$cat/$icon.svg" "256.svg"
   foreach ($size in 256, 128, 64, 48, 32, 24, 16) { Png 256 $size $size }
+  Ico $app
+  Cleanup
+}
+
+function Gnome3($app, $cat, $icon) { # https://github.com/Distrotech/gnome-icon-theme
+  $url = "https://raw.githubusercontent.com/Distrotech/gnome-icon-theme/refs/heads/gnome-3-12/gnome"
+  foreach ($size in 256, 48, 32, 24, 16) {
+    Download "$url/$($size)x$($size)/$cat/$icon.png" "$size.png"
+  }
+  foreach ($size in 128, 64) { &magick 256.png -resize "$($size)x$($size)" "$size.png" }
   Ico $app
   Cleanup
 }
@@ -54,18 +81,20 @@ Papirus "NVIDIA 3" "apps" "geforcenow"
 Papirus "OBS" "apps" "obs"
 Papirus "Obsidian" "apps" "obsidian"
 
-Gnome "paint.net" "f/fe/" "Gnome-applications-graphics"
+Gnome2 "paint.net" "categories" "applications-graphics"
+Gnome3 "paint.net 2" "categories" "applications-graphics"
+
 Papirus "Steam" "apps" "steam"
 Papirus "SumatraPDF" "mimetypes" "application-pdf"
 
-Gnome "Total Commander" "3/38" "Gnome-media-floppy"
-Papirus "Total Commander 2" "devices" "media-floppy"
+Gnome2 "Total Commander" "devices" "media-floppy"
+Gnome3 "Total Commander 2" "devices" "media-floppy"
+Papirus "Total Commander 3" "devices" "media-floppy"
 
 Papirus "Visual Studio Code" "apps" "vscode"
 
 Papirus "WezTerm" "apps" "utilities-terminal"
-Papirus "WezTerm (Admin)" "apps" "utilities-terminal_su"
+Papirus "WezTerm 2" "apps" "utilities-terminal_su"
 
 Papirus "Zed" "apps" "zed"
-
 Papirus "TIDAL" "apps" "tidal-hifi"
