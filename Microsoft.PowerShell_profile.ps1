@@ -30,6 +30,10 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   Set-PSReadLineOption -EditMode Vi
   Set-PSReadLineKeyHandler -ViMode Command -Chord "Ctrl+e" -Function ViEditVisually # was v by default
 
+  # handled via wezterm and windows terminal
+  # Set-PSReadLineKeyHandler -ViMode Command -Chord "Ctrl+v" -Function Paste
+  # Set-PSReadLineKeyHandler -ViMode Insert -Chord "Ctrl+v" -Function Paste
+
   # dir colors (eza, lf)
 
   $lsColors = @(
@@ -299,6 +303,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   Set-PSReadLineOption -ViModeIndicator Script -ViModeChangeHandler {
     Write-Host -NoNewLine "`e[$(if ($args[0] -eq 'Command') { '2' } else { '6' }) q"
+    if ($env:WT_SESSION) { Write-Host -NoNewLine "`e[?25l`e[?25h" } # force cursor repaint as otherwise wt waits for focus change
   }
 
   # prompt
