@@ -32,6 +32,7 @@ if ($Cleanmgr) {
   $selected = @(
     "Delivery Optimization Files"
     "Device Driver Packages"
+    "Recycle Bin"
     "Temporary Files"
     "Update Cleanup"
   )
