@@ -370,7 +370,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     if (Get-Command "zoxide" -CommandType Application -TotalCount 1 -ErrorAction Ignore) {
       $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
       $_zoxide = Join-Path $PSScriptRoot "_zoxide.ps1"
-      if (!(Test-Path $_zoxide)) { & zoxide init --cmd cd powershell | Out-String | Set-Content $_zoxide }
+      if (!(Test-Path $_zoxide)) { zoxide init --cmd cd powershell | Out-String | Set-Content $_zoxide }
       . $_zoxide
     }
 

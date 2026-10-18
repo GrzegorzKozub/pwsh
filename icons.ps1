@@ -16,18 +16,18 @@ $PSNativeCommandUseErrorActionPreference = $true
 
 function Png($svg, $png, $size) {
   if ($size) {
-    &rsvg-convert --width $size --height $size "$svg.svg" -o "$png.png"
+    rsvg-convert --width $size --height $size "$svg.svg" -o "$png.png"
   } else {
-    &rsvg-convert "$svg.svg" -o "$png.png"
+    rsvg-convert "$svg.svg" -o "$png.png"
   }
 }
 
 function Ico($ico) {
-  &magick 256.png 128.png 64.png 48.png 32.png 24.png 16.png "$ico.ico"
+  magick 256.png 128.png 64.png 48.png 32.png 24.png 16.png "$ico.ico"
 }
 
 function Download($url, $file) {
-  &curl.exe -fsL --retry 32 --retry-all-errors --retry-delay 2 $url -o $file
+  curl.exe -fsL --retry 32 --retry-all-errors --retry-delay 2 $url -o $file
 }
 
 function Cleanup() {
@@ -60,7 +60,7 @@ function Gnome3($app, $cat, $icon) { # https://github.com/Distrotech/gnome-icon-
   foreach ($size in 256, 48, 32, 24, 16) {
     Download "$url/$($size)x$($size)/$cat/$icon.png" "$size.png"
   }
-  foreach ($size in 128, 64) { &magick 256.png -resize "$($size)x$($size)" "$size.png" }
+  foreach ($size in 128, 64) { magick 256.png -resize "$($size)x$($size)" "$size.png" }
   Ico $app
   Cleanup
 }
