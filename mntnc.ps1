@@ -3,6 +3,7 @@
 param (
   [Switch] $Fix,
   [Switch] $Chkdsk,
+  [Switch] $Cleanmgr,
   [Switch] $Defrag,
   [Switch] $DismComponents,
   [Switch] $DismImage,
@@ -25,6 +26,22 @@ if ($Chkdsk) {
       "chkdsk ${drive}:" `
       "chkdsk /F ${drive}:"
   }
+}
+
+if ($Cleanmgr) {
+  $selected = @(
+    "Delivery Optimization Files"
+    "Device Driver Packages"
+    "Temporary Files"
+    "Update Cleanup"
+  )
+  $sageset = 42
+  foreach ($key in Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches") {
+    $value = $key.PSChildName -in $selected ? 2 : 0
+    Set-ItemProperty $key.PSPath "StateFlags$($sageset.ToString('D4'))" $value -Type DWord
+  }
+  Write-Host "`e[37m`ncleanmgr /sagerun:$sageset`e[0m"
+  Start-Process cleanmgr "/sagerun:$sageset" -Wait
 }
 
 if ($Defrag) {
