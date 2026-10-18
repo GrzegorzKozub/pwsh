@@ -14,14 +14,14 @@ function Ico($ico) { &magick *.png "$ico.ico" }
 
 function Cleanup() {
   foreach ($size in 256, 128, 64, 48, 32, 24, 16) {
-    Remove-Item -Path "$size.png", "$size.svg" -ErrorAction SilentlyContinue
+    Remove-Item "$size.png", "$size.svg" -ErrorAction SilentlyContinue
   }
 }
 
 function Papirus($app, $cat, $icon) {
   $url = "https://raw.githubusercontent.com/PapirusDevelopmentTeam/papirus-icon-theme/refs/heads/master/Papirus"
   foreach ($size in 64, 48, 32, 24, 16) {
-    Invoke-WebRequest -Uri "$url/$($size)x$($size)/$cat/$icon.svg" -OutFile "$size.svg"
+    Invoke-WebRequest "$url/$($size)x$($size)/$cat/$icon.svg" -OutFile "$size.svg"
     Png $size $size
   }
   foreach ($size in 256, 128) { Png 64 $size $size }
@@ -32,7 +32,7 @@ function Papirus($app, $cat, $icon) {
 function Gnome($app, $path, $icon) {
   # https://download.gnome.org/sources/gnome-icon-theme/2.20/gnome-icon-theme-2.20.0.tar.bz2
   $url = "https://upload.wikimedia.org/wikipedia/commons"
-  Invoke-WebRequest -Uri "$url/$path/$icon.svg" -OutFile "256.svg"
+  Invoke-WebRequest "$url/$path/$icon.svg" -OutFile "256.svg"
   foreach ($size in 256, 128, 64, 48, 32, 24, 16) { Png 256 $size $size }
   Ico $app
   Cleanup

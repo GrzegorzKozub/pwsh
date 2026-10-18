@@ -1,7 +1,7 @@
 $yt = "D:\\Music\\YouTube"
-if (!(Test-Path -Path $yt)) { mkdir -Path $yt | Out-Null }
-Remove-Item -Path "$yt\*"
-Push-Location -Path $yt
+if (!(Test-Path $yt)) { mkdir $yt | Out-Null }
+Remove-Item "$yt\*"
+Push-Location $yt
 
 $tmp = [System.IO.Path]::GetTempFileName()
 
@@ -19,12 +19,12 @@ yt-dlp `
   "https://music.youtube.com/browse/VLPLm6VwE4tgUkXEcczHuW9xiwGJwHvq69ri"
   # "https://music.youtube.com/playlist?list=LM"
 
-(Get-Content -Path $tmp) -replace "$yt\\", "" -replace "\.webm", "" | Set-Content -Path $tmp
+(Get-Content $tmp) -replace "$yt\\", "" -replace "\.webm", "" | Set-Content $tmp
 
-foreach ($title in (Get-Content -Path $tmp)) {
+foreach ($title in (Get-Content $tmp)) {
 
-  Move-Item -Path "$title.png" -Destination original.png
-  Move-Item -Path "$title.flac" -Destination original.flac
+  Move-Item "$title.png" original.png
+  Move-Item "$title.flac" original.flac
 
   ffmpeg `
     -i original.png `
@@ -36,10 +36,10 @@ foreach ($title in (Get-Content -Path $tmp)) {
     -map 0 -map 1 -c copy -disposition:v attached_pic `
     "$title.flac"
 
-  Remove-Item -Path original.flac, original.png, square.png
+  Remove-Item original.flac, original.png, square.png
 }
 
-Remove-Item -Path $tmp
+Remove-Item $tmp
 
 Pop-Location
 

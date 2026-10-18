@@ -161,7 +161,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # gsudo
 
-  Set-Alias -Name sudo -Value gsudo -Scope Global
+  Set-Alias sudo gsudo -Scope Global
 
   # less
 
@@ -186,10 +186,10 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     $tempFile = New-TemporaryFile
     & $Cmd $tempFile.FullName
     if (Test-Path -PathType Leaf $tempFile) {
-      $dir = Get-Content -Path $tempFile
-      Remove-Item -Path $tempFile
+      $dir = Get-Content $tempFile
+      Remove-Item $tempFile
       if ((Test-Path -PathType Container "$dir") -and "$dir" -ne "$pwd") {
-        Set-Location -Path "$dir"
+        Set-Location "$dir"
       }
     }
   }
@@ -214,16 +214,16 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   $env:EDITOR = $env:VISUAL = "nvim"
 
-  Set-Alias -Name vim -Value nvim -Scope Global
-  Set-Alias -Name v -Value nvim -Scope Global
+  Set-Alias vim nvim -Scope Global
+  Set-Alias v nvim -Scope Global
 
   # vscode
 
-  Set-Alias -Name c -Value code -Scope Global
+  Set-Alias c code -Scope Global
 
   # zed
 
-  Set-Alias -Name z -Value zed -Scope Global
+  Set-Alias z zed -Scope Global
 
   # shutdown
 
@@ -233,7 +233,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # unblock
 
-  function global:unblock { Get-ChildItem -File -Path . -Recurse | Unblock-File }
+  function global:unblock { Get-ChildItem . -File -Recurse | Unblock-File }
 
   # syntax highlighting
 
@@ -323,9 +323,9 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # worktrunk (unused)
 
-  # if ((Get-Command -Name "wt" -CommandType Application -TotalCount 1 -ErrorAction Ignore).Source -like "D:\Apps\Common\*") {
-  #   $_wt = Join-Path -Path $PSScriptRoot -ChildPath "_wt.ps1"
-  #   if (!(Test-Path -Path $_wt)) { & wt config shell init powershell | Out-String | Set-Content -Path $_wt }
+  # if ((Get-Command "wt" -CommandType Application -TotalCount 1 -ErrorAction Ignore).Source -like "D:\Apps\Common\*") {
+  #   $_wt = Join-Path $PSScriptRoot "_wt.ps1"
+  #   if (!(Test-Path $_wt)) { & wt config shell init powershell | Out-String | Set-Content $_wt }
   #   . $_wt
   # }
 
@@ -339,7 +339,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
     foreach ($cmd in "fd", "rg") { try { . "_$cmd.ps1" } catch {} }
 
-    . (Join-Path -Path $PSScriptRoot -ChildPath "_git.ps1")
+    . (Join-Path $PSScriptRoot "_git.ps1")
 
     # $cmpl = @{
     #   gh = { gh completion -s powershell }
@@ -349,9 +349,9 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     # }
 
     # foreach ($cmd in $cmpl.Keys) {
-    #   if (!(Get-Command -Name $cmd -CommandType Application -TotalCount 1 -ErrorAction Ignore)) { continue }
-    #   $file = Join-Path -Path $PSScriptRoot -ChildPath "_$cmd.ps1"
-    #   if (!(Test-Path -Path $file)) { & $cmpl[$cmd] | Out-String | Set-Content -Path $file }
+    #   if (!(Get-Command $cmd -CommandType Application -TotalCount 1 -ErrorAction Ignore)) { continue }
+    #   $file = Join-Path $PSScriptRoot "_$cmd.ps1"
+    #   if (!(Test-Path $file)) { & $cmpl[$cmd] | Out-String | Set-Content $file }
     #   . $file
     # }
 
@@ -359,7 +359,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
     # psfzf
 
-    Import-Module -Name "PSFzf"
+    Import-Module "PSFzf"
     Set-PsFzfOption `
       -PSReadlineChordReverseHistory "ctrl+r" `
       -PSReadlineChordProvider "ctrl+t" `
@@ -367,10 +367,10 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
     # zoxide
 
-    if (Get-Command -Name "zoxide" -CommandType Application -TotalCount 1 -ErrorAction Ignore) {
+    if (Get-Command "zoxide" -CommandType Application -TotalCount 1 -ErrorAction Ignore) {
       $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
-      $_zoxide = Join-Path -Path $PSScriptRoot -ChildPath "_zoxide.ps1"
-      if (!(Test-Path -Path $_zoxide)) { & zoxide init --cmd cd powershell | Out-String | Set-Content -Path $_zoxide }
+      $_zoxide = Join-Path $PSScriptRoot "_zoxide.ps1"
+      if (!(Test-Path $_zoxide)) { & zoxide init --cmd cd powershell | Out-String | Set-Content $_zoxide }
       . $_zoxide
     }
 
@@ -386,9 +386,9 @@ if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-3
 }
 
 function _git {
-  if (!(Test-Path -Path ".git")) { return "" }
-  if (!$(Get-Item -Path ".git" -Force).PSIsContainer) {
-    if ((Get-Content -Path ".git" -TotalCount 1) -match "gitdir: .*[\\/]worktrees[\\/]([^\\/]+)") {
+  if (!(Test-Path ".git")) { return "" }
+  if (!$(Get-Item ".git" -Force).PSIsContainer) {
+    if ((Get-Content ".git" -TotalCount 1) -match "gitdir: .*[\\/]worktrees[\\/]([^\\/]+)") {
       $worktree = "`e[94m$($Matches[1])`e[0m "
     }
   } else { $worktree = "" }

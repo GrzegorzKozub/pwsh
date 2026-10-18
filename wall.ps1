@@ -1,6 +1,5 @@
-$dir = Join-Path -Path $env:USERPROFILE -ChildPath "Pictures\Walls"
-$image = Join-Path -Path $dir `
-  -ChildPath (& (Join-Path -Path $dir -ChildPath "random.ps1"))
+$dir = Join-Path $env:USERPROFILE "Pictures\Walls"
+$image = Join-Path $dir (& (Join-Path $dir "random.ps1"))
 
 # wallpaper
 
@@ -29,7 +28,7 @@ sudo {
 
   $key = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP"
 
-  if (-not (Test-Path -Path $key)) { New-Item -Path $key | Out-Null }
+  if (-not (Test-Path $key)) { New-Item $key | Out-Null }
 
   New-ItemProperty -Path $key `
     -Name "LockScreenImagePath" -PropertyType "String" -Value $args `

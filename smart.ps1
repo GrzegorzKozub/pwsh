@@ -12,4 +12,4 @@ sudo {
   "" | CiTool.exe --refresh | Out-Null
 } -args @($policy, $state)
 
-Start-Sleep -Seconds 1
+Start-Sleep 1

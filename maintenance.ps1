@@ -15,11 +15,11 @@ if (!([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5
 function Run($checkCmd, $fixCmd) {
   if ($Fix -and $fixCmd) { $cmd = $fixCmd } else { $cmd = $checkCmd }
   Write-Host "`e[37m`n$cmd`e[0m"
-  Invoke-Expression -Command $cmd
+  Invoke-Expression $cmd
 }
 
 function Drives {
-  return Get-PSDrive -PSProvider FileSystem | Where-Object -Property Name -ne Temp
+  return Get-PSDrive -PSProvider FileSystem | Where-Object Name -ne Temp
 }
 
 if ($ChkDsk) {

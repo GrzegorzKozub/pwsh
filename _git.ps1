@@ -72,9 +72,9 @@ function script:Get-GitAddableFiles {
 }
 
 function script:Get-GitPatchFiles {
-    Get-ChildItem -Path . -Filter *.patch -File -ErrorAction SilentlyContinue |
+    Get-ChildItem . -Filter *.patch -File -ErrorAction SilentlyContinue |
         ForEach-Object { $_.Name }
-    Get-ChildItem -Path . -Filter *.diff -File -ErrorAction SilentlyContinue |
+    Get-ChildItem . -Filter *.diff -File -ErrorAction SilentlyContinue |
         ForEach-Object { $_.Name }
 }
 
