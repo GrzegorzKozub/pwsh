@@ -3,7 +3,7 @@ if (!$backup) { throw "Can't find backup drive" }
 
 $source = "D:\"
 $target = Join-Path "${backup}:" "Backup\Windows"
-Write-Host "Backup `e[36m$source`e[0m to `e[36m$target`e[0m"
+Write-Host "`e[37mBackup `e[36m$source`e[37m to `e[36m$target`e[0m"
 
 $rcloneArgs = @(
   "sync",
