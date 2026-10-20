@@ -1,3 +1,4 @@
 Modules
+.secrets
 _*.ps1
 !_git.ps1

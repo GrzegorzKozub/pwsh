@@ -321,6 +321,10 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     }
   }
 
+  # secrets
+
+  & (Join-Path $PSScriptRoot "secrets.ps1")
+
   # worktrunk (unused)
 
   # if ((Get-Command "wt" -CommandType Application -TotalCount 1 -ErrorAction Ignore).Source -like "D:\Apps\Common\*") {

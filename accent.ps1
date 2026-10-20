@@ -42,7 +42,3 @@ if ($Reset) {
 
 Stop-Process -Name "explorer"
 
-# param ( [Switch] $Reset)
-# sudo {
-#   Start-Process "regedit.exe" -ArgumentList "/s", $args[0] -Wait
-# } -args $(Join-Path $PSScriptRoot $(if ($Reset) { "blue.reg" } else { "orange.reg" }))
