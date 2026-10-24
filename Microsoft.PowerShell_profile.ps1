@@ -202,10 +202,6 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
   }
 
-  # mise (100 ms)
-
-  # & mise activate pwsh | Out-String | Invoke-Expression
-
   # mpv
 
   function global:music { mpv --no-resume-playback --shuffle "D:\Music" }
@@ -347,6 +343,11 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
     # $cmpl = @{
     #   gh = { gh completion -s powershell }
+    #   mise = {
+    #     (mise completion powershell | Out-String).
+    #       Replace('if ($offset -gt $extent.Text.Length) { $offset = $extent.Text.Length }', '').
+    #       Replace('$extent.Text.Substring(0, $offset)', '$extent.Text.PadRight($offset).Substring(0, $offset)')
+    #   }
     #   rclone = { rclone completion powershell }
     #   uv = { uv generate-shell-completion powershell }
     #   yq = { yq completion powershell }
@@ -376,6 +377,12 @@ function _defer { # runs once from the prompt function (functions and aliases mu
       $_zoxide = Join-Path $PSScriptRoot "_zoxide.ps1"
       if (!(Test-Path $_zoxide)) { zoxide init --cmd cd powershell | Out-String | Set-Content $_zoxide }
       . $_zoxide
+    }
+
+    # mise
+
+    if (Get-Command "mise" -CommandType Application -TotalCount 1 -ErrorAction Ignore) {
+      mise env -s pwsh | Out-String | Invoke-Expression
     }
 
     Unregister-Event -SourceIdentifier PowerShell.OnIdle -ErrorAction SilentlyContinue
