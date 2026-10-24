@@ -16,7 +16,7 @@ $rcloneArgs = @(
   # "--filter", "- **/AppData/Roaming/TIDAL/**",
   # "--filter", "+ /Apps/**",
   # "--filter", "+ /Code/**",
-  "--filter", "+ /Images/**",
+  "--filter", "+ /Backup/**",
   "--filter", "+ /Music/**",
   "--filter", "+ /Reflect/**",
   "--filter", "+ /Software/**",
