@@ -25,6 +25,10 @@ if ($Set) {
 }
 
 foreach ($secret in $secrets.GetEnumerator()) {
-  $secure = ConvertTo-SecureString $secret.Value -ErrorAction Stop
-  Set-Item "Env:\$($secret.Key)" ([Net.NetworkCredential]::new("", $secure).Password)
+  try {
+    $secure = ConvertTo-SecureString $secret.Value -ErrorAction Stop
+    Set-Item "Env:\$($secret.Key)" ([Net.NetworkCredential]::new("", $secure).Password) -ErrorAction Stop
+  } catch {
+    Write-Warning "Can't set $($secret.Key): $($_.Exception.Message)"
+  }
 }
