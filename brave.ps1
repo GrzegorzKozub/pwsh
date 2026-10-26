@@ -35,7 +35,7 @@ if ($Backup) {
 
   restic forget `
     --keep-within-daily 7d --keep-within-weekly 21d --keep-within-monthly 3m `
-    --prune --quiet --tag brave
+    --prune --quiet --tag 'brave'
   if ($LASTEXITCODE) { throw "restic forget failed" }
 
 }
