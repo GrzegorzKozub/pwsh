@@ -349,6 +349,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     #       Replace('$extent.Text.Substring(0, $offset)', '$extent.Text.PadRight($offset).Substring(0, $offset)')
     #   }
     #   rclone = { rclone completion powershell }
+    #   restic = { restic generate --powershell-completion - }
     #   uv = { uv generate-shell-completion powershell }
     #   yq = { yq completion powershell }
     # }
