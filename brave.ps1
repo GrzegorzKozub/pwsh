@@ -10,7 +10,7 @@ if (Get-Process 'brave' -ErrorAction SilentlyContinue) { throw "Brave is running
 $userData = Join-Path "D:" $env:LOCALAPPDATA.TrimStart("C:") "BraveSoftware\Brave-Origin\User Data"
 if (!(Test-Path $userData)) { New-Item $userData -ItemType Directory | Out-Null }
 
-$env:RESTIC_REPOSITORY = "D:\Snaps"
+if (!$env:RESTIC_REPOSITORY) { $env:RESTIC_REPOSITORY = "D:\Snaps" }
 if (!(Test-Path $env:RESTIC_REPOSITORY)) { New-Item $env:RESTIC_REPOSITORY -ItemType Directory | Out-Null }
 
 if ($Backup -or $ClearCache) {

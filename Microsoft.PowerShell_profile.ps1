@@ -213,6 +213,10 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   Set-Alias vim nvim -Scope Global
   Set-Alias v nvim -Scope Global
 
+  # restic
+
+  $env:RESTIC_REPOSITORY = "D:\Snaps"
+
   # vscode
 
   Set-Alias c code -Scope Global
