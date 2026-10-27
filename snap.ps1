@@ -3,7 +3,8 @@ param (
   [ValidateSet('Brave', 'Claude')]
   [String] $Name,
   [Switch] $Backup,
-  [Switch] $Restore
+  [Switch] $Restore,
+  [String[]] $Skip
 )
 
 if ($Backup -eq $Restore) { throw 'Can either backup or restore' }
@@ -48,15 +49,7 @@ if ($Backup) {
 
 if ($Restore) {
 
-  $keep = switch ($Name) {
-    'Claude' {
-      '/themes/gruvbox-material-dark.json',
-      '/keybindings.json',
-      '/settings.json',
-      '/statusline.ps1'
-    }
-  }
-  $exclude = @($keep | ForEach-Object { '--exclude', $_ })
+  $exclude = @(foreach ($s in $Skip) { '--exclude', $s })
 
   restic restore --delete --quiet --tag $tag --target $path @exclude `
     "latest:/$($path.Replace(':', '').Replace('\', '/'))" | Out-Null
