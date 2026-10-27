@@ -9,8 +9,16 @@ param (
 if ($Backup -eq $Restore) { throw 'Can either backup or restore' }
 
 $proc, $tag, $path = switch ($Name) {
-  'Brave' { 'brave', 'brave', (Join-Path 'D:' $env:LOCALAPPDATA.TrimStart('C:') 'BraveSoftware\Brave-Origin\User Data') }
-  'Claude' { 'claude', 'claude', ($env:CLAUDE_CONFIG_DIR ? $env:CLAUDE_CONFIG_DIR : "$env:USERPROFILE\.config\claude") }
+  'Brave' {
+    'brave',
+    'brave',
+    (Join-Path 'D:' $env:LOCALAPPDATA.TrimStart('C:') 'BraveSoftware\Brave-Origin\User Data')
+  }
+  'Claude' {
+    'claude',
+    'claude',
+    ($env:CLAUDE_CONFIG_DIR ? $env:CLAUDE_CONFIG_DIR : (Join-Path $env:USERPROFILE '.config\claude'))
+  }
 }
 
 if (Get-Process $proc -ErrorAction SilentlyContinue) { throw "$Name is running" }
@@ -40,7 +48,17 @@ if ($Backup) {
 
 if ($Restore) {
 
-  restic restore --delete --quiet --tag $tag --target $path `
+  $keep = switch ($Name) {
+    'Claude' {
+      '/themes/gruvbox-material-dark.json',
+      '/keybindings.json',
+      '/settings.json',
+      '/statusline.ps1'
+    }
+  }
+  $exclude = @($keep | ForEach-Object { '--exclude', $_ })
+
+  restic restore --delete --quiet --tag $tag --target $path @exclude `
     "latest:/$($path.Replace(':', '').Replace('\', '/'))" | Out-Null
   if ($LASTEXITCODE) { throw 'restic restore failed' }
 
