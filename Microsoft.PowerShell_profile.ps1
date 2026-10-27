@@ -2,12 +2,12 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # stop on errors
 
-  $ErrorActionPreference = "Stop"
+  $ErrorActionPreference = 'Stop'
 
   # psreadline
 
   Set-PSReadlineOption -BellStyle None
-  Set-PSReadLineOption -ContinuationPrompt " • "
+  Set-PSReadLineOption -ContinuationPrompt ' • '
   Set-PSReadLineOption -MaximumHistoryCount 100000
   Set-PSReadLineOption -PredictionSource History
   Set-PSReadLineOption -PromptText "`e[34m●• `e[0m", "`e[31m●• `e[0m"
@@ -17,7 +17,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   # terminal features
 
   if ($env:WT_SESSION) { # https://github.com/microsoft/terminal/issues/11057
-    $env:COLORTERM = "truecolor" # fix bat color tint
+    $env:COLORTERM = 'truecolor' # fix bat color tint
     # $env:TERM = "xterm-256color" # clear screen when neovim exits
   }
 
@@ -28,7 +28,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   if ($env:WT_SESSION) { Write-Host -NoNewLine "`e[6 q" }
 
   Set-PSReadLineOption -EditMode Vi
-  Set-PSReadLineKeyHandler -ViMode Command -Chord "Ctrl+e" -Function ViEditVisually # was v by default
+  Set-PSReadLineKeyHandler -ViMode Command -Chord 'Ctrl+e' -Function ViEditVisually # was v by default
 
   # handled via wezterm and windows terminal
   # Set-PSReadLineKeyHandler -ViMode Command -Chord "Ctrl+v" -Function Paste
@@ -37,63 +37,63 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   # dir colors (eza, lf)
 
   $lsColors = @(
-    "rs=0", "di=36", "ln=34", "pi=33", "so=35", "do=35", "bd=33", "cd=33", "or=31", "mi=0", "tw=36", "ow=36", "st=36", "ex=32",
-    "*.AppImage=32","*.flatpak=32",
-    "*.nu=32", "*.sh=32", "*.zsh=32", "*.bat=32", "*.cmd=32", "*.exe=32", "*.ps1=32",
-    "*.deb=33", "*.rpm=33",
-    "*.7z=33", "*.gz=33", "*.rar=33", "*.tar=33", "*.zip=33",
-    "*.cow=35", "*.fsa=35", "*.mrimg=35", "*.mrimgx=35", "*.wim=35",
-    "*.iso=35",
-    "*.ico=35", "*.jpeg=35", "*.jpg=35", "*.png=35", "*.svg=35",
-    "*.flac=35", "*.m4a=35",
-    "*.mkv=35", "*.mp4=35", "*.webm=35",
-    "*.SRCINFO=37", "*.bun-version=37", "*.bunfig.toml=37", "*.cfnlintrc=37", "*.classpath=37", "*.claude.json=37", "*.dockerignore=37", "*.editorconfig=37", "*.env=37", "*.envrc=37", "*.eslintignore=37", "*.eslintrc=37", "*.eslintrc.js=37", "*.eslintrc.json=37", "*.factorypath=37", "*.git=37", "*.gitattributes=37", "*.gitignore=37", "*.gitkeep=37", "*.gitmodules=37", "*.lock=37", "*.luacheckrc=37", "*.luarc.json=37", "*.markdownlint.json=37", "*.npmrc=37", "*.nvmrc=37", "*.prettierignore=37", "*.prettierrc=37", "*.project=37", "*.pylintrc=37", "*.stylintrc=37", "*.stylua.toml=37", "*.taplo.toml=37", "*.vscodeignore=37", "*.yarnrc=37", "*.zprofile=37", "*.zshenv=37", "*.zshrc=37",
-    "*.lmstudio-home-pointer=90",
-    "*.backup=90", "*.bak=90", "*.log=90", "*.off=90", "*.old=90", "*.orig=90", "*.original=90", "*.part=90", "*.swp=90", "*.tmp=90"
+    'rs=0', 'di=36', 'ln=34', 'pi=33', 'so=35', 'do=35', 'bd=33', 'cd=33', 'or=31', 'mi=0', 'tw=36', 'ow=36', 'st=36', 'ex=32',
+    '*.AppImage=32','*.flatpak=32',
+    '*.nu=32', '*.sh=32', '*.zsh=32', '*.bat=32', '*.cmd=32', '*.exe=32', '*.ps1=32',
+    '*.deb=33', '*.rpm=33',
+    '*.7z=33', '*.gz=33', '*.rar=33', '*.tar=33', '*.zip=33',
+    '*.cow=35', '*.fsa=35', '*.mrimg=35', '*.mrimgx=35', '*.wim=35',
+    '*.iso=35',
+    '*.ico=35', '*.jpeg=35', '*.jpg=35', '*.png=35', '*.svg=35',
+    '*.flac=35', '*.m4a=35',
+    '*.mkv=35', '*.mp4=35', '*.webm=35',
+    '*.SRCINFO=37', '*.bun-version=37', '*.bunfig.toml=37', '*.cfnlintrc=37', '*.classpath=37', '*.claude.json=37', '*.dockerignore=37', '*.editorconfig=37', '*.env=37', '*.envrc=37', '*.eslintignore=37', '*.eslintrc=37', '*.eslintrc.js=37', '*.eslintrc.json=37', '*.factorypath=37', '*.git=37', '*.gitattributes=37', '*.gitignore=37', '*.gitkeep=37', '*.gitmodules=37', '*.lock=37', '*.luacheckrc=37', '*.luarc.json=37', '*.markdownlint.json=37', '*.npmrc=37', '*.nvmrc=37', '*.prettierignore=37', '*.prettierrc=37', '*.project=37', '*.pylintrc=37', '*.stylintrc=37', '*.stylua.toml=37', '*.taplo.toml=37', '*.vscodeignore=37', '*.yarnrc=37', '*.zprofile=37', '*.zshenv=37', '*.zshrc=37',
+    '*.lmstudio-home-pointer=90',
+    '*.backup=90', '*.bak=90', '*.log=90', '*.off=90', '*.old=90', '*.orig=90', '*.original=90', '*.part=90', '*.swp=90', '*.tmp=90'
   )
-  $env:LS_COLORS = $lsColors -join ":"
+  $env:LS_COLORS = $lsColors -join ':'
 
   # eza
 
   $ezaColors = @(
     # permissions
-    "oc=37",
-    "ur=37", "uw=37", "ux=37", "ue=37",
-    "gr=37", "gw=37", "gx=37",
-    "tr=37", "tw=37", "tx=37",
-    "su=37", "sf=37", "xa=37",
+    'oc=37',
+    'ur=37', 'uw=37', 'ux=37', 'ue=37',
+    'gr=37', 'gw=37', 'gx=37',
+    'tr=37', 'tw=37', 'tx=37',
+    'su=37', 'sf=37', 'xa=37',
     # size
-    "nb=90", "nk=37", "nm=33", "ng=31", "nt=91",
+    'nb=90', 'nk=37', 'nm=33', 'ng=31', 'nt=91',
     # owner & group
-    "uu=90", "uR=31", "un=37", "gu=90", "gR=31", "gn=37",
+    'uu=90', 'uR=31', 'un=37', 'gu=90', 'gR=31', 'gn=37',
     # git
-    "ga=32", "gm=33", "gd=31", "gv=33", "gt=33", "gi=90", "gc=91",
-    "Gm=34", "Go=34", "Gc=30", "Gd=33",
+    'ga=32', 'gm=33', 'gd=31', 'gv=33', 'gt=33', 'gi=90', 'gc=91',
+    'Gm=34', 'Go=34', 'Gc=30', 'Gd=33',
     # dates
-    "da=37",
+    'da=37',
     # symlinks
-    "bO=31",
+    'bO=31',
     # mount points
-    "mp=34;4",
+    'mp=34;4',
     # media
-    "im=35", "vi=35", "mu=35", "lo=35",
+    'im=35', 'vi=35', 'mu=35', 'lo=35',
     # cryptography
-    "cr=33",
+    'cr=33',
     # documents
-    "do=0",
+    'do=0',
     # compressed
-    "co=33",
+    'co=33',
     # temp
-    "tm=90",
+    'tm=90',
     # dev
-    "bu=0", "sc=0",
+    'bu=0', 'sc=0',
     # flags
-    "ff=37"
+    'ff=37'
   )
-  $env:EZA_COLORS = $ezaColors -join ":"
+  $env:EZA_COLORS = $ezaColors -join ':'
 
   $env:EZA_ICONS_AUTO = 1
-  $env:EZA_WINDOWS_ATTRIBUTES="short"
+  $env:EZA_WINDOWS_ATTRIBUTES='short'
 
   function global:ls { eza.exe --all --group-directories-first --no-permissions --no-quotes $args }
   function global:la { eza.exe --all --group-directories-first --no-permissions --no-quotes --long $args }
@@ -166,16 +166,16 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   # less
 
   $less = @(
-    "--quit-if-one-screen", "--RAW-CONTROL-CHARS", "--tilde", "--use-color",
-    "-DEr", "-DPw", "-DRk", "-DSkY", "-Dd-d", "-Du-d",
+    '--quit-if-one-screen', '--RAW-CONTROL-CHARS', '--tilde', '--use-color',
+    '-DEr', '-DPw', '-DRk', '-DSkY', '-Dd-d', '-Du-d',
     # flagged colors
-    "-D1rR", "-D2rR", "-D3rR", "-D4rR", "-D5rR", "-DBrR", "-DCrR", "-DHrR", "-DMrR", "-DNrR", "-DWrR", "-DkrR", "-DsrR"
+    '-D1rR', '-D2rR', '-D3rR', '-D4rR', '-D5rR', '-DBrR', '-DCrR', '-DHrR', '-DMrR', '-DNrR', '-DWrR', '-DkrR', '-DsrR'
     # not supported on windows: -DTk -DJrR
   )
-  $env:LESS = $less -join " "
+  $env:LESS = $less -join ' '
 
-  $env:LESSHISTFILE = "-"
-  $env:PAGER = "less"
+  $env:LESSHISTFILE = '-'
+  $env:PAGER = 'less'
 
   # yazi
 
@@ -196,26 +196,26 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   function global:y { _cd -Cmd { yazi.exe --cwd-file $args[0] } }
 
-  Set-PSReadLineKeyHandler -Chord "Ctrl+y" -ScriptBlock {
+  Set-PSReadLineKeyHandler -Chord 'Ctrl+y' -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::RevertLine()
-    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("y")
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert('y')
     [Microsoft.PowerShell.PSConsoleReadLine]::AcceptLine()
   }
 
   # mpv
 
-  function global:music { mpv --no-resume-playback --shuffle "D:\Music" }
+  function global:music { mpv --no-resume-playback --shuffle 'D:\Music' }
 
   # neovim
 
-  $env:EDITOR = $env:VISUAL = "nvim"
+  $env:EDITOR = $env:VISUAL = 'nvim'
 
   Set-Alias vim nvim -Scope Global
   Set-Alias v nvim -Scope Global
 
   # restic
 
-  $env:RESTIC_REPOSITORY = "D:\Snaps"
+  $env:RESTIC_REPOSITORY = 'D:\Snaps'
 
   # vscode
 
@@ -238,22 +238,22 @@ function _defer { # runs once from the prompt function (functions and aliases mu
   # syntax highlighting
 
   Set-PSReadLineOption -Colors @{
-    "Command" = [ConsoleColor]::DarkGreen
-    "Comment" = [ConsoleColor]::Black
-    "ContinuationPrompt" = [ConsoleColor]::DarkBlue
-    "Default" = [ConsoleColor]::White
-    "Emphasis" = [ConsoleColor]::DarkYellow
-    "Error" = [ConsoleColor]::DarkRed
-    "InlinePrediction" = [ConsoleColor]::DarkGray
-    "Keyword" = [ConsoleColor]::DarkYellow
-    "Member" = [ConsoleColor]::DarkYellow
-    "Number" = [ConsoleColor]::White
-    "Operator" = [ConsoleColor]::White
-    "Parameter" = [ConsoleColor]::DarkBlue
-    "Selection" = "`e[97;1m" # bold bright white
-    "String" = [ConsoleColor]::DarkMagenta
-    "Type" = [ConsoleColor]::DarkGreen
-    "Variable" = [ConsoleColor]::DarkRed
+    'Command' = [ConsoleColor]::DarkGreen
+    'Comment' = [ConsoleColor]::Black
+    'ContinuationPrompt' = [ConsoleColor]::DarkBlue
+    'Default' = [ConsoleColor]::White
+    'Emphasis' = [ConsoleColor]::DarkYellow
+    'Error' = [ConsoleColor]::DarkRed
+    'InlinePrediction' = [ConsoleColor]::DarkGray
+    'Keyword' = [ConsoleColor]::DarkYellow
+    'Member' = [ConsoleColor]::DarkYellow
+    'Number' = [ConsoleColor]::White
+    'Operator' = [ConsoleColor]::White
+    'Parameter' = [ConsoleColor]::DarkBlue
+    'Selection' = "`e[97;1m" # bold bright white
+    'String' = [ConsoleColor]::DarkMagenta
+    'Type' = [ConsoleColor]::DarkGreen
+    'Variable' = [ConsoleColor]::DarkRed
   }
 
   # style
@@ -280,23 +280,23 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   $PSStyle.FileInfo.Extension.Clear()
 
-  ".ps1" |
+  '.ps1' |
     ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Green) }
-  ".7z", ".gz", ".rar", ".tar", ".zip" |
+  '.7z', '.gz', '.rar', '.tar', '.zip' |
     ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Yellow) }
-  ".cow", ".fsa", ".mrimg", ".wim" |
+  '.cow', '.fsa', '.mrimg', '.wim' |
     ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
-  ".iso" |
+  '.iso' |
     ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
-  ".ico", ".jpeg", ".jpg", ".png", ".svg" |
+  '.ico', '.jpeg', '.jpg', '.png', '.svg' |
     ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
-  ".flac", ".m4a" |
+  '.flac', '.m4a' |
     ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
-  ".mkv", ".mp4", ".webm" |
+  '.mkv', '.mp4', '.webm' |
     ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.Magenta) }
-  ".dockerignore", ".editorconfig", ".env", ".eslintignore", ".eslintrc", ".git", ".gitattributes", ".gitignore", ".gitkeep", ".gitmodules", ".lock", ".luacheckrc", ".npmrc", ".nvmrc", ".prettierignore", ".prettierrc", ".pylintrc", ".vscodeignore" |
+  '.dockerignore', '.editorconfig', '.env', '.eslintignore', '.eslintrc', '.git', '.gitattributes', '.gitignore', '.gitkeep', '.gitmodules', '.lock', '.luacheckrc', '.npmrc', '.nvmrc', '.prettierignore', '.prettierrc', '.pylintrc', '.vscodeignore' |
     ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.White) }
-  ".backup", ".bak", ".log", ".off", ".old", ".orig", ".original", ".part", ".swp", ".tmp" |
+  '.backup', '.bak', '.log', '.off', '.old', '.orig', '.original', '.part', '.swp', '.tmp' |
     ForEach-Object { $PSStyle.FileInfo.Extension.Add($_, $PSStyle.Foreground.BrightBlack) }
 
   # vi mode indicator
@@ -308,7 +308,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # prompt
 
-  Set-PSReadLineKeyHandler -Chord "Enter" -ScriptBlock {
+  Set-PSReadLineKeyHandler -Chord 'Enter' -ScriptBlock {
     try {
       $errors = $null
       [Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$null, [ref]$null, [ref]$errors, [ref]$null)
@@ -323,7 +323,7 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
   # secrets
 
-  & (Join-Path $PSScriptRoot "secrets.ps1")
+  & (Join-Path $PSScriptRoot 'secrets.ps1')
 
   # worktrunk (unused)
 
@@ -341,9 +341,9 @@ function _defer { # runs once from the prompt function (functions and aliases mu
     #   try { . "_$cmd.ps1" } catch {}
     # }
 
-    foreach ($cmd in "fd", "rg") { try { . "_$cmd.ps1" } catch {} }
+    foreach ($cmd in 'fd', 'rg') { try { . "_$cmd.ps1" } catch {} }
 
-    . (Join-Path $PSScriptRoot "_git.ps1")
+    . (Join-Path $PSScriptRoot '_git.ps1')
 
     # $cmpl = @{
     #   gh = { gh completion -s powershell }
@@ -369,24 +369,24 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
     # psfzf
 
-    Import-Module "PSFzf"
+    Import-Module 'PSFzf'
     Set-PsFzfOption `
-      -PSReadlineChordReverseHistory "ctrl+r" `
-      -PSReadlineChordProvider "ctrl+t" `
-      -PSReadlineChordSetLocation "alt+c"
+      -PSReadlineChordReverseHistory 'ctrl+r' `
+      -PSReadlineChordProvider 'ctrl+t' `
+      -PSReadlineChordSetLocation 'alt+c'
 
     # zoxide
 
-    if (Get-Command "zoxide" -CommandType Application -TotalCount 1 -ErrorAction Ignore) {
+    if (Get-Command 'zoxide' -CommandType Application -TotalCount 1 -ErrorAction Ignore) {
       $env:_ZO_FZF_OPTS = $env:FZF_DEFAULT_OPTS
-      $_zoxide = Join-Path $PSScriptRoot "_zoxide.ps1"
+      $_zoxide = Join-Path $PSScriptRoot '_zoxide.ps1'
       if (!(Test-Path $_zoxide)) { zoxide init --cmd cd powershell | Out-String | Set-Content $_zoxide }
       . $_zoxide
     }
 
     # mise
 
-    if (Get-Command "mise" -CommandType Application -TotalCount 1 -ErrorAction Ignore) {
+    if (Get-Command 'mise' -CommandType Application -TotalCount 1 -ErrorAction Ignore) {
       mise env -s pwsh | Out-String | Invoke-Expression
     }
 
@@ -397,60 +397,60 @@ function _defer { # runs once from the prompt function (functions and aliases mu
 
 # prompt
 
-if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains "S-1-5-32-544") {
+if ([Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains 'S-1-5-32-544') {
   $script:admin = "$([char]0x1B)[33m󰒘$([char]0x1B)[0m "
 }
 
 function _git {
-  if (!(Test-Path ".git")) { return "" }
-  if (!$(Get-Item ".git" -Force).PSIsContainer) {
-    if ((Get-Content ".git" -TotalCount 1) -match "gitdir: .*[\\/]worktrees[\\/]([^\\/]+)") {
+  if (!(Test-Path '.git')) { return '' }
+  if (!$(Get-Item '.git' -Force).PSIsContainer) {
+    if ((Get-Content '.git' -TotalCount 1) -match 'gitdir: .*[\\/]worktrees[\\/]([^\\/]+)') {
       $worktree = "`e[94m$($Matches[1])`e[0m "
     }
-  } else { $worktree = "" }
+  } else { $worktree = '' }
   # https://git-scm.com/docs/git-status#_porcelain_format_version_2
   $status = git status --porcelain=2 --branch --show-stash # --ignore-submodule
   foreach ($line in $status) {
-    if ($line -match "# branch.oid (.*)") { $commit = $Matches[1] }
-    if ($line -match "# branch.head (.*)") { $branch = $Matches[1] }
-    if ($line -match "# branch.ab \+(.*) \-(.*)") {
+    if ($line -match '# branch.oid (.*)') { $commit = $Matches[1] }
+    if ($line -match '# branch.head (.*)') { $branch = $Matches[1] }
+    if ($line -match '# branch.ab \+(.*) \-(.*)') {
       if ($Matches[1] -gt 0) { $ahead = $Matches[1] }
       if ($Matches[2] -gt 0) { $behind = $Matches[2] }
     }
-    if ($line -match "# stash (.*)") { $stash = $Matches[1] }
-    if ($line -match "[12] ([\.AMD])([\.AMD])") {
-      if ($Matches[1] -ne ".") { $staged++ }
-      if ($Matches[2] -ne ".") { $unstaged++ }
+    if ($line -match '# stash (.*)') { $stash = $Matches[1] }
+    if ($line -match '[12] ([\.AMD])([\.AMD])') {
+      if ($Matches[1] -ne '.') { $staged++ }
+      if ($Matches[2] -ne '.') { $unstaged++ }
     }
-    if ($line -match "u .*") { $unmerged++ }
-    if ($line -match "\? .*") { $untracked++ }
+    if ($line -match 'u .*') { $unmerged++ }
+    if ($line -match '\? .*') { $untracked++ }
   }
-  if ($branch -match "(detached)") {
+  if ($branch -match '(detached)') {
     $branchOrCommit = "`e[33m$(-join $commit[0..6])`e[0m "
   } else {
     if ($branch.Length -gt 32) { $branch = "$(-join $branch[0..3])…" }
     $branchOrCommit = "`e[34m$branch`e[0m "
   }
-  $behind = if ($behind) { "`e[33m↓$behind`e[0m " } else { "" }
-  $ahead = if ($ahead) { "`e[32m↑$ahead`e[0m " } else { "" }
-  $stash = if ($stash) { "`e[35m←$stash`e[0m " } else { "" }
-  $unmerged = if ($unmerged) { "`e[31m?$unmerged`e[0m " } else { "" }
-  $staged = if ($staged) { "`e[32m+$staged`e[0m " } else { "" }
-  $unstaged = if ($unstaged) { "`e[33m~$unstaged`e[0m " } else { "" }
-  $untracked = if ($untracked) { "`e[31m*$untracked`e[0m " } else { "" }
+  $behind = if ($behind) { "`e[33m↓$behind`e[0m " } else { '' }
+  $ahead = if ($ahead) { "`e[32m↑$ahead`e[0m " } else { '' }
+  $stash = if ($stash) { "`e[35m←$stash`e[0m " } else { '' }
+  $unmerged = if ($unmerged) { "`e[31m?$unmerged`e[0m " } else { '' }
+  $staged = if ($staged) { "`e[32m+$staged`e[0m " } else { '' }
+  $unstaged = if ($unstaged) { "`e[33m~$unstaged`e[0m " } else { '' }
+  $untracked = if ($untracked) { "`e[31m*$untracked`e[0m " } else { '' }
   return " $worktree$branchOrCommit$behind$ahead$stash$unmerged$staged$unstaged$untracked"
 }
 
 function _osc7 ($location) {
-  if ($location.Provider.Name -ne "FileSystem") { return "" }
+  if ($location.Provider.Name -ne 'FileSystem') { return '' }
   if ($env:WT_SESSION) {
     # https://learn.microsoft.com/en-us/windows/terminal/tutorials/new-tab-same-directory
     return "$([char]27)]9;9;`"$($location.ProviderPath)`"$([char]27)\"
-  } elseif ($env:TERM_PROGRAM -eq "WezTerm") {
+  } elseif ($env:TERM_PROGRAM -eq 'WezTerm') {
     # https://wezfurlong.org/wezterm/shell-integration.html?h=shell
-    return "$([char]27)]7;file://${env:COMPUTERNAME}/$($location.ProviderPath -Replace "\\", "/")$([char]27)\"
+    return "$([char]27)]7;file://${env:COMPUTERNAME}/$($location.ProviderPath -Replace '\\', '/')$([char]27)\"
   } else {
-    return ""
+    return ''
   }
 }
 
@@ -463,9 +463,9 @@ function prompt {
     $char
   } else {
     $location = $executionContext.SessionState.Path.CurrentLocation
-    $path = $location.ProviderPath.Replace($HOME, "~")
-    if ($path -ne "~" -and !$path.EndsWith("\")) {
-      $lastSlash = $path.LastIndexOf("\")
+    $path = $location.ProviderPath.Replace($HOME, '~')
+    if ($path -ne '~' -and !$path.EndsWith('\')) {
+      $lastSlash = $path.LastIndexOf('\')
       $path = $path.Substring($lastSlash + 1, $path.Length - $lastSlash - 1)
     }
     $Host.UI.RawUI.WindowTitle = $path
@@ -476,10 +476,10 @@ function prompt {
       if (!$question) {
         $cmdletErr = try { $global:error[0] | Where-Object { $_ -ne $null } | Select-Object -ExpandProperty InvocationInfo } catch { $null }
         $err = if ($null -ne $cmdletErr -and $cmd.CommandLine -eq $cmdletErr.Line) { 1 } else { $exitCode }
-        $char = $char.Replace("[34m", "[31m")
+        $char = $char.Replace('[34m', '[31m')
       }
       if ($time -gt 5000 -or $err) {
-        $prompt += "#"
+        $prompt += '#'
         if ($time -gt 5000) {
           $time = [TimeSpan]::FromMilliseconds($time)
           $prompt += " $([char]0x1B)[35m"
@@ -490,9 +490,9 @@ function prompt {
         if ($err) {
           $prompt += " $([char]0x1B)[30m$err$([char]0x1B)[0m"
         }
-        $len = [RegEx]::Replace($prompt, "\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])", "").Length
-        $pad = [System.String]::new(" ", $Host.UI.RawUI.WindowSize.Width - $len + 1)
-        $prompt = $prompt.Replace("#", $pad)
+        $len = [RegEx]::Replace($prompt, '\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])', '').Length
+        $pad = [System.String]::new(' ', $Host.UI.RawUI.WindowSize.Width - $len + 1)
+        $prompt = $prompt.Replace('#', $pad)
       }
     }
     $prompt += "`n$char"
@@ -501,6 +501,6 @@ function prompt {
     $prompt
   }
   $global:LASTEXITCODE = $exitCode
-  if ($global:? -ne $question) { if ($question) { 1 + 1 } else { Write-Error "" -ErrorAction Ignore } }
+  if ($global:? -ne $question) { if ($question) { 1 + 1 } else { Write-Error '' -ErrorAction Ignore } }
   if (!$script:delayedDone) { _defer; $script:delayedDone = $true }
 }

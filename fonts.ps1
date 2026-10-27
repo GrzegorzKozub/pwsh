@@ -1,6 +1,6 @@
 Write-Host
 
-Write-Host "normal " -NoNewline
+Write-Host 'normal ' -NoNewline
 
 Write-Host "`e[1mbold`e[0m " -NoNewline
 Write-Host "`e[2mdim`e[0m " -NoNewline
@@ -19,8 +19,8 @@ Write-Host "`e[9mstrikethrough`e[0m"
 
 Write-Host "`e]8;;http://archlinux.org`e\link`e]8;;`e\"
 
-Write-Host "== != === !== >= <= => ->"
-Write-Host "              "
-Write-Host "🙁 😐 🙂 👍 👎"
+Write-Host '== != === !== >= <= => ->'
+Write-Host '              '
+Write-Host '🙁 😐 🙂 👍 👎'
 
 Write-Host
