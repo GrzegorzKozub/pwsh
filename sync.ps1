@@ -3,6 +3,7 @@ $dirs =
   'D:\Code\notes',
   'D:\Code\pass',
   "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadline",
+  "$env:LOCALAPPDATA\zoxide",
   "$env:USERPROFILE\Pictures\Walls"
 
 foreach ($dir in $dirs) {
