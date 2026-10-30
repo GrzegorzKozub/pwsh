@@ -5,6 +5,7 @@ param (
   [Switch] $Chkdsk,
   [Switch] $Cleanmgr,
   [Switch] $Defrag,
+  [Switch] $OptimizeVolume,
   [Switch] $DismComponents,
   [Switch] $DismImage,
   [Switch] $Sfc
@@ -48,6 +49,12 @@ if ($Cleanmgr) {
 if ($Defrag) {
   foreach ($drive in Drives) {
     Run "defrag /Retrim ${drive}:"
+  }
+}
+
+if ($OptimizeVolume) {
+  foreach ($drive in Drives) {
+    Run "Optimize-Volume -DriveLetter $drive -Verbose"
   }
 }
 
