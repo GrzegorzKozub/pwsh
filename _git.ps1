@@ -1,8 +1,3 @@
-# _git.ps1 - lightweight native git tab-completion for PowerShell
-# Dot-source or Import this from your $PROFILE:
-#   . "$HOME\_git.ps1"
-# No modules, no prompt changes - just Register-ArgumentCompleter for `git`.
-
 $script:GitSubcommands = @(
     'add','am','apply','archive','bisect','blame','branch','bundle','checkout',
     'cherry','cherry-pick','clean','clone','commit','config','describe','diff',
@@ -31,7 +26,6 @@ function script:Get-GitStashes {
 }
 
 function script:Get-GitRefs {
-    # branches + tags, deduped - used for checkout/merge/rebase/reset/diff/log/show/cherry-pick/revert
     (Get-GitBranches -IncludeRemote) + (Get-GitTags) | Select-Object -Unique
 }
 
@@ -46,7 +40,6 @@ function script:Get-GitTrackedFiles {
 }
 
 function script:Get-GitStatusFiles {
-    # returns objects with .Code (XY porcelain status) and .Path
     git status --porcelain=v1 2>$null | ForEach-Object {
         $code = $_.Substring(0, 2)
         $path = $_.Substring(3)
@@ -87,21 +80,16 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
     param($wordToComplete, $commandAst, $cursorPosition)
 
     $elems = $commandAst.CommandElements
-    # if the cursor is still inside/at the last element, that element is the word
-    # being typed right now (not yet a "completed" argument) - exclude it, otherwise
-    # (e.g. trailing space) every element so far is a completed argument.
     $cursorInLastElement = $elems.Count -gt 0 -and $cursorPosition -le $elems[$elems.Count - 1].Extent.EndOffset
     $completedCount = if ($cursorInLastElement) { $elems.Count - 1 } else { $elems.Count }
     $completed = if ($completedCount -gt 0) { $elems[0..($completedCount - 1)] | ForEach-Object { $_.Extent.Text } } else { @() }
-    # drop leading 'git'
-    $args = if ($completed.Count -gt 1) { $completed[1..($completed.Count - 1)] } else { @() }
-    $sub  = $args | Select-Object -First 1
+    $arguments = if ($completed.Count -gt 1) { $completed[1..($completed.Count - 1)] } else { @() }
+    $sub  = $arguments | Select-Object -First 1
     $wtc  = [regex]::Escape($wordToComplete)
 
     $candidates = @()
 
     if ($completed.Count -le 1) {
-        # completing the subcommand itself (nothing after 'git' completed yet)
         $candidates = $script:GitSubcommands
     }
     else {
@@ -110,7 +98,7 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
                 $candidates = @('-b','-B','--detach','--track','--orphan') + (Get-GitRefs)
             }
             'branch' {
-                if ($args -contains '-d' -or $args -contains '-D' -or $args -contains '-m' -or $args -contains '-M') {
+                if ($arguments -contains '-d' -or $arguments -contains '-D' -or $arguments -contains '-m' -or $arguments -contains '-M') {
                     $candidates = Get-GitBranches
                 } else {
                     $candidates = @('-a','-r','-d','-D','-m','-M','--list','--set-upstream-to=','--track','--unset-upstream') + (Get-GitBranches)
@@ -131,8 +119,7 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
             }
             { $_ -in 'push','pull','fetch' } {
                 $remotes = Get-GitRemotes
-                # arg immediately after remote name -> branch; else remote / flags
-                if ($args.Count -ge 2 -and ($remotes -contains $args[1])) {
+                if ($arguments.Count -ge 2 -and ($remotes -contains $arguments[1])) {
                     $candidates = Get-GitBranches
                 } else {
                     $flags = switch ($sub) {
@@ -144,7 +131,7 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
                 }
             }
             'remote' {
-                $sub2 = $args | Select-Object -Skip 1 -First 1
+                $sub2 = $arguments | Select-Object -Skip 1 -First 1
                 if (-not $sub2) {
                     $candidates = @('add','remove','rename','set-url','show','prune','get-url','update','-v')
                 }
@@ -156,7 +143,7 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
                 $candidates = @('-a','-d','-l','--list','-f') + (Get-GitTags)
             }
             'stash' {
-                $sub2 = $args | Select-Object -Skip 1 -First 1
+                $sub2 = $arguments | Select-Object -Skip 1 -First 1
                 if (-not $sub2) {
                     $candidates = @('push','pop','apply','drop','list','show','branch','clear','-u','--include-untracked')
                 }
@@ -168,7 +155,7 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
                 }
             }
             'worktree' {
-                $sub2 = $args | Select-Object -Skip 1 -First 1
+                $sub2 = $arguments | Select-Object -Skip 1 -First 1
                 if (-not $sub2) {
                     $candidates = @('add','list','remove','lock','unlock','move','prune','repair')
                 }
@@ -204,7 +191,7 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
                 $candidates = @('-f','--force') + (Get-GitTrackedFiles)
             }
             'restore' {
-                if ($args -contains '--staged') {
+                if ($arguments -contains '--staged') {
                     $candidates = @('--staged','--worktree','--source=') + (Get-GitStagedFiles)
                 } else {
                     $candidates = @('--staged','--worktree','--source=') + (Get-GitUnstagedFiles)
@@ -229,7 +216,7 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
                 $candidates = @('--format=tar','--format=zip','-o','--prefix=') + (Get-GitRefs)
             }
             'bundle' {
-                $sub2 = $args | Select-Object -Skip 1 -First 1
+                $sub2 = $arguments | Select-Object -Skip 1 -First 1
                 if (-not $sub2) {
                     $candidates = @('create','verify','list-heads','unbundle')
                 }
@@ -244,7 +231,7 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
                 $candidates = @('start','good','bad','skip','reset','log','run','visualize') + (Get-GitRefs)
             }
             'notes' {
-                $sub2 = $args | Select-Object -Skip 1 -First 1
+                $sub2 = $arguments | Select-Object -Skip 1 -First 1
                 if (-not $sub2) {
                     $candidates = @('add','append','copy','edit','show','list','remove','prune')
                 } else {
@@ -252,7 +239,7 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
                 }
             }
             'reflog' {
-                $sub2 = $args | Select-Object -Skip 1 -First 1
+                $sub2 = $arguments | Select-Object -Skip 1 -First 1
                 if (-not $sub2) {
                     $candidates = @('show','list','expire','delete') + (Get-GitRefs)
                 } else {
@@ -275,7 +262,7 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
                 $candidates = @('-s','-n','-e') + (Get-GitRefs)
             }
             'submodule' {
-                $sub2 = $args | Select-Object -Skip 1 -First 1
+                $sub2 = $arguments | Select-Object -Skip 1 -First 1
                 if (-not $sub2) {
                     $candidates = @('add','status','init','update','deinit','sync','foreach','absorbgitdirs')
                 } else {
@@ -283,7 +270,7 @@ Register-ArgumentCompleter -Native -CommandName git -ScriptBlock {
                 }
             }
             'sparse-checkout' {
-                $sub2 = $args | Select-Object -Skip 1 -First 1
+                $sub2 = $arguments | Select-Object -Skip 1 -First 1
                 if (-not $sub2) {
                     $candidates = @('list','init','set','add','disable','reapply','check-rules')
                 } else {
