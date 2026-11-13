@@ -25,10 +25,20 @@ if ($startRtss) {
   WaitFor { Get-Process 'RTSS' -ErrorAction SilentlyContinue }
 }
 
+$game = $args |
+  ForEach-Object { if ($_ -match '^(.+\\steamapps\\common\\[^\\]+)\\') { $Matches[1] + '\' } } |
+  Select-Object -First 1
+
+function GameRunning {
+  [bool](Get-Process | Where-Object { $_.Path -and $_.Path.StartsWith($game, 'OrdinalIgnoreCase') })
+}
+
 try {
 
   $command, $arguments = $args
   & $command @arguments | Out-Null
+
+  if ($game) { do { Start-Sleep 5 } while (GameRunning) }
 
 } finally {
 
