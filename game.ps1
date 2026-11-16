@@ -8,7 +8,7 @@ function WaitFor ($condition, $seconds = 10) {
 
 # hdr
 
-$enableHdr = [bool]((hdr.exe status) -match '\bHDR off\b')
+$enableHdr = [bool]((hdr.exe status) -match 'hdr off')
 if ($enableHdr) { hdr.exe on | Out-Null }
 
 # windows.ahk
